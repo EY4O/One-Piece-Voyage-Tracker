@@ -4,7 +4,7 @@
 
 An interactive, spoiler-safe companion web application engineered to navigate all **1,120+ anime episodes** and **15 theatrical movies** in definitive chronological order.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Voyage-E53935?style=for-the-badge&logo=google-chrome&logoColor=white)](https://EY4O.github.io/the-one-piece/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Voyage-E53935?style=for-the-badge&logo=google-chrome&logoColor=white)](https://ey4o.github.io/One-Piece-Voyage-Tracker/)
 [![Node Version](https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](#prerequisites)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](#disclaimer)
 
