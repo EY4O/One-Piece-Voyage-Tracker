@@ -324,7 +324,7 @@ const SAGAS_DATA = [
     crewJoined: ['Grand Fleet Formed'],
     items: [
       { id: 'arc-33', title: 'Z’s Ambition Arc', type: 'filler', episodes: '575 – 578', startEp: 575, endEp: 578, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Neo Navy filler leading into Film Z.', watchTip: 'Watch right before Film Z.', tier: 'Recommended' },
-      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 20000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
+      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 2000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
       { id: 'arc-34', title: 'Punk Hazard Arc', type: 'canon', episodes: '579 – 625', startEp: 579, endEp: 625, epCount: 47, chapters: 'Ch 654 – 699', onePace: '22 eps (10 hr 15m)', bountyReward: 60000000, description: 'Half-ice half-fire island. Law and Luffy forge alliance.', highlights: 'Pirate Alliance formed, Caesar Clown defeat.', tier: 'Core' },
       { id: 'arc-35', title: 'Caesar Retrieval Arc', type: 'filler', episodes: '626 – 628', startEp: 626, endEp: 628, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arc where Breed kidnaps Caesar.', watchTip: 'Filler. Skip to 629.', tier: 'Filler' },
       { id: 'arc-36', title: 'Dressrosa Arc', type: 'canon', episodes: '629 – 746', startEp: 629, endEp: 746, epCount: 118, chapters: 'Ch 700 – 801', onePace: '48 eps (23 hr 30m)', bountyReward: 200000000, description: 'Corrida Colosseum, Doflamingo Birdcage, Gear 4th.', highlights: 'Sabo inherits flame fruit, Gear 4th Boundman. 500M Bounty!', tier: 'Core' },
@@ -789,11 +789,11 @@ export default function App() {
         </div>
       )}
 
-      {/* STICKY "UP NEXT" BAR WITH FLEX/TRUNCATE/HOVER FIX */}
+      {/* STICKY "UP NEXT" BAR */}
       {upNextData && (
         <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-4 py-2.5 shadow-xl transition">
           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-            {/* Left Episode Metadata Column: min-w-0 ensures truncation works */}
+            {/* Left Episode Metadata Column */}
             <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
               <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
                 {upNextData.item.type === 'movie' ? (
@@ -803,7 +803,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* Title Container with Overflow Guard */}
               <div 
                 className="min-w-0 flex-1 overflow-hidden select-none group"
                 title={upNextData.episodeTitle}
@@ -830,7 +829,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Action Buttons Column: shrink-0 guarantees rigid layout */}
+            {/* Action Buttons Column */}
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={scrollToActiveArc}
@@ -1463,7 +1462,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 2: PIRATE ACHIEVEMENTS */}
+        {/* TAB 2: PIRATE ACHIEVEMENTS WITH SPOILER PROTECTION */}
         {activeTab === 'achievements' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -1502,13 +1501,15 @@ export default function App() {
                   Platinum: 'border-cyan-400/50 text-cyan-300 bg-cyan-500/10'
                 }[ach.tier];
 
+                const isMasked = spoilerShield && !ach.isUnlocked;
+
                 return (
                   <div
                     key={ach.id}
                     className={`p-4 rounded-2xl border transition-all flex items-start gap-4 ${
                       ach.isUnlocked
                         ? 'bg-slate-900/90 border-slate-700 shadow-md'
-                        : 'bg-slate-950/40 border-slate-900 opacity-60'
+                        : 'bg-slate-950/40 border-slate-900 opacity-75 group'
                     }`}
                   >
                     <div
@@ -1516,27 +1517,56 @@ export default function App() {
                         ach.isUnlocked ? tierStyles : 'bg-slate-900 border-slate-800 grayscale'
                       }`}
                     >
-                      {ach.isUnlocked ? ach.icon : '🔒'}
+                      {ach.isUnlocked ? (
+                        ach.icon
+                      ) : isMasked ? (
+                        <>
+                          <Lock className="w-5 h-5 text-slate-500 group-hover:hidden" />
+                          <span className="hidden group-hover:inline">{ach.icon}</span>
+                        </>
+                      ) : (
+                        ach.icon
+                      )}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-0.5">
-                        <h4 className={`text-sm font-bold truncate ${ach.isUnlocked ? 'text-slate-100' : 'text-slate-400'}`}>
-                          {ach.title}
+                        <h4 className="text-sm font-bold truncate">
+                          {isMasked ? (
+                            <span className="filter blur-[3.5px] group-hover:filter-none select-none transition text-slate-400">
+                              {ach.title}
+                            </span>
+                          ) : (
+                            <span className={ach.isUnlocked ? 'text-slate-100' : 'text-slate-400'}>
+                              {ach.title}
+                            </span>
+                          )}
                         </h4>
                         <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded border shrink-0 ${tierStyles}`}>
                           {ach.tier}
                         </span>
                       </div>
 
-                      <p className={`text-xs leading-relaxed ${ach.isUnlocked ? 'text-slate-400' : 'text-slate-600'}`}>
-                        {ach.description}
-                      </p>
+                      <div className="relative mt-1">
+                        <p className={`text-xs leading-relaxed transition-all duration-300 ${
+                          isMasked 
+                            ? 'filter blur-[3.5px] group-hover:filter-none select-none text-slate-500 group-hover:text-slate-400' 
+                            : ach.isUnlocked 
+                            ? 'text-slate-400' 
+                            : 'text-slate-600'
+                        }`}>
+                          {ach.description}
+                        </p>
+                      </div>
 
-                      <div className="mt-2 flex items-center gap-1.5 text-[10px] font-bold">
+                      <div className="mt-2 flex items-center justify-between text-[10px] font-bold">
                         {ach.isUnlocked ? (
                           <span className="text-emerald-400 flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" /> Unlocked
+                          </span>
+                        ) : isMasked ? (
+                          <span className="text-slate-500 flex items-center gap-1 group-hover:text-amber-400/80 transition">
+                            <Lock className="w-3 h-3" /> Hidden (Hover to view)
                           </span>
                         ) : (
                           <span className="text-slate-500 flex items-center gap-1">
