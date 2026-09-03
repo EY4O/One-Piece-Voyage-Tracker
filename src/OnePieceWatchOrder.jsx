@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
+import headerBg1 from './bg1.jpg';
+import headerBg2 from './bg2.jpg';
 import {
   Compass,
   Film,
@@ -38,7 +40,8 @@ import {
   ArrowRight,
   SkipForward,
   Lock,
-  Award
+  Award,
+  Image as ImageIcon
 } from 'lucide-react';
 
 // Straw Hat Themes
@@ -420,6 +423,9 @@ export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
   const [showThemePicker, setShowThemePicker] = useState(false);
 
+  // Background artwork selector (bg1 vs bg2)
+  const [activeBg, setActiveBg] = useState(() => localStorage.getItem('op_header_bg') || 'bg1');
+
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
       const saved = localStorage.getItem('op_tracker_watched');
@@ -460,6 +466,7 @@ export default function App() {
   const theme = THEMES[activeThemeId] || THEMES.classic;
 
   useEffect(() => { localStorage.setItem('op_tracker_theme', activeThemeId); }, [activeThemeId]);
+  useEffect(() => { localStorage.setItem('op_header_bg', activeBg); }, [activeBg]);
   useEffect(() => { localStorage.setItem('op_tracker_watched', JSON.stringify(Array.from(watchedIds))); }, [watchedIds]);
   useEffect(() => { localStorage.setItem('op_tracker_skipped', JSON.stringify(Array.from(skippedIds))); }, [skippedIds]);
   useEffect(() => { localStorage.setItem('op_tracker_subprogress', JSON.stringify(subProgress)); }, [subProgress]);
@@ -699,6 +706,7 @@ export default function App() {
       version: '3.0',
       exportDate: new Date().toISOString(),
       theme: activeThemeId,
+      headerBg: activeBg,
       watchedIds: Array.from(watchedIds),
       skippedIds: Array.from(skippedIds),
       subProgress,
@@ -725,6 +733,7 @@ export default function App() {
         if (data.skippedIds) setSkippedIds(new Set(data.skippedIds));
         if (data.subProgress) setSubProgress(data.subProgress);
         if (data.theme) setActiveThemeId(data.theme);
+        if (data.headerBg) setActiveBg(data.headerBg);
         if (data.dailyPace) setDailyPace(data.dailyPace);
         showToast('Voyage progress restored successfully!');
       } catch {
@@ -870,10 +879,31 @@ export default function App() {
         </div>
       )}
 
-      {/* Header Banner */}
-      <header className="relative bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950 border-b border-slate-800 px-4 py-8 md:py-12 overflow-hidden">
+      {/* Header Banner with Custom Dynamic Tinted Background */}
+      <header className="relative bg-slate-950 border-b border-slate-800 px-4 py-8 md:py-12 overflow-hidden">
+        {/* 1. Base Selected Artwork Layer */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <img
+            src={activeBg === 'bg2' ? headerBg2 : headerBg1}
+            alt="One Piece Header Art"
+            className="w-full h-full object-cover object-center opacity-30 filter contrast-125 brightness-95"
+          />
+        </div>
+
+        {/* 2. Dynamic Theme Tint Overlay */}
         <div
-          className="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700"
+          className="absolute inset-0 z-0 pointer-events-none transition-all duration-700 mix-blend-color"
+          style={{
+            background: `linear-gradient(135deg, ${theme.primary}66 0%, transparent 80%)`
+          }}
+        />
+
+        {/* 3. Dark Vignette Overlay for Text Readability */}
+        <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-slate-950/70 via-slate-950/85 to-slate-950" />
+
+        {/* 4. Straw Hat Radial Ambient Glow */}
+        <div
+          className="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700 z-0"
           style={{ background: theme.accentGlow }}
         />
 
@@ -893,10 +923,11 @@ export default function App() {
                   Grand Line Definitive Order
                 </div>
 
+                {/* Theme Selector Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setShowThemePicker(!showThemePicker)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
                   >
                     <Palette className="w-3.5 h-3.5" style={{ color: theme.primary }} />
                     <span>Theme: <strong>{theme.character}</strong></span>
@@ -944,6 +975,20 @@ export default function App() {
                     </div>
                   )}
                 </div>
+
+                {/* Wallpaper Toggle (bg1 vs bg2) */}
+                <button
+                  onClick={() => {
+                    const next = activeBg === 'bg1' ? 'bg2' : 'bg1';
+                    setActiveBg(next);
+                    showToast(`Header wallpaper switched to ${next.toUpperCase()}!`);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
+                  title="Toggle between header background images"
+                >
+                  <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Art: <strong>{activeBg.toUpperCase()}</strong></span>
+                </button>
               </div>
 
               <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
@@ -958,7 +1003,7 @@ export default function App() {
             {/* Live Marine Bounty & Achievements Quick Card */}
             <div
               onClick={() => setActiveTab('achievements')}
-              className="cursor-pointer group bg-slate-900/90 border border-slate-800 hover:border-amber-500/60 p-4 rounded-3xl shadow-xl transition flex items-center gap-4 relative overflow-hidden"
+              className="cursor-pointer group bg-slate-900/90 border border-slate-800 hover:border-amber-500/60 p-4 rounded-3xl shadow-xl transition flex items-center gap-4 relative overflow-hidden shrink-0 backdrop-blur-sm"
             >
               <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl group-hover:scale-105 transition shrink-0">
                 💰
@@ -988,26 +1033,26 @@ export default function App() {
 
           {/* Watch Time Metrics */}
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Watched Units</div>
               <div className="text-lg font-black text-amber-400 font-mono mt-0.5">{watchedEpisodesCount}</div>
             </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Screen Time</div>
               <div className="text-lg font-black text-cyan-400 font-mono mt-0.5">{watchTimeStats.hoursWatched} hrs</div>
             </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Continuous Days</div>
               <div className="text-lg font-black text-emerald-400 font-mono mt-0.5">{watchTimeStats.daysEquivalent} days</div>
             </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center">
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filler Time Saved</div>
               <div className="text-lg font-black text-orange-400 font-mono mt-0.5">+{watchTimeStats.fillerHoursSaved} hrs</div>
             </div>
           </div>
 
           {/* Global Progress Bar */}
-          <div className="mt-6 bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80 shadow-lg">
+          <div className="mt-6 bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80 shadow-lg backdrop-blur-sm">
             <div className="flex justify-between items-center text-xs font-semibold mb-2">
               <span className="flex items-center gap-1.5" style={{ color: theme.primary }}>
                 <Anchor className="w-4 h-4" /> Voyage Progress
@@ -1736,7 +1781,7 @@ export default function App() {
         )}
       </main>
 
-	  {/* Footer & Social Links */}
+      {/* Footer & Social Links */}
       <footer className="max-w-6xl mx-auto px-4 mt-16">
         <hr className="border-slate-800/80 mb-8" />
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pb-8">
