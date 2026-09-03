@@ -36,9 +36,12 @@ import {
   FastForward,
   BookmarkCheck,
   PlayCircle,
-  ArrowRight
+  ArrowRight,
+  SkipForward,
+  Lock
 } from 'lucide-react';
 
+// Straw Hat Themes
 const THEMES = {
   classic: {
     id: 'classic',
@@ -198,89 +201,1186 @@ const THEMES = {
   }
 };
 
+// Canonical Landmark Episode Titles
 const EPISODE_TITLES = {
-  1: "I'm Luffy! The Man Who Will Become the Pirate King!",
-  2: "Great Swordsman Appears! Pirate Hunter Roronoa Zoro",
-  3: "Morgan vs. Luffy! Who's This Beautiful Young Girl?",
-  4: "Luffy's Past! Red-Haired Shanks Appears",
-  8: "Who is the Victor? Devil Fruit Power Showdown!",
-  19: "Past of the Three Swords! Promise Between Zoro and Kuina",
-  24: "Hawk-Eye Mihawk! Swordsman Zoro Falls at Sea",
-  31: "The Worst Man of the East Blue! Arlong the Fishman",
-  37: "Luffy Stands Up! End of a Broken Promise",
-  44: "Setting Sail with a Smile! Farewell Cocoyasi Village",
-  48: "The Town of Beginning and End: Arrival at Loguetown",
-  53: "The Legend has Begun! Head for the Grand Line",
-  62: "The First Obstacle? Giant Whale Laboon Appears",
-  65: "Exploding Santoryu! Zoro vs. Baroque Works",
-  78: "Nami is Sick? Beyond the Snow That Falls on the Ocean!",
-  86: "Hiriluk's Cherry Blossoms and Inherited Will!",
-  91: "Farewell Drum Island! I'm Going Out to Sea!",
-  92: "The Hero of Arabasta and the Ballerina on Shipboard",
-  110: "Merciless Death Match! Luffy vs. Crocodile",
-  126: "I Will Surpass You! Rain Falls on Arabasta!",
-  130: "Scent of Danger! The Seventh Member is Nico Robin!",
-  147: "Distinguished Pirates! A Man Who Talks of Dreams and Undersea Search",
-  151: "100 Million Man! World's Greatest Power and Pirate Blackbeard",
-  153: "Sail into the Sky Ocean! Farewell to the Blue Sea",
-  182: "At Last They Clash! Pirate Luffy vs. God Enel!",
-  195: "Off to the Blue Sea!! A Heartfelt Finale",
-  196: "A State of Emergency Issued! A Notorious Pirate Ship Infiltrates!",
-  206: "So Long, Marine Base! The Final Escape",
-  227: "Marine High Admiral Aokiji! The Threat of the Greatest Power",
-  236: "Luffy vs. Usopp! Collision of Two Men's Pride!",
-  278: "Say You Want to Live! We Are Friends!!",
-  309: "Fists Full of Emotion! Luffy Unleashes Gatling with All His Might",
-  312: "Thank You, Merry! Snow Falls on the Parting Sea",
-  313: "Disturbed Peace! Vice Admiral Garp and His Fist of Love",
-  325: "The Most Heinous Ability! Blackbeard's Darkness Attacks Ace",
-  377: "My Crewmates' Pain is My Pain: Zoro Fights Prepared to Die",
-  380: "Binks' Sake: The Song that Connects the Past and Present",
-  381: "A New Crewmate! The Musician 'Humming' Brook",
-  405: "Disappearing Crew: The Final Day of the Straw Hat Crew",
-  416: "Rescuing Ace! The New Destination is the Great Prison",
-  451: "Come, Miracle! The Gates of Justice Open",
-  483: "Looking for the Answer: Fire Fist Ace Dies on the Battlefield",
-  485: "Settling the Score: Whitebeard vs. The Blackbeard Pirates",
-  505: "I Want to See Them! Luffy's Tearful Plea",
-  516: "Luffy's Training Begins: To the Place We Promised in 2 Years",
-  517: "The Beginning of the New Chapter: The Straw Hats Reunited!",
-  522: "Everyone Assembled! Luffy Sets Sail for the New World",
-  567: "Stop, Noah! Desperate Elephant Gatling!",
-  574: "To the New World! Heading for the Ultimate Sea",
-  579: "Landing! Burning Island, Punk Hazard",
-  580: "A Battle in the Heat! Luffy vs. The Giant Dragon!",
-  581: "The Crew is Confused! The Shocking Severed Samurai Head!",
-  625: "Tense! Aokiji vs. Doflamingo",
-  629: "Violent Commotion! Big News Shakes the New World",
-  663: "Luffy Astonished: The Man Who Inherits Ace's Will",
-  706: "Go, Law! A Kind Man's Final Battle!",
-  726: "Fourth Gear! The Phenomenal Boundman!",
-  733: "Strike on the Heavens! Luffy's King Kong Gun of Rage",
-  746: "The Clash of the Strongest! The Mad Ruffians of the New World",
-  751: "Curtain Falls on a New Adventure! Arrival at Phantom Island Zou",
-  777: "To the Reverie! Princess Vivi and Princess Shirahoshi",
-  808: "A Heartbreaking Duel: Luffy vs. Sanji (Part 2)",
-  870: "A Fist of Divine Speed! Another Gear Fourth Activated!",
-  877: "The Parting Request: Pudding's Secret Wish",
-  878: "The World in Shock: The Fifth Emperor of the Sea Emerges!",
-  890: "Marco! The Keeper of Whitebeard's Last Memento",
-  892: "Wano Country! To the Land of Samurais Where Cherry Blossoms Flutter",
-  914: "Finally Clashing! The Ferocious Emperor Kaido vs. Luffy!",
-  957: "Big News! An Incident That Will Affect the Seven Warlords",
-  968: "The Pirate King is Born! Arriving at the Last Island!",
-  1000: "Overwhelming Strength! The Straw Hats Come Together!",
-  1015: "Straw Hat Luffy! The Man Who Will Become the Pirate King!",
-  1061: "The Strike of an Ifrit! Sanji vs. Queen",
-  1062: "The Three-Sword Style of the Supreme King! Zoro vs. King",
-  1071: "Luffy's Peak – Attained! GEAR 5",
-  1072: "The Ridiculous Power! GEAR 5 in Full Play",
-  1085: "The Last Curtain! Luffy and Momonosuke's Vow",
-  1086: "A New Emperor! Buggy the Genius Jester!",
-  1089: "Entering a New Chapter! Luffy and Sabo's Paths!",
-  1100: "Powers on a Different Level! Luffy vs. Lucci!"
+	1: "I'm Luffy! The Man Who Will Become the Pirate King!",
+	2: "Great Swordsman Appears! Pirate Hunter Roronoa Zoro",
+	3: "Morgan vs. Luffy! Who's This Beautiful Young Girl?",
+	4: "Luffy's Past! Red-Haired Shanks Appears",
+	5: "A Terrifying Mysterious Power! Captain Buggy, the Clown Pirate!",
+	6: "Desperate Situation! Beast Tamer Mohji vs. Luffy!",
+	7: "Epic Showdown! Swordsman Zoro vs. Acrobat Cabaji!",
+	8: "Who is the Victor? Devil Fruit Power Showdown!",
+	9: "The Honorable Liar? Captain Usopp!",
+	10: "The Weirdest Guy Ever! Jango the Hypnotist!",
+	11: "Expose the Plot! Pirate Butler, Captain Kuro!",
+	12: "Clash With the Black Cat Pirates! The Great Battle on the Slope!",
+	13: "The Terrifying Duo! Meowban Brothers vs. Zoro!",
+	14: "Luffy Back in Action! Miss Kaya's Desperate Resistance!",
+	15: "Beat Kuro! Usopp the Man's Tearful Resolve!",
+	16: "Protect Kaya! The Usopp Pirates' Great Efforts!",
+	17: "Anger Explosion! Kuro vs. Luffy! How It Ends!",
+	18: "You're the Weird Creature! Gaimon and His Strange Friends!",
+	19: "The Three-Sword Style's Past! Zoro and Kuina's Vow!",
+	20: "Famous Cook! Sanji of the Sea Restaurant!",
+	21: "Unwelcome Customer! Sanji's Food and Ghin's Debt!",
+	22: "The Strongest Pirate Fleet! Commodore Don Krieg!",
+	23: "Protect Baratie! The Great Pirate, Red Foot Zeff!",
+	24: "Hawk-Eye Mihawk! The Great Swordsman Zoro Falls at Sea!",
+	25: "The Deadly Foot Technique Bursts Forth! Sanji vs. the Invincible Pearl!",
+	26: "Zeff and Sanji's Dream! The Illusory All Blue!",
+	27: "Cool-Headed, Cold-Hearted Demon! Pirate Fleet Chief Commander Ghin!",
+	28: "I Won't Die! Fierce Battle, Luffy vs. Krieg!",
+	29: "The Conclusion of the Deadly Battle! A Spear of Blind Determination!",
+	30: "Set Sail! The Seafaring Cook Sets off With Luffy!",
+	31: "The Worst Man in the Eastern Seas! Fish-Man Pirate Arlong!",
+	32: "Witch of Cocoyashi Village! Arlong's Female Leader!",
+	33: "Usopp Dead?! When Is Luffy Going To Make Landfall?!",
+	34: "Everyone's Gathered! Usopp Speaks the Truth About Nami!",
+	35: "Untold Past! Female Warrior Bellemere!",
+	36: "Survive! Mother Bellemere and Nami's Bond!",
+	37: "Luffy Rises! Result of the Broken Promise!",
+	38: "Luffy in Big Trouble! Fish-Men vs. the Luffy Pirates!",
+	39: "Luffy Submerged! Zoro vs. Hatchan the Octopus!",
+	40: "Proud Warriors! Sanji and Usopp's Fierce Battles!",
+	41: "Luffy at Full Power! Nami's Determination and the Straw Hat!",
+	42: "Explosion! Fish-Man Arlong's Fierce Assault From the Sea!",
+	43: "End of the Fish-Man Empire! Nami's My Friend!",
+	44: "Setting Out With a Smile! Farewell, Hometown Cocoyashi Village!",
+	45: "Bounty! Straw Hat Luffy Becomes Known to the World!",
+	46: "Chase Straw Hat! Little Buggy's Big Adventure!",
+	47: "The Wait Is Over! The Return of Captain Buggy!",
+	48: "The Town of the Beginning and the End! Landfall at Loguetown!",
+	49: "Kitetsu III and Yubashiri! Zoro's New Swords and the Woman Sergeant Major!",
+	50: "Usopp vs. Daddy the Parent! Showdown at High!",
+	51: "Fiery Cooking Battle? Sanji vs. the Beautiful Chef!",
+	52: "Buggy's Revenge! The Man Who Smiles on the Execution Platform!",
+	53: "The Legend Has Started! Head for the Grand Line!",
+	54: "Precursor to a New Adventure! Apis, a Mysterious Girl!",
+	55: "Miraculous Creature! Apis' Secret and the Legendary Island!",
+	56: "Eric Attacks! Great Escape From Warship Island!",
+	57: "A Solitary Island in the Distant Sea! The Legendary Lost Island!",
+	58: "Showdown in the Ruins! Tense Zoro vs. Eric!",
+	59: "Luffy, Completely Surrounded! Commodore Nelson's Secret Strategy!",
+	60: "Through the Sky They Soar! The 1000 Year Legend Lives Again!",
+	61: "An Angry Showdown! Cross the Red Line!",
+	62: "The First Line of Defense? The Giant Whale Laboon Appears!",
+	63: "A Promise Between Men! Luffy and the Whale Vow to Meet Again!",
+	64: "A Town That Welcomes Pirates? Setting Foot on Whisky Peak!",
+	65: "Explosion! The Three Swords Style! Zoro vs. Baroque Works!",
+	66: "All Out Battle! Luffy vs. Zoro, Mysterious Grand Duel!",
+	67: "Deliver Princess Vivi! The Luffy Pirates Set Sail!",
+	68: "Try Hard, Coby! Coby and Helmeppo's Struggles in the Marines!",
+	69: "Coby and Helmeppo's Resolve! Vice-Admiral Garp's Parental Affection",
+	70: "An Ancient Island! The Shadow Hiding in Little Garden!",
+	71: "Huge Duel! The Giants Dorry and Broggy!",
+	72: "Luffy Gets Angry! A Dirty Trick Violates the Sacred Duel!",
+	73: "Broggy's Bitter Tears of Victory! The Conclusion of Elbaf!",
+	74: "The Devilish Candle! Tears of Regret and Tears of Anger!",
+	75: "A Hex on Luffy! Colors Trap!",
+	76: "Time to Fight Back! Usopp's Quick Thinking and Fire Star!",
+	77: "Farewell Giant Island! Head for Alabasta!",
+	78: "Nami's Sick? Beyond the Snow Falling on the Sea!",
+	79: "A Raid! The Tin Tyrant and Tin Plate Wapol!",
+	80: "An Island Without Doctors? Adventure in a Nameless Land!",
+	81: "Are You Happy? The Doctor Called Witch!",
+	82: "Dalton's Resolve! Wapol's Corps Lands on the Island!",
+	83: "The Island Where Snow Lives! Climb the Drum Rockies!",
+	84: "Blue-Nosed Reindeer! Chopper's Secret!",
+	85: "An Outcast's Dream! Hiriluk the Quack!",
+	86: "Hiriluk's Cherry Blossoms and the Will That Gets Carried On!",
+	87: "Fight Wapol's Crew! The Power of the Munch-Munch Fruit!",
+	88: "Zoan-Type Devil Fruit! Chopper's Seven-Form Transformation!",
+	89: "When the Kingdom's Rule Ends! The Flag of Faith Flies Forever!",
+	90: "Hiriluk's Cherry Blossoms! Miracle in the Drum Rockies!",
+	91: "Goodbye Drum Island! I'm Going Out to Sea!",
+	92: "Alabasta's Hero and a Ballerina on the Ship!",
+	93: "Off to the Desert Kingdom! The Rain-Summoning Powder and the Rebel Army!",
+	94: "The Heroes' Reunion! His Name Is Fire Fist Ace!",
+	95: "Ace and Luffy! Hot Emotions and Brotherly Bonds!",
+	96: "Erumalu, the City of Green and the Kung Fu Dugongs!",
+	97: "Adventure in the Country of Sand! The Monsters That Live in the Scorching Land!",
+	98: "Enter the Desert Pirates! The Men Who Live Freely!",
+	99: "False Fortitude! Camu, Rebel Soldier at Heart!",
+	100: "Rebel Warrior Koza! The Dream Vowed to Vivi!",
+	101: "Showdown in a Heat Haze! Ace vs. the Gallant Scorpion!",
+	102: "Ruins and Lost Ways! Vivi, Her Friends and the Country's Form!",
+	103: "Spiders Café at 8 O'Clock! The Enemy Leaders Gather!",
+	104: "Luffy vs. Vivi! The Tearful Vow To Put Friends on the Line!",
+	105: "The Battlefront of Alabasta! Rainbase, the City of Dreams!",
+	106: "The Trap of Certain Defeat! Storming Raindinners!",
+	107: "Operation Utopia Commences! The Swell of Rebellion Stirs!",
+	108: "The Terrifying Banana Gators and Mr. Prince!",
+	109: "The Key to a Great Comeback Escape! The Wax-Wax Ball!",
+	110: "Merciless Mortal Combat! Luffy vs. Crocodile!",
+	111: "Dash for a Miracle! Alabasta Animal Land!",
+	112: "Rebel Army vs. Royal Army! Showdown at Alubarna!",
+	113: "Alubarna Grieves! The Fierce Captain Karoo!",
+	114: "Sworn on a Friend's Dream! The Battle of Molehill, Block 4!",
+	115: "Big Opening Day Today! The Copy-Copy Montage!",
+	116: "Transformed Into Nami! Bon Clay's Rapid-Fire Ballet Kenpo!",
+	117: "Nami's Cyclone Advisory! Clima Takt Burst!",
+	118: "Secret Passed Down in the Royal Family! The Ancient Weapon Pluton!",
+	119: "Secret of Powerful Swordplay! Ability To Cut Steel and the Rhythm Things Have!",
+	120: "The Battle Is Over! Koza Raises the White Flag!",
+	121: "Where Vivi's Voice Gets Heard! The Hero Descends!",
+	122: "Sand Croc and Water Luffy! The Second Round of the Duel!",
+	123: "That Looks Croc-ish! Luffy, Run to the Royal Tomb!",
+	124: "The Nightmare Draws Near! This Is the Sand-Sand Clan's Secret Base!",
+	125: "Magnificent Wings! My Name Is Pell, Guardian Deity of the Country!",
+	126: "I Will Surpass You! Rain Falls in Alabasta!",
+	127: "A Farewell to Arms! Pirates and Different Ideas of Justice!",
+	128: "The Pirates' Banquet and Operation Escape From Alabasta!",
+	129: "It All Started on That Day! Vivi Tells the Story of Her Adventure!",
+	130: "Scent of Danger! The Seventh Member Is Nico Robin!",
+	131: "The First Patient! The Untold Story of the Rumble Ball!",
+	132: "Uprising of the Navigator! For the Unyielding Dream!",
+	133: "A Recipe Handed Down! Sanji, the Iron Man of Curry!",
+	134: "I Will Make It Bloom! Usopp the Man and the Eight-Foot Shell!",
+	135: "The Fabled Pirate Hunter! Zoro, the Wandering Swordsman!",
+	136: "Zenny of the Island of Goats and the Pirate Ship in the Mountains!",
+	137: "How's Tricks? The Designs of Zenny the Moneylender!",
+	138: "Whereabouts of the Island Treasure! Attack of the Zenny Pirates!",
+	139: "Legend of the Rainbow Mist! Old Man Henzo of the Luluka Island!",
+	140: "Residents of the Land of Eternity! The Pumpkin Pirates!",
+	141: "Thoughts of Home! The Pirate Graveyard of No Escape!",
+	142: "An Inevitable Melee! Wetton's Schemes and the Rainbow Tower!",
+	143: "And so, the Legend Begins! To the Other Side of the Rainbow!",
+	144: "Caught Log! The King of Salvagers, Masira!",
+	145: "Monsters Appear! Don't Mess With the Whitebeard Pirates!",
+	146: "Quit Dreaming! Mock Town, the Town of Ridicule!",
+	147: "Distinguished Pirates! A Man Who Talks of Dreams and the King of Undersea Search!",
+	148: "Legendary Family! Noland the Liar!",
+	149: "Steer for the Clouds! Capture the South Bird!",
+	150: "Dreams Don't Come True?! Bellamy vs. the Saruyama Alliance",
+	151: "100 Million Man! World's Greatest Power and Pirate Blackbeard",
+	152: "Take to the Sky! Ride the Knock-up Stream!",
+	153: "Sail the White Sea! The Sky Knight and the Gate in the Clouds!",
+	154: "Godland, Skypiea! Angels on a Beach of Clouds",
+	155: "The Forbidden Sacred Ground! The Island Where God Lives and Heaven's Judgment!",
+	156: "Already Criminals?! Skypiea's Upholder of the Law!",
+	157: "Is Escape Possible?!? God's Challenge Is Set in Motion!",
+	158: "A Trap on Lovely Street! The Almighty Eneru!",
+	159: "Onward Crow! To the Sacrificial Altar!",
+	160: "10% Survival Rate! Satori, the Mantra Master!",
+	161: "The Ordeal of Spheres! Desperate Struggle in the Lost Forest!",
+	162: "Chopper in Danger! Former God vs. Priest Shura!",
+	163: "Profound Mystery! Ordeal of String and Ordeal of Love?!?",
+	164: "Light the Fire of Shandora! Wyper the Warrior!",
+	165: "Jaya, City of Gold in the Sky! Head for God's Shrine!",
+	166: "Festival on the Night Before Gold Hunting! Feelings for 'Vearth!'",
+	167: "Enter God Eneru! Farewell to the Survivors!",
+	168: "A Giant Snake Bares Its Fangs! The Survival Game Begins!",
+	169: "The Deadly Reject! War Demon Wyper's Resolve",
+	170: "Fierce Mid-Air Battle! Pirate Zoro vs. Warrior Braham",
+	171: "The Roaring Burn Bazooka!! Pirate Luffy vs. War Demon Wyper!",
+	172: "The Ordeal of Swamp! Chopper vs. Priest Gedatsu!",
+	173: "Unbeatable Powers! Eneru's True Form Is Revealed!",
+	174: "A Mystical City! The Grand Ruins of Shandora!",
+	175: "0% Survival Rate! Chopper vs Ohm, the Sword Wielding Priest",
+	176: "Climb Giant Jack! Deadly Combat in the Upper Ruins!",
+	177: "The Ordeal of Iron! White Barbed Death Match!",
+	178: "Bursting Slash! Zoro vs. Ohm!",
+	179: "Collapsing Upper Ruins! The Quintet for the Finale!",
+	180: "Showdown in the Ancient Ruins! Sky God Eneru's Goal!",
+	181: "Ambition Towards the Endless Vearth! The Ark Maxim!",
+	182: "They Finally Clash! Pirate Luffy vs. God Eneru!",
+	183: "Maxim Surfaces! Deathpiea Is Activated!",
+	184: "Luffy Falls! Eneru's Judgment and Nami's Wish!",
+	185: "The Two Awaken! On the Front Lines of the Burning Love Rescue!",
+	186: "Capriccio for Despair! The Impending Doom of Sky Island!",
+	187: "Led by a Bell's Sound! Tale of the Great Warrior and the Explorer!",
+	188: "Free From the Spell! The Great Warrior Sheds Tears!",
+	189: "Eternal Friends! The Vowed Bell Echoes Across the Mighty Seas!",
+	190: "Angel Island, Obliterated! The Horror of the Raigo's Advent!!",
+	191: "Knock Over Giant Jack! Last Hope for Escape!",
+	192: "Miracle on Skypiea! The Love Song Heard in the Clouds!",
+	193: "The Battle Ends! Proud Fantasia Echoes Far!",
+	194: "I Made It Here! The Yarn the Poneglyphs Spin!",
+	195: "Off to the Blue Sea!! A Heartfelt Finale!!",
+	196: "A State of Emergency Is Issued! A Notorious Pirate Ship Has Infiltrated!",
+	197: "Sanji the Cook! Proving His Merit at the Marine Dining Hall!",
+	198: "Captured Zoro! Chopper's Emergency Operations!",
+	199: "The Marine's Dragnet Closes In! The Second Member Captured!",
+	200: "Luffy and Sanji's Daring Rescue Mission!",
+	201: "Enter the Hot-Blooded Special Forces! Battle on the Bridge!",
+	202: "Breaking Through the Siege! The Going Merry Is Recovered!",
+	203: "The Pirate Ship Disappears! Fortress Battle, Round #2!",
+	204: "The Gold and Waver Recovery Operations!",
+	205: "The One Fell Swoop Plan! Jonathan's Surefire Secret Tactic!",
+	206: "Farewell, Marine Fortress! The Last Battle for Escape!",
+	207: "Great Adventure in Long Ring Long Land!",
+	208: "A Davy Back With the Foxy Pirates!",
+	209: "Round 1! One Lap of the Donut Race!",
+	210: "Silver Fox Foxy! The Merciless Interference!",
+	211: "Round 2! Shoot It Into the Groggy Ring!",
+	212: "A Barrage of Red Cards in Groggy Ring!",
+	213: "Round 3! The Round-and-Round Roller Race!",
+	214: "A Seriously Heated Race! Into the Final Round!",
+	215: "Screaming-Hot Bombardment! Pirate Dodgeball!",
+	216: "Showdown on the Cliff! Red Light, Green Light!",
+	217: "The Captains Square Off! The Final Combat Round!",
+	218: "Full-Blast Slow-Slow Onslaught vs. Invulnerable Luffy!",
+	219: "Epic, Heated Combat! The Fateful Final Conclusion!",
+	220: "Was It Lost? Stolen? Who Are You?",
+	221: "A Mysterious Boy With a Horn and Robin's Deduction!",
+	222: "Now, Let's Get Back Our Memories! The Pirate Crew Lands on the Island!",
+	223: "Zoro Bares His Fangs! A Savage Animal Stands in the Way!",
+	224: "The Last Counterattack by the Memory Thief Who Reveals His True Colors!",
+	225: "Proud Man! Silver Fox Foxy!",
+	226: "The Guy Who's the Closest To Invincible? And the Most Dangerous Man!",
+	227: "Navy Headquarters Admiral Aokiji! The Ferocity of an Ultimate Powerhouse!",
+	228: "Duel Between Rubber and Ice! Luffy vs. Aokiji!",
+	229: "The Dashing Sea Train and the City of Water: Water Seven!",
+	230: "Adventure in the City on the Water! Head to the Mammoth Shipbuilding Plant!",
+	231: "The Franky Family and Iceburg!",
+	232: "Galley-La Company! A Grand Sight: Dock #1!",
+	233: "Pirate Abduction Incident! A Pirate Ship That Can Only Await Her End!",
+	234: "Rescuing Our Friend! Raid on the Franky House!",
+	235: "Big Fight Under the Moon! The Pirate Flag Flutters With Sorrow!",
+	236: "Luffy vs. Usopp! Collision of Two Men's Pride!",
+	237: "Severe Shock Hits the City of Water! Iceburg Targeted!",
+	238: "Gum-Gum Human vs. Fire-Breathing Cyborg!",
+	239: "The Straw Hat Pirates Are the Culprits? The Protectors of the City of Water!",
+	240: "Eternal Farewell? Nico Robin: The Woman Who Draws Darkness!",
+	241: "Capture Robin! The Determination of the Straw Hats!",
+	242: "Cannon Fire Is the Signal! CP9 Goes Into Action!",
+	243: "CP9 Takes Off Their Masks! Their Shocking True Faces!",
+	244: "Secret Bond! Iceburg and Franky!",
+	245: "Come Back, Robin! Showdown With CP9!",
+	246: "The Straw Hat Pirates Annihilated? The Menace of the Leopard Model!",
+	247: "The Man Who Is Loved Even by His Ship! Usopp's Tears!",
+	248: "Franky's Past! The Day the Sea Train First Ran",
+	249: "Spandam's Scheme! The Day the Sea Train Shook",
+	250: "The End of the Legendary Man! The Day the Sea Train Cried!",
+	251: "The Truth Behind Her Betrayal! Robin's Sorrowful Decision!",
+	252: "The Steam Whistle Forces Friends Apart! The Sea Train Starts To Run",
+	253: "Sanji Barges In! Sea Train Battle in the Storm!",
+	254: "Nami's Soul Cries Out! Straw Hat Luffy Makes a Comeback!",
+	255: "Another Sea Train? Rocketman Charges Forth!",
+	256: "Rescue Our Friends! A Bond Among Foes Sworn With Fists!",
+	257: "Smash the Wave! Luffy and Zoro Use the Strongest Combo!",
+	258: "A Mysterious Man Appears?! His Name Is Sniperking!",
+	259: "Showdown Between Cooks! Sanji vs. Ramen Kenpo",
+	260: "Rooftop Duel! Franky vs. Nero",
+	261: "Clash! Demon-Slasher Zoro vs. Ship-Slasher T-Bone!",
+	262: "Scramble Over Robin! A Cunning Plan by Sniperking!!",
+	263: "The Judicial Island! Full View of Enies Lobby!",
+	264: "Landing Operations Start! Charge in, Straw Hats!",
+	265: "Luffy Cuts Through! Big Showdown on the Judicial Island!",
+	266: "Battle Against Giants! Open the Second Gate!",
+	267: "Find a Way Out! Rocketman Takes Flight!",
+	268: "Catch up With Luffy! The Straw Hats' All-Out Battle",
+	269: "Robin Betrayed! The Motive of the World Government!",
+	270: "Give Robin Back! Luffy vs. Blueno!",
+	271: "Don't Stop! Hoist the Counterattack Signal!",
+	272: "Almost to Luffy! Gather at the Courthouse Plaza!",
+	273: "Everything Is To Protect My Friends! Second Gear Activated!",
+	274: "Give Us Your Answer, Robin! The Straw Hats' Outcry!",
+	275: "Robin's Past! The Girl Was Called a Devil!",
+	276: "Fated Mother and Daughter! The Mother's Name Is Olvia!",
+	277: "The Tragedy of Ohara! The Terror of the Buster Call!",
+	278: "Say You Want To Live! We Are Your Friends!!",
+	279: "Jump Towards the Falls! Luffy's Feelings!",
+	280: "The Ways of Men! Zoro's Techniques, Usopp's Dream!",
+	281: "A Bond of Friendship Woven by Tears! Nami's World Map!",
+	282: "Parting Builds a Man's Character! Sanji and Chopper!",
+	283: "Everything Is for Her Friends! Robin in the Darkness!",
+	284: "I'm Not Gonna Hand Over the Blueprints! Franky's Decision!",
+	285: "Obtain the Five Keys! The Straw Hat Pirates vs. CP9!",
+	286: "Devil Fruit Powers! Kaku and Jabra Transform!",
+	287: "I Won't Kick Even if It Costs Me My Life! Sanji's Chivalry!",
+	288: "Fukurou's Miscalculation! My Cola Is the Water of Life!",
+	289: "Zoro Busts Out a New Technique! The Sword's Name Is Sniperking?",
+	290: "Uncontrollable! Chopper's Forbidden Rumble!",
+	291: "Boss Luffy Returns! Is It a Dream or Reality? Lottery Ruckus!",
+	292: "A Big Rice Cake Tossing Race at the Castle! Red Nose's Plot!",
+	293: "Bubble Master Kalifa! The Soap Trap Closes in on Nami!",
+	294: "Resounding Bad News! The Buster Call Invoked!",
+	295: "Five Namis? Nami Strikes Back With Mirages!",
+	296: "Nami's Decision! Fire at the Out-of-Control Chopper!",
+	297: "Hunter Sanji Makes an Entrance? Elegy for a Lying Wolf!",
+	298: "Fiery Kicks! Sanji's Full Course of Foot Techniques!",
+	299: "Fierce Sword Attacks! Zoro vs. Kaku, Powerful Sword Fighting Showdown!",
+	300: "Demon God Zoro! An Incarnation of Asura Born From Fighting Spirit!",
+	301: "Spandam Frightened! The Hero on the Tower of Law!",
+	302: "Robin Freed! Luffy vs. Lucci, Showdown Between Leaders!",
+	303: "Boss Luffy Is the Culprit? Track Down the Missing Great Cherry Tree!",
+	304: "I Can't Protect Anyone Unless I Win! Third Gear Activated!",
+	305: "Shivering Past! Dark Justice and Rob Lucci!",
+	306: "A Mysterious Mermaid Appears? As Consciousness Fades Away...",
+	307: "Cannon Fire Sinks the Island! Franky's Lamentation!",
+	308: "Wait for Luffy! Mortal Combat on the Bridge of Hesitation!",
+	309: "Fists Full of Emotion! Luffy Unleashes Gatling With All His Might!",
+	310: "From the Sea, a Friend Arrives! The Straw Hats Share the Strongest Bond!",
+	311: "Everyone Makes a Great Escape! The Road to Victory Is for the Pirates!",
+	312: "Thank You, Merry! Snow Falls Over the Parting Sea!",
+	313: "Peace Interrupted! A Navy Vice Admiral With a Fist of Love!",
+	314: "The Strongest Family? Luffy's Father Revealed!",
+	315: "Its Name Is the New World! The Fate of the Grand Line!",
+	316: "Shanks Makes a Move! The Linchpin to the Reckless Era!",
+	317: "The Girl in Search of Her Yagara! Great Search in the City of Water!",
+	318: "Mothers Are Strong! Zoro's Hectic Household Chores!",
+	319: "Sanji's Shock! Mysterious Old Man and His Super Yummy Cooking!",
+	320: "Everyone Finally Has a Bounty! A Pirate Group Worth Over 600 Million!",
+	321: "The King of Animals That Overlooks the Sea! The Dream Ship Magnificently Completed!",
+	322: "Goodbye My Dear Underlings! Franky Departs!",
+	323: "Departing the City of Water! Usopp Mans up and Brings Closure to the Duel!",
+	324: "Wanted Posters Make It Around the World! Celebrations in Their Hometowns as the Ship Moves Forward!",
+	325: "The Most Heinous Power! Blackbeard's Darkness Attacks Ace!",
+	326: "The Mysterious Band of Pirates! Sunny and the Dangerous Trap!",
+	327: "Sunny in a Pinch! Roar, Secret Superspeed Mecha!",
+	328: "The Dream Sinking in the New World! The Disillusioned Pirate, Puzzle!",
+	329: "The Assassins Attack! The Great Battle on Ice Begins!",
+	330: "The Straw Hat's Hard Battles! A Pirate Soul Risking It All for the Flag!",
+	331: "Hot Full Throttle! The Twin's Magnetic Power Drawing Near!",
+	332: "Mansion of Great Chaos! The Enraged Don and the Captured Crew!",
+	333: "The Return of the Phoenix! The Dream of the Pirate Flag Sworn to a Friend!",
+	334: "The Red Hot Decisive Battle! Luffy vs. the Scorching Don!",
+	335: "Waiting in the New World! Farewell to the Brave Pirates!",
+	336: "Chopperman to the Rescue! Protect the TV Station by the Shore!",
+	337: "Plunging Into the Devil's Sea! The Mysterious Skeleton Floating in the Fog!",
+	338: "The Joy of Seeing People! The Gentleman Skeleton's True Identity!",
+	339: "One Unnatural Phenomenon After the Next! Disembarking on Thriller Bark!",
+	340: "The Man Called a Genius! Hogback Makes His Appearance!",
+	341: "Nami's in a Major Pinch! The Zombie Mansion and the Invisible Man!",
+	342: "The Zombie's Secret! Hogback's Nightmarish Laboratory!",
+	343: "His Name Is Moria! The Great Shadow-Seizing Pirate's Trap!",
+	344: "Feast of the Zombie Song! The Night Raid's Bell Is the Sound of Darkness!",
+	345: "A Bunch of Animals? Perona's Wonder Garden!",
+	346: "The Vanishing Straw Hat Crew! A Mysterious Swordsman Appears!",
+	347: "Chivalry Remains! The Traitorous Zombie Protects Nami",
+	348: "Appearing From the Sky! That Man Is the Humming Swordsman!",
+	349: "Luffy's Emergency Situation! The Ultimate Shadow's Destination!",
+	350: "The Warrior Known as the 'Devil!!' The Moment of Oars' Revival",
+	351: "Awakening After 500 Years!! Oars Opens His Eyes!!",
+	352: "A Belief Worth Begging To Live For!! Brook Defends His Afro",
+	353: "A Man's Promise Never Dies!! To the Friend Waiting Under the Distant Sky",
+	354: "I Swear To Go See Him!! Brook and the Cape of Promise!",
+	355: "Food, Nami and Shadows!! Luffy's Enraged Counterattack!",
+	356: "Usopp's the Strongest? Leave Anything Negative to Him!",
+	357: "The General Zombies Are Down in a Flash!! Oars Feels Like an Adventure!!",
+	358: "Blazing Knight Sanji!! Kick Down the Fake Wedding",
+	359: "A Clear-Clear History? Sanji's Stolen Dream",
+	360: "Save Me, Hero!! My Enemy Is the Immortal Princess",
+	361: "Perona Is Terrified!! Usopp and Untruthful Share the Same 'U'",
+	362: "Slashes Dancing on the Roof!! Zoro vs. Ryuma's Showdown",
+	363: "Chopper Is Furious!! Hogback's Evil Medical Practices",
+	364: "Oars Roars! Come Out, Straw Hat Crew",
+	365: "Luffy Is the Enemy! The Ulitmate Zombie vs. the Straw Hat Crew",
+	366: "You're Going Down, Absalom!! Nami's Lightning Attack of Friendship!!",
+	367: "Knock Him Down!! Special Attack: Straw Hat Docking?",
+	368: "The Silent Assault!! The Mysterious Visitor, Tyrant Kuma",
+	369: "Oars + Moria! The Most Heinous Combination of Brains and Brawn",
+	370: "The Secret Plan to Turn the Tables! Nightmare Luffy Makes His Appearance",
+	371: "The Straw Hat Crew Gets Wiped Out! The Shadow-Shadow's Powers in Full Swing",
+	372: "The Incredible Battle Starts! Luffy vs. Luffy",
+	373: "The End of the Battle Is Nigh! Pound in the Finishing Move",
+	374: "Our Bodies Vanish! The Morning Sun Shines on the Nightmarish Island!",
+	375: "Not Out of Danger Yet! Orders To Annihilate the Straw Hat Crew",
+	376: "It Repels Everything! Kuma's Paw-Paw Power!",
+	377: "The Pain of My Crewmates Is My Pain! Zoro's Desperate Fight!",
+	378: "The Promise From a Distant Day! The Pirates' Song and a Small Whale!",
+	379: "Brook's Past! A Sad Farewell With His Cheerful Comrade!",
+	380: "Bink's Booze! The Song That Connects the Past With the Present!",
+	381: "A New Crewmate! The Musician, Humming Brook!",
+	382: "The Slow-Slow Menace! 'Silver Fox' Foxy Returns!",
+	383: "The Great Scramble for Treasure! Collapse! Spa Island!",
+	384: "Brook's Great Struggle! Is the Path To Becoming a True Comrade Rigorous?",
+	385: "Arriving at Halfway Through the Grand Line! The Red Line",
+	386: "Hatred of the Straw Hat Crew! Enter Iron Mask Duval",
+	387: "The Fated Reunion! Save the Imprisoned Fish-Man",
+	388: "Tragedy! The Truth of the Unmasked Duval",
+	389: "Explosion! The Sunny's Super Secret Weapon: Gaon Cannon",
+	390: "Landing to Get to Fish-Man Island! The Sabaody Archipelago",
+	391: "Tyranny! The Rulers of Sabaody, the Celestial Dragons",
+	392: "New Rivals Gather! The 11 Supernovas",
+	393: "The Target Is Camie! The Looming Clutches of a Professional Kidnapper",
+	394: "Rescue Camie! The Archipelago's Lingering Dark History",
+	395: "Time Limit! The Human Auction Begins",
+	396: "The Fist Explodes! Destroy the Auction",
+	397: "Major Panic! Desperate Struggle at the Auction House",
+	398: "Admiral Kizaru Takes Action! Sabaody Archipelago Thrown Into Chaos",
+	399: "Break Through the Siege! The Navy vs. the Three Captains",
+	400: "Roger and Rayleigh! The King of the Pirates and His Right Hand Man",
+	401: "No Escape!? Admiral Kizaru's Light Speed Kick!!",
+	402: "Overwhelming! The Navy's Fighting Weapons, the Pacifistas",
+	403: "An Even Stronger Enemy Appears! The Battle Axe-Carrying Sentomaru",
+	404: "Admiral Kizaru's Fierce Assault! The Straw Hats Face Certain Death!",
+	405: "Eliminated Friends! The Final Day of the Straw Hat Crew",
+	406: "Feudal Era Side Story! Boss Luffy Appears Again",
+	407: "Feudal Era Side Story! Defeat Thriller Company's Trap",
+	408: "Landing! The All-Female Island, Amazon Lily",
+	409: "Hurry Back to Your Friends! The Maiden Island Adventure",
+	410: "Everyone Falls in Love! Pirate Empress Hancock",
+	411: "The Secret Hidden on Their Backs! Luffy and the Snake Princess Meet",
+	412: "Heartless Judgment! Margaret Is Turned to Stone!!",
+	413: "A Difficult Fight for Luffy! The Snake Sisters' Haki Power!!",
+	414: "All-Out Special Power Battle!! Gum-Gum vs. Snake-Snake",
+	415: "Hancock's Confession! The Sisters' Abhorrent Past",
+	416: "Saving Ace! The Next Stop: The Great Prison!",
+	417: "Love Is a Hurricane! Hancock Madly in Love!",
+	418: "The Friends' Whereabouts! The Science of Weather and the Mechanical Island!",
+	419: "The Friends' Whereabouts! An Island of Giant Birds and a Pink Paradise!",
+	420: "The Friends' Whereabouts! Bridging the Islands and Vicious Vegetations!",
+	421: "The Friends' Whereabouts! A Negative Princess and the King of Demons!",
+	422: "A Deadly Infiltration! The Underwater Prison Impel Down!",
+	423: "A Reunion in Hell?! The Man Who Ate the Chop-Chop Fruit!",
+	424: "Break Through the Crimson Hell! Buggy's Chaos-Inducing Plan!",
+	425: "The Strongest Man in the Prison! Poison Man Magellan Appears!",
+	426: "A Special Presentation Related to the Movie! A Gold Lion's Ambition on the Move!",
+	427: "A Special Presentation Related to the Movie! Little East Blue in Danger!",
+	428: "A Special Presentation Related to the Movie! The Fierce Onslaught of the Amigo Pirates!",
+	429: "A Special Presentation Related to the Movie! Luffy vs. Largo - The Battle Is On!",
+	430: "A Warlord in Prison! Jimbei the First Son of the Sea!",
+	431: "Chief Jailer Saldeath's Trap! Level 3 - Starvation Hell!",
+	432: "The Unleashed Swan! A Reunion With Bon Clay!",
+	433: "Warden Magellan's Strategy! Straw Hat Entrapment Completed!",
+	434: "All Forces Have Gathered! The Battle on Level 4 - The Burning Heat Hell!",
+	435: "Mighty Magellan! Bon Clay Bugs Out!",
+	436: "The Showdown Has Come! Luffy's Desperate Last Attack!",
+	437: "For His Friend! Bon Clay Goes to the Deadly Rescue!",
+	438: "A Paradise in Hell! Impel Down - Level 5.5!",
+	439: "Luffy's Treatment Begins! Iva's Miraculous Power!",
+	440: "Believe in Miracles! Bon Clay's Cries From the Heart!",
+	441: "Luffy Back in Action! Iva Begins the Breakout Plan!!",
+	442: "Ace's Convoy Begins! Battle on the Lowest Floor - Level 6!",
+	443: "The Ultimate Team Has Formed! Shaking Impel Down!",
+	444: "Even More Chaos! Here Comes Blackbeard Teach!",
+	445: "The Dangerous Encounter! Blackbeard and Shiryu of the Rain!",
+	446: "Refusal to Be Defeated! Serious Hannyabal",
+	447: "Jet Pistol of Anger! Luffy vs. Blackbeard!",
+	448: "Stop Magellan! Iva's Esoteric Technique Explodes!",
+	449: "Magellan's Tricky Move! A Foiled Escaped Plan!",
+	450: "The Escapee Team in Trouble! The Forbidden Move: Venom Demon!",
+	451: "Come, Final Miracle! Break Through the Gate of Justice!",
+	452: "To the Navy Headquarters! Off to Rescue Ace!",
+	453: "The Friends' Whereabouts! The Weatheria Report and the Cyborg Animals!",
+	454: "The Friends' Whereabouts! A Cheeper of Giant Birds and a Pink Showdown!",
+	455: "The Friends' Whereabouts! Revolutionaries and the Gorging Forest's Trap!",
+	456: "The Friends' Whereabouts! A Huge Tomb and the Panty Debt!",
+	457: "A Special Retrospective Before Marineford! The Vow of the Brotherhood!",
+	458: "A Special Retrospective Before Marineford! The Three Navy Admirals Come Together!",
+	459: "Ticking Down to the Time of Battle! The Navy's Strongest Lineup in Position!",
+	460: "A Vast Fleet Appears! Here Come the Whitebeard Pirates!",
+	461: "The Beginning of the War! Ace and Whitebeard's Past!",
+	462: "The Force That Could Destroy the World! The Power of the Tremor-Tremor Fruit!",
+	463: "An All-Consuming Inferno!! Admiral Akainu's Power!",
+	464: "A Descendant of the Beast! Little Oars Jr. - Full Speed Ahead!",
+	465: "Justice for the Winners! Sengoku's Strategy in Action!",
+	466: "Straw Hat Team Arrives! Tension Grows at the Battlefield",
+	467: "Even If It Means Death! Luffy vs. the Navy, the Battle Starts!",
+	468: "Hard Battles, One After Another! Devil Fruit Users vs. Devil Fruit Users!",
+	469: "Kuma's Transformation! Iva's Blow of Anger!",
+	470: "The Great Swordsman Mihawk! Luffy Comes Under the Attack of the Black Sword!",
+	471: "The Extermination Strategy in Action! The Power of the Pacifistas!",
+	472: "Akainu's Plot! Whitebeard Entrapped!",
+	473: "The Encircling Walls Activated! The Whitebeard Pirates Backed Into a Corner!",
+	474: "Execution Order Issued! Break Through the Encircling Walls!",
+	475: "Moving Into the Final Phase! Whitebeard's Trump Card for Recovery!",
+	476: "Luffy at the End of His Tether! An All-Out Battle at the Oris Plaza!",
+	477: "The Power That Will Shorten One's Life! Energy Hormone, Redux!",
+	478: "To Live up to a Promise! Luffy and Coby Collide!",
+	479: "The Scaffold at Last! The Way to Ace Has Opened!",
+	480: "Each on Different Paths! Luffy vs. Garp!",
+	481: "Ace Rescued! Whitebeard's Final Order!",
+	482: "The Power That Can Burn Even Fire! Akainu's Ruthless Pursuit!",
+	483: "Looking for the Answer! Fire Fist Ace Dies on the Battlefield!",
+	484: "The Navy Headquarters Falls! Whitebeard's Unspeakable Wrath!",
+	485: "Ending the Matter! Whitebeard vs. the Blackbeard Pirates!",
+	486: "The Show Begins! Blackbeard's Plot Is Revealed!",
+	487: "The Insatiable Akainu! Lava Fists Pummel Luffy!",
+	488: "The Desperate Scream! Courageous Moments That Will Change the Future",
+	489: "Here Comes Shanks! The War of the Best Is Finally Over!",
+	490: "Mighty Leaders Face Each Other Down! Heralding the 'New Era!'",
+	491: "Landing at the Maiden Island! The Harsh Reality Falls Upon Luffy!",
+	492: "The Strongest Tag-Team! Luffy and Toriko's Hard Struggle!",
+	493: "Luffy and Ace! The Story of How the Brothers Met!",
+	494: "Here Comes Sabo! The Boy at the Gray Terminal!",
+	495: "I Won't Run! Ace's Desperate Rescue Operation!",
+	496: "To the Sea Someday! The Pledge of the Three Brats!",
+	497: "Leaving the Dadan Family for Good? The Kids' Hideout Has Been Built!",
+	498: "Luffy Becoming an Apprentice?! A Man Who Fought Against the King of the Pirates!",
+	499: "The Battle Against the Big Tiger! Who Is Going to Be Captain?!",
+	500: "Freedom Taken Away! The Nobles' Plot Closing in on the Brothers!",
+	501: "The Fire Has Been Set! The Gray Terminal in Crisis!",
+	502: "Where Can Freedom Be Found? A Sad Departure of a Boy!",
+	503: "Take Good Care of Him! A Letter From the Brother!",
+	504: "To Live up to the Promise! Departures of Their Own!",
+	505: "I Want to See Them! Luffy's Mournful Cry!",
+	506: "Straw Hats in Shock! The Bad News Has Reached Them!",
+	507: "Reunited With Dark King Rayleigh! Decision Time for Luffy!",
+	508: "Back to Our Captain! A Jail Break at the Sky Island and the Incident on the Winter Island!",
+	509: "Encounter! The Great Swordsman Mihawk! Zoro's Self-Willed Deadly Struggle!",
+	510: "A Disaster for Sanji! The Queen's Return to the Kingdom!",
+	511: "Unexpected Relanding! Luffy, to Marineford!",
+	512: "With Hopes It Will Reach My Friends! Big News Spreading Fast!",
+	513: "Pirates Get On the Move! Astounding New World!",
+	514: "Living Through Hell! Sanji's Fight for His Manhood!",
+	515: "I Will Get Much, Much Stronger! Zoro's Pledge to His Captain!",
+	516: "Luffy's Training Begins! To the Place We Promised in 2 Years!",
+	517: "The Beginning of the New Chapter! The Straw Hats Reunited!",
+	518: "An Explosive Situation! Luffy vs. Fake Luffy!",
+	519: "The Navy Has Set Out! The Straw Hats in Danger!",
+	520: "Big Guns Assembled! The Danger of the Fake Straw Hats!",
+	521: "The Battle Is On! Show Them What You Got From Training!",
+	522: "Everyone Together! Luffy, Setting Out for the New World!",
+	523: "A Surprising Fact! The Man Who Guarded the Sunny!",
+	524: "Deadly Combat Under the Sea! The Demon of the Ocean Strikes!",
+	525: "Lost in the Deep Sea! The Straw Hats Get Separated!",
+	526: "Undersea Volcanic Eruption! Drifting to the Fish-Man Island!",
+	527: "Landing at the Fish-Man Island! Beautiful Mermaids!",
+	528: "Excitement Blow-Out! Sanji's Life Under Threat!",
+	529: "The Fish-Man Island Will Be Annihilated?! Sharley's Prophecy!",
+	530: "The King of the Fish-Man Island! Neptune, the God of the Sea!",
+	531: "Ryugu Palace! Taken by the Shark That They Saved!",
+	532: "A Coward and a Crybaby! The Princess in the Hard Shell Tower!",
+	533: "It's an Emergency! The Ryugu Palace Is Occupied!",
+	534: "The Ryugu Palace in Shock! The Kidnapping of Shirahoshi!",
+	535: "Hordy's Onslaught! The Retaliatory Plan Set Into Motion!",
+	536: "The Battle in the Ryugu Palace! Zoro vs. Hordy!",
+	537: "Keep Shirahoshi Safe! Decken Close Behind!",
+	538: "The Straw Hats Defeated?! Hordy Gains Control of the Ryugu Palace!",
+	539: "The Haunting Ties! Nami and the Fish-Man Pirates!",
+	540: "A Hero Who Freed the Slaves! An Adventurer Tiger!",
+	541: "Kizaru Appears! A Trap to Catch Tiger!",
+	542: "A Team Is Formed! Save Chopper",
+	543: "The Death of the Hero! A Shocking Truth of Tiger!",
+	544: "The Sun Pirates Split! Jimbei vs. Arlong!",
+	545: "Shaking Fish-Man Island! A Celestial Dragon Drifts In!",
+	546: "A Sudden Tragedy! A Gunshot Shuts Down the Future!",
+	547: "Back to the Present! Hordy Makes a Move!",
+	548: "The Kingdom in Shock! An Order to Execute Neptune Issued!",
+	549: "A Rift Opens Up! Luffy vs. Jimbei!",
+	550: "Something Has Happened to Hordy! The True Power of the Evil Drug!",
+	551: "The Battle Is On! At Conchcorde Plaza!",
+	552: "Surprising Confession! The Truth Behind the Assassination of Otohime!",
+	553: "Shirahoshi's Tears! Luffy Finally Shows Up!",
+	554: "A Great Clash! The Straw Hat Crew vs. 100,000 Enemies",
+	555: "Deadly Attacks One After Another! Zoro and Sanji Join the Battle!",
+	556: "Unveiled! The Secret Weapons of the Sunny!",
+	557: "Iron Pirate! Here Comes General Franky!",
+	558: "The Noah Closing In! The Fish-Man Island Facing Destruction!",
+	559: "Hurry Up, Luffy! Shirahoshi's Life in Jeopardy!",
+	560: "The Fierce Fight Begins! Luffy vs. Hordy!",
+	561: "A Massive Confused Fight! The Straw Hats vs. the New Fish-Man Pirates!",
+	562: "Luffy Loses the Fight?! Hordy's Long Awaited Revenge!",
+	563: "A Shocking Fact! The True Identity of Hordy!",
+	564: "Back to Zero! Earnest Wishes for Luffy!",
+	565: "Luffy's All-Out Attack! Red Hawk Blasts!",
+	566: "Coming to an End! The Final Decisive Battle Against Hordy!",
+	567: "Stop, Noah! Desperate Elephant Gatling!",
+	568: "To the Future! The Path to the Sun!",
+	569: "The Secret Revealed! The Truth About the Ancient Weapon!",
+	570: "The Straw Hats Stunned! The New Fleet Admiral of the Navy!",
+	571: "She Loves Sweets! Big Mom of the Four Emperors!",
+	572: "Many Problems Lie Ahead! A Trap Awaiting in the New World!",
+	573: "Finally Time to Go! Goodbye, Fish-Man Island!",
+	574: "To the New World! Heading for the Ultimate Sea!",
+	575: "Z's Ambition! Lily the Little Giant!",
+	576: "Z's Ambition! A Dark and Powerful Army!",
+	577: "Z's Ambition! A Great and Desperate Escape Plan!",
+	578: "Z's Ambition! Luffy vs. Shuzo!",
+	579: "Arriving! A Burning Island - Punk Hazard!",
+	580: "A Battle in the Heat! Luffy vs. the Giant Dragon!",
+	581: "The Straw Hats Stunned! Enter: A Samurai's Horrifying Severed Head!",
+	582: "Startling! The Secret of the Island Is Finally Revealed!",
+	583: "Save the Children! The Straw Hats Start to Fight!",
+	584: "A Swordplay Showdown! Brook vs. the Mysterious Torso Samurai!",
+	585: "The Warlord! Trafalgar Law!",
+	586: "In a Real Pinch! Luffy Sinks Into the Ice-Cold Lake!",
+	587: "A Collision! Law vs. Vice Admiral Smoker!",
+	588: "Meeting Again After Two Years! Luffy and Law!",
+	589: "The Worst in the World! A Scientist of Terror - Caesar!",
+	590: "History's Strongest Collaboration vs. Glutton of the Sea",
+	591: "Chopper's Fury! The Master's Inhumane Experiment!",
+	592: "To Annihilate the Straw Hats! Legendary Assassins Descend!",
+	593: "Save Nami! Luffy's Fight on the Snow-Capped Mountains!",
+	594: "Formed! Luffy and Law's Pirate Alliance!",
+	595: "Capture M! The Pirate Alliance's Operation Launches!",
+	596: "On the Verge of Annihilation! A Deadly Monster Comes Flying In!",
+	597: "An Intense Battle! Caesar Exercises His True Power!",
+	598: "A Samurai Who Can Cut Fire! Foxfire Kin'emon!",
+	599: "Shocking! The True Identity of the Mystery Man Vergo!",
+	600: "Save the Children! The Master's Evil Hands Close In!",
+	601: "Shaking up the New World! Caesar's Horrendous Experiment!",
+	602: "The Deadliest Weapon of Mass Destruction in History! Shinokuni!",
+	603: "Launching the Counter Attack! Luffy and Law's Great Escape!",
+	604: "Get to Building R! The Pirate Alliance's Great Advance!",
+	605: "Tashigi's Tears! G-5's Desperate Breakthrough Plan!",
+	606: "The Treacherous Vice Admiral! Demon Bamboo Vergo!",
+	607: "A Fierce Battle Gets Heated! Luffy vs. Caesar!",
+	608: "A Mastermind Underground! Doflamingo Makes His Move!",
+	609: "Luffy Dies From Exposure?! The Spine-Chilling Snow Woman Monet!",
+	610: "Fists Collide! A Battle of the Two Vice Admirals!",
+	611: "A Small Dragon! Momonosuke Appears!",
+	612: "A Deadly Fight in a Blizzard! The Straw Hats vs. the Snow Woman!",
+	613: "Showing Off His Techniques! Zoro's Formidable One-Sword Style!",
+	614: "To Save Her Friends! Mocha Runs at the Risk of Her Life!",
+	615: "Brownbeard in Grief! Luffy Lands a Furious Blow!",
+	616: "A Surprising Outcome! Smoker vs. Vergo!",
+	617: "Caesar's Defeat! The Powerful Grizzly Magnum!",
+	618: "Raid! An Assassin From Dressrosa!",
+	619: "Running Wild! Invincible General Franky!",
+	620: "A Critical Situation! Punk Hazard Explodes!",
+	621: "Capture Caesar! General Cannon Blasts!",
+	622: "A Touching Reunion! Momonosuke and Kin'emon!",
+	623: "It's Time to Say Goodbye! Leaving Punk Hazard!",
+	624: "The G-5 Wiped Out! Doflamingo's Sudden Attack!",
+	625: "Intense! Aokiji vs. Doflamingo!",
+	626: "Caesar Goes Missing! The Pirate Alliance Makes a Sortie!",
+	627: "Luffy Dies at Sea!? The Pirate Alliance Comes Apart!",
+	628: "A Major Turnaround! Luffy's Angry Iron Fist Strikes!",
+	629: "Startling! The Big News Shakes up the New World!",
+	630: "Explore! A Kingdom of Love and Passion Dressrosa!",
+	631: "Full of Enthusiasm! The Corrida Colosseum",
+	632: "A Dangerous Love! The Dancer Girl - Violet!",
+	633: "A Formidable, Unknown Warrior! Here Comes Lucy!",
+	634: "A Pirate Noble! Cavendish!",
+	635: "The Fateful Reunion! Bellamy the Hyena!",
+	636: "A Super Rookie! Bartolomeo the Cannibal!",
+	637: "Big Names Duke It Out! The Heated Block B Battle!",
+	638: "A Deadly Blow! The Astonishing King Punch!",
+	639: "The Fighting Fish Strike! Across the Deadly Iron Bridge!",
+	640: "Explore! Fairies' Island - Green Bit!",
+	641: "The Unknown World! The Tontatta Kingdom!",
+	642: "The Stratagem of the Century! Doflamingo Makes His Move!",
+	643: "Shaking Heaven and Earth! Admiral Fujitora's Power!",
+	644: "A Blow of Anger! A Giant vs. Lucy!",
+	645: "Destruction Cannon Blasts! Lucy in Trouble!",
+	646: "The Legendary Pirate! Don Chinjao!",
+	647: "Light and Shadow! Darkness Behind Dressrosa!",
+	648: "Making a Sortie! The Legendary Hero Usoland!",
+	649: "The Fierce Battle Coming to the End! Lucy vs. Chinjao!",
+	650: "Luffy and the Gladiator of Fate - Rebecca!",
+	651: "Protect You to the End! Rebecca and the Toy Soldier!",
+	652: "The Last - and Bloodiest - Block! Block D Battle Begins!",
+	653: "A Decisive Battle! Giolla vs. the Straw Hats!",
+	654: "Beautiful Sword! Cavendish of the White Horse!",
+	655: "A Big Clash! Sanji vs. Doflamingo",
+	656: "Rebecca's Special Attack! Last-Ditch Sword Dance!",
+	657: "The Most Violent Fighter! Logan vs. Rebecca!",
+	658: "A Big Surprise! The True Identity of the Toy Soldier!",
+	659: "A Horrible Past! The Secret of Dressrosa",
+	660: "A Nightmare! The Tragic Night of Dressrosa!",
+	661: "A Showdown Between the Warlords! Law vs. Doflamingo!",
+	662: "Two Great Rivals Meet Each Other! Straw Hat and Heavenly Demon!",
+	663: "Luffy Astonished! The Man Who Inherits Ace's Will!",
+	664: "Operation SOP Starts! Usoland Charges Forth!",
+	665: "A Burning Passion! Rebecca vs. Suleiman!",
+	666: "The End of the Match?! A Surprising Result of Block D!",
+	667: "The Admiral's Decision! Fujitora vs. Doflamingo!",
+	668: "The Final Round Starts! Diamante the Hero Shows Up!",
+	669: "A Moving Castle! The Top Executive Pica Rises Up!",
+	670: "Dragon Claw Strikes! Lucy's Intimidating Attack!",
+	671: "Defeat Sugar! The Army of the Little People Charges!",
+	672: "The Last Light of Hope! The Secret of Our Commander!",
+	673: "The Rupture Human! Gladius Blows up Big Time!",
+	674: "A Liar! Usoland on the Run!",
+	675: "A Fateful Encounter! Kyros and King Riku!",
+	676: "Operation Failed! Usoland the Hero Dies!?",
+	677: "The Legend Is Back! Kyros' All-Out Attack!",
+	678: "The Fire Fist Strikes! The Flare-Flare Fruit Power Returns!",
+	679: "Dashing Onto the Scene! The Chief of Staff of the Revolutionary Army, Sabo!",
+	680: "The Devil's Trap! A Dressrosa Extermination Plan!",
+	681: "The 500 Million Berry Man! Target: Usoland!",
+	682: "Breaking Through Enemy Lines! Luffy and Zoro Launch the Counter-Attack!",
+	683: "With a Rumbling of the Ground! The God of Destruction - Giant Pica Descends!",
+	684: "Gathering Into a Powerful Front! Luffy and a Group of Brutal Warriors!",
+	685: "Steady Progress! Luffy's Army vs. Pica!",
+	686: "A Shocking Confession! Law's Soulful Vow!",
+	687: "A Big Collision! Chief of Staff - Sabo vs. Admiral Fujitora!",
+	688: "A Desperate Situation! Luffy Gets Caught in a Trap!",
+	689: "A Great Escape! Luffy's Tide-Turning Elephant Gun!",
+	690: "A United Front! Luffy's Breakthrough to the Victory!",
+	691: "The Second Samurai! Evening Shower Kanjuro Appears",
+	692: "A Hard-Fought Battle Against Pica! Zoro's Deadly Attack!",
+	693: "The Little People's Princess! Captive Mansherry!",
+	694: "Invincible! A Gruesome Army of Headcracker Dolls!",
+	695: "Risking Their Lives! Luffy Is the Trump Card for Victory!",
+	696: "A Tearful Reunion! Rebecca and Kyros!",
+	697: "One Shot One Kill! The Man Who Will Save Dressrosa!",
+	698: "Anger Erupts! Luffy and Law's Ultimate Stratagem!",
+	699: "A Noble Family! The True Identity of Doflamingo!",
+	700: "The Ultimate Power! The Secret of the Op-Op Fruit!",
+	701: "Sad Memories! Law the Boy From the White Town!",
+	702: "A Celestial Dragon! Doffy's Stormy Past",
+	703: "A Rocky Road! Law and Corazon's Journey of Life!",
+	704: "The Time Is Ticking Down! Seize the Op-Op Fruit!",
+	705: "The Moment of Resolution! Corazon's Farewell Smile!",
+	706: "Advance, Law! The Kindhearted Man's Final Fight!",
+	707: "To Be Free! Law's Injection Shot Blasts!",
+	708: "An Intense Battle! Law vs. Doflamingo!",
+	709: "A Decisive Battle Against the Executives! Proud Hajrudin!",
+	710: "The Battle of Love! The New Leader Sai vs. Baby 5!",
+	711: "The Man's Pride! Bellamy's Last Charge!",
+	712: "A Strong Wind and a Surge! Hakuba vs. Dellinger!",
+	713: "Barrier-Barrier! Homage God Fist Strikes!",
+	714: "The Healing Princess! Save Mansherry!",
+	715: "The Manly Duel! Señor's Elegy of Love!",
+	716: "Stardust of Death! Diamante's Storm of Vicious Attacks!",
+	717: "Trueno Bastardo! Kyros' Furious Strike!",
+	718: "Moving Across the Ground! The Giant Statue Pica's Surprise Maneuver!",
+	719: "A Decisive Battle in Midair! Zoro's New Special Secret Technique Blasts!",
+	720: "So Long! Bellamy's Farewell Blow!",
+	721: "Law Dies! Luffy's Raging Onslaught!",
+	722: "A Blade of Tenacity! The Gamma Knife Counterattack!",
+	723: "A Collision of Haki! Luffy vs. Doflamingo!",
+	724: "Unassailable! The Stunning Secret of Trebol!",
+	725: "Anger Erupts! I Will Take Everything Upon Myself!",
+	726: "Fourth Gear! The Phenomenal Bounce-Man!",
+	727: "A Massive Counterattack! Doflamingo's Awakening!",
+	728: "Luffy! An All-Out Leo Bazooka!",
+	729: "Flame Dragon King! Protect Luffy's Life!",
+	730: "Tears of Miracles! Mansherry's Fight!",
+	731: "As Long as We Breathe! Stop the Deadly Birdcage!",
+	732: "Dead or Alive! A Fateful Countdown!",
+	733: "Attack on a Celestial! Luffy's King Kong Gun of Anger!",
+	734: "To Be Free! Dressrosa's Delight!",
+	735: "The Unheard-Of! Admiral Fujitora's Surprising Decision!",
+	736: "Sending a Shock Wave! The Worst Generation Goes Into Action!",
+	737: "The Birth of the Legend! The Adventures of the Revolutionary Warrior Sabo!",
+	738: "The Brothers' Bond! The Untold Story Behind Luffy and Sabo's Reunion!",
+	739: "The Strongest Creature! One of the Four Emperors - Kaido, King of the Beasts!",
+	740: "Fujitora Takes Action! The Complete Siege of the Straw Hats!",
+	741: "A State of Emergency! Rebecca Is Kidnapped!",
+	742: "The Bond Between Father and Daughter! Kyros and Rebecca!",
+	743: "Men's Pride! Luffy vs. Fujitora, Head-to-Head!",
+	744: "No Way Out! Admiral Fujitora's Ruthless Pursuit!",
+	745: "Sons' Cups! Straw Hat Fleet Is Formed!",
+	746: "The Numerous Rivals Struggle Amongst Themselves! The Raging Monsters of the New World",
+	747: "The Silver Fortress! Luffy and Barto's Great Adventure!",
+	748: "An Underground Maze! Luffy vs. the Tram Human!",
+	749: "The Sword Technique Heats Up! Law and Zoro Finally Appear!",
+	750: "A Desperate Situation! Luffy Fights a Battle in Extreme Heat!",
+	751: "Curtain-up on a New Adventure! Arriving at the Phantom Island, Zou!",
+	752: "The New Warlord! The Legendary Whitebeard's Son Appears!",
+	753: "A Deadly Elephant Climb! A Great Adventure on the Back of the Giant Elephant!",
+	754: "A Battle Begins! Luffy vs. the Mink Tribe!",
+	755: "Garchu! The Straw Hats Reunite!",
+	756: "Start to Counterattack! Great Moves by the Twirly Hat Crew!",
+	757: "A Threat Descends! The Beast Pirates, Jack!",
+	758: "The King of the Day! Duke Dogstorm Appears!",
+	759: "The King of the Night! Master Cat Viper Emerges!",
+	760: "The Exterminated Capital! The Twirly Hat Crew Arrive!",
+	761: "The Time Limit Closes In! The Bond Between the Mink Tribe and the Crew!",
+	762: "The Delinquent Comes Home! Emperor Big Mom's Assassins!",
+	763: "The Truth Behind the Disappearance! Sanji Gets a Startling Invitation!",
+	764: "To My Buds! Sanji's Farewell Note!",
+	765: "Let's Go and Meet Master Cat Viper!",
+	766: "Luffy's Decision! Sanji on the Brink of Quitting!",
+	767: "A Volatile Situation! The Dog and the Cat and the Samurai",
+	768: "The Third One! Raizo of the Mist, the Ninja, Appears!",
+	769: "A Red Stone! A Guide to the One Piece!",
+	770: "The Secret of the Land of Wano! The Kozuki Family and the Poneglyphs!",
+	771: "A Vow Between Two Men! Luffy and Kozuki Momonosuke!",
+	772: "The Legendary Journey! The Dog and the Cat and the Pirate King!",
+	773: "The Nightmare Returns! The Invincible Jack's Fierce Attack!",
+	774: "A Battle to Defend Zou! Luffy and Zunesha!",
+	775: "Save Zunesha! The Straw Hat's Rescue Operation!",
+	776: "Saying Goodbye and Descending From the Elephant! Setting Out to Take Back Sanji!",
+	777: "To the Reverie! Princess Vivi and Princess Shirahoshi!",
+	778: "To the Reverie! Rebecca and the Sakura Kingdom!",
+	779: "Kaido Returns! An Imminent Threat to the Worst Generation!",
+	780: "A Hungry Front! Luffy and the Navy Rookies!",
+	781: "The Implacable Three! A Big Chase After the Straw Hats!",
+	782: "The Devil's Fist! A Show Down! Luffy vs. Grount!",
+	783: "Sanji's Homecoming! Into Big Mom's Territory!",
+	784: "Zero and Four! Encountering Germa 66!",
+	785: "A Deadly Poison Crisis! Luffy and Reiju!",
+	786: "Totto Land! Emperor Big Mom Appears!",
+	787: "The Emperor's Daughter! Sanji's Fiancée - Pudding!",
+	788: "A Massive Attack! Mom's Hunger Pangs!",
+	789: "The Capital City Falls?! Big Mom and Jimbei",
+	790: "The Emperor's Castle! Arriving at the Whole Cake Island!",
+	791: "A Mysterious Forest Full of Candies! Luffy vs. Luffy?!",
+	792: "Mom's Assassin! Luffy and the Seducing Woods!",
+	793: "A Seafaring Kingdom! Germa's King Judge!",
+	794: "A Battle Between Father and Son! Judge vs. Sanji!",
+	795: "A Giant Ambition! Big Mom and Caesar!",
+	796: "The Land of Souls! Mom's Fatal Ability!",
+	797: "A Top Officer! The Sweet 3 General Cracker Appears!",
+	798: "An Enemy Worth 800 Million! Luffy vs. Thousand Armed Cracker!",
+	799: "An All-Out Duel! Gear Four vs. the Bis-Bis Ability!",
+	800: "The First and the Second Join! The Vinsmoke Family",
+	801: "The Benefactor's Life! Sanji and Owner Zeff!",
+	802: "An Angry Sanji! The Secret of Germa 66!",
+	803: "The Past That He Let Go Of! Vinsmoke Sanji!",
+	804: "To the East Blue! Sanji's Resolute Departure!",
+	805: "A Battle of Limits! Luffy and the Infinite Biscuits!",
+	806: "The Power of Satiety! A New Gear Four Form - Tank Man!",
+	807: "A Heartbreaking Duel! Luffy vs. Sanji! - Part 1",
+	808: "A Heartbreaking Duel! Luffy vs. Sanji! - Part 2",
+	809: "A Storm of Revenge! An Enraged Army Comes to Attack!",
+	810: "The End of the Adventure! Sanji's Resolute Proposal!",
+	811: "I'll Wait Here! Luffy vs. the Enraged Army!",
+	812: "Invading the Chateau! Reach the Road Ponegliff!",
+	813: "A Fateful Confrontation! Luffy and Big Mom!",
+	814: "Shout of the Soul! Brook and Pedro's Lightning Operation!",
+	815: "Goodbye! Pudding's Tearful Determination!",
+	816: "The History of the Left Eye! Pedro vs. Baron Tamago!",
+	817: "Moist Cigarette! The Night Before Sanji's Wedding!",
+	818: "The Undaunted Soul! Brook vs. Big Mom!",
+	819: "Sora's Wish! Germa's Failure - Sanji!",
+	820: "To Reach Sanji! Luffy's Vengeful Hell-Bent Dash!",
+	821: "The Chateau in Turmoil! Luffy, to the Rendezvous!",
+	822: "Deciding to Say Goodbye! Sanji and His Straw Hat Bento!",
+	823: "The Emperor Rolls Over! Rescue Brook Mission!",
+	824: "The Rendezvous! Luffy, a One-on-One at His Limit!",
+	825: "A Liar! Luffy and Sanji!!",
+	826: "Sanji Comes Back! Crash! The Tea Party From Hell!",
+	827: "A Secret Meeting! Luffy vs. the Fire Tank Pirates!",
+	828: "The Deadly Pact! Luffy & Bege's Allied Forces!",
+	829: "Luffy Engages in a Secret Maneuver! The Wedding Full of Conspiracies Starts Soon!",
+	830: "The Family Gets Together! The Hellish Tea Party Starts!",
+	831: "The Broken Couple! Sanji and Pudding Enter!",
+	832: "A Deadly Kiss! The Mission to Assassinate the Emperor Kicks Off!",
+	833: "Returning the Sake Cup! The Manly Jimbei Pays His Debt!",
+	834: "The Mission Failed?! The Big Mom Pirates Strike Back!",
+	835: "Run, Sanji! SOS! Germa 66!",
+	836: "Mom's Secret! The Giant's Island Elbaph and a Little Monster!",
+	837: "The Birth of Mom! The Day That Carmel Vanished!",
+	838: "The Launcher Blasts! The Moment of Big Mom's Assassination!",
+	839: "The Evil Army! Transform! Germa 66!",
+	840: "Cutting the Father-Son Relationship! Sanji and Judge!",
+	841: "Escape From the Tea Party! Luffy vs. Big Mom!",
+	842: "The Execution Begins! Luffy's Allied Forces Are Annihilated?!",
+	843: "The Chateau Collapses! The Straw Hat's Great Escape Begins!",
+	844: "The Spear of Elbaph! Onslaught! The Flying Big Mom!",
+	845: "Pudding's Determination! Ablaze! The Seducing Woods!",
+	846: "A Lightning Counterattack! Nami and Zeus the Thundercloud!",
+	847: "A Coincidental Reunion! Sanji and the Lovestruck Evil Pudding!",
+	848: "Save the Sunny! Fighting Bravely! Chopper and Brook!",
+	849: "Before the Dawn! Pedro, the Captain of the Guardians!",
+	850: "I'll Be Back! Luffy, Deadly Departure!",
+	851: "The Man With a Bounty of Billion! The Strongest Sweet General, Katakuri!",
+	852: "A Hard Battle Starts! Luffy vs. Katakuri!",
+	853: "The Green Room! An Invincible Helmsman, Jimbei!",
+	854: "The Threat of the Mole! Luffy's Silent Fight!",
+	855: "The End of the Deadly Battle?! Katakuri's Awakening in Anger!",
+	856: "The Forbidden Secret! Katakuri's Merienda!",
+	857: "Luffy Fights Back! The Invincible Katakuri's Weak Point!",
+	858: "Another Crisis! Gear Four vs. Unstoppable Donuts!",
+	859: "The Rebellious Daughter, Chiffon! Sanji's Big Plan for Transporting the Cake!",
+	860: "A Man's Way of Life! Bege and Luffy's Determination as Captains!",
+	861: "The Cake Sank?! Sanji and Bege's Getaway Battle!",
+	862: "Sulong! Carrot's Big Mystic Transformation!",
+	863: "Break Through! The Straw Hats' Mighty Sea Battle!",
+	864: "Finally, the Clash! The Emperor of the Sea vs. the Straw Hats!",
+	865: "Dark King's Direct Precepts! The Battle Against Katakuri Turns Around!",
+	866: "Finally He Returns! Sanji, the Man Who'll Stop the Emperor of the Sea!",
+	867: "Lurking in the Darkness! An Assassin Targeting Luffy!",
+	868: "One Man's Determination! Katakuri's Deadly Big Fight!",
+	869: "Wake Up! The Color of Observation Able To Top the Strongest!",
+	870: "A Fist of Divine Speed! Another Gear Four Application Activated!",
+	871: "Finally, It's Over! The Climax of the Intense Fight Against Katakuri!",
+	872: "A Desperate Situation! The Iron-Tight Entrapment of Luffy!",
+	873: "Pulling Back From the Brink! The Formidable Reinforcements - Germa!",
+	874: "The Last Hope! The Sun Pirates Emerge!",
+	875: "A Captivating Flavor! Sanji's Cake of Happiness!",
+	876: "The Man of Humanity and Justice! Jimbei, a Desperate Massive Ocean Current",
+	877: "The Parting Time! Pudding's Last Wish!",
+	878: "The World in Shock! The Fifth Emperor of the Sea Arrives!",
+	879: "To the Reverie! The Straw Hats' Sworn Allies Come Together!",
+	880: "Sabo Goes Into Action! All the Captains of the Revolutionary Army Appear!",
+	881: "Going Into Action! The Implacable New Admiral of the Fleet - Sakazuki!",
+	882: "The Paramount War! The Inherited Will of the King of the Pirates!",
+	883: "One Step Forward for Her Dream! Shirahoshi Goes Out in the Sun!",
+	884: "I Miss Him! Vivi and Rebecca's Sentiments!",
+	885: "In the Dark Recesses of the Holyland! A Mysterious Giant Straw Hat!",
+	886: "The Holyland in Tumult! The Targeted Princess Shirahoshi!",
+	887: "An Explosive Situation! Two Emperors of the Sea Going After Luffy!",
+	888: "Sabo Enraged! The Tragedy of the Revolutionary Army Officer Kuma!",
+	889: "Finally, It Starts! The Conspiracy-Filled Reverie!",
+	890: "Marco! The Keeper of Whitebeard's Last Memento!",
+	891: "Climbing up a Waterfall! A Great Journey Through the Land of Wano's Sea Zone!",
+	892: "The Land of Wano! To the Samurai Country Where Cherry Blossoms Flutter!",
+	893: "Otama Appears! Luffy vs. Kaido's Army!",
+	894: "He'll Come! The Legend of Ace in the Land of Wano!",
+	895: "Side Story! The World's Greatest Bounty Hunter, Cidre!",
+	896: "Side Story! Clash! Luffy vs. the King of Carbonation!",
+	897: "Save Otama! Straw Hat, Bounding Through the Wasteland!",
+	898: "The Headliner! Hawkins the Magician Appears!",
+	899: "Defeat Is Inevitable! The Strawman's Fierce Attack!",
+	900: "The Greatest Day of My Life! Otama and Her Sweet Red-Bean Soup!",
+	901: "Charging Into the Enemy's Territory! Bakura Town - Where Officials Thrive!",
+	902: "The Yokozuna Appears! The Invincible Urashima Goes After Okiku!",
+	903: "A Climatic Sumo Battle! Straw Hat vs. the Strongest Ever Yokozuna!",
+	904: "Luffy Rages! Rescue Otama From Danger!",
+	905: "Taking Back Otama! A Fierce Fight Against Holdem!",
+	906: "Duel! The Magician and the Surgeon of Death!",
+	907: "20th Anniversary Special! Romance Dawn",
+	908: "The Coming of the Treasure Ship! Luffytaro Returns the Favor!",
+	909: "Mysterious Grave Markers! A Reunion at the Ruins of Oden Castle!",
+	910: "A Legendary Samurai! The Man Who Roger Admired!",
+	911: "Bringing Down the Emperor of the Sea! A Secret Raid Operation Begins!",
+	912: "The Strongest Man in the World! Shutenmaru, the Thieves Brigade Chief!",
+	913: "Everyone Is Annihilated! Kaido's Furious Blast Breath!",
+	914: "Finally Clashing! The Ferocious Luffy vs. Kaido!",
+	915: "Destructive! One Shot, One Kill - Thunder Bagua!",
+	916: "A Living Hell! Luffy, Humiliated in the Great Mine!",
+	917: "The Holyland in Tumult! Emperor of the Sea Blackbeard Cackles!",
+	918: "It's On! The Special Operation To Bring Down Kaido!",
+	919: "Rampage! The Prisoners - Luffy and Kid!",
+	920: "A Great Sensation! Sanji's Special Soba!",
+	921: "Luxurious and Gorgeous! Wano's Most Beautiful Woman - Komurasaki!",
+	922: "A Tale of Chivalry! Zoro and Tonoyasu's Little Trip!",
+	923: "A State of Emergency! Big Mom Closes In!",
+	924: "The Capital in an Uproar! Another Assassin Targets Sanji!",
+	925: "Dashing! The Righteous Soba Mask!",
+	926: "A Desperate Situation! Orochi's Menacing Oniwabanshu!",
+	927: "Pandemonium! The Monster Snake, Shogun Orochi!",
+	928: "The Flower Falls! The Final Moment of the Most Beautiful Woman in the Land of Wano!",
+	929: "The Bond Between Prisoners! Luffy and Old Man Hyo!",
+	930: "A Lead Performer! Queen the Plague Emerges!",
+	931: "Climb Up! Luffy's Desperate Escape!",
+	932: "Dead or Alive! Queen's Sumo Inferno!",
+	933: "Gyukimaru! Zoro Fights a Duel on Bandit's Bridge!",
+	934: "A Big Turnover! The Three-Sword Style Overcomes Danger!",
+	935: "Zoro, Stunned! The Shocking Identity of the Mysterious Woman!",
+	936: "Get the Hang of It! The Land of Wano's Haki - Ryuo!",
+	937: "Tonoyasu! Ebisu Town's Most Loved!",
+	938: "Shaking the Nation! The Identity of Ushimitsu Kozo the Chivalrous Thief!",
+	939: "The Straw Hats Run! Save the Captive Tonoyasu!",
+	940: "Zoro's Fury! The Truth About the Smile!",
+	941: "Toko's Tears! Orochi's Pitiless Bullets!",
+	942: "The Straw Hats Step In! An Uproarious Deadly Battle at the Execution Ground!",
+	943: "Luffy's Determination! Win Through the Sumo Inferno!",
+	944: "The Storm Has Come! A Raging Big Mom!",
+	945: "A Grudge Over Red-bean Soup! Luffy Gets Into a Desperate Situation!",
+	946: "Stop the Emperor of the Sea! Queen's Secret Plan!",
+	947: "Brutal Ammunition! The Plague Rounds Aim At Luffy!",
+	948: "Start Fighting Back! Luffy and the Akazaya Samurai!",
+	949: "We're Here To Win! Luffy's Desperate Scream!",
+	950: "Warriors' Dream! Luffy's Conquer of Udon!",
+	951: "Orochi's Hunting Party! The Ninja Group vs. Zoro!",
+	952: "Tension Rises in Onigashima! Two Emperors of the Sea Meet?!",
+	953: "Hiyori's Confession! A Reunion at Bandit's Bridge!",
+	954: "Its Name Is Enma! Oden's Great Swords!",
+	955: "A New Alliance?! Kaido's Army Gathers!",
+	956: "Ticking Down to the Great Battle! The Straw Hats Go Into Combat Mode!",
+	957: "Big News! An Incident That Will Affect the Seven Warlords!",
+	958: "A Legendary Battle! Garp and Roger!",
+	959: "The Rendezvous Port! The Land of Wano Act Three Begins!",
+	960: "The Number-One Samurai in the Land of Wano! Here Comes Kozuki Oden!",
+	961: "Tearfully Swearing Allegiance! Oden and Kin'emon!",
+	962: "Changing Destiny! The Whitebeard Pirates Cast Ashore!",
+	963: "Oden's Determination! Whitebeard's Test!",
+	964: "Whitebeard's Little Brother! Oden's Great Adventure!",
+	965: "Crossing Swords! Roger and Whitebeard!",
+	966: "Roger's Wish! A New Journey!",
+	967: "Devoting His Life! Roger's Adventure!",
+	968: "The King of the Pirates Is Born! Arriving at the Last Island!",
+	969: "To the Land of Wano! The Roger Pirates Disband!",
+	970: "Sad News! The Opening of the Great Pirate Era!",
+	971: "Raid! Oden and the Akazaya Nine!",
+	972: "The End of the Battle! Oden vs. Kaido!",
+	973: "Boiled to Death! Oden's One-hour Struggle!",
+	974: "Oden Wouldn't Be Oden if It Wasn't Boiled!",
+	975: "The Castle on Fire! The Fate of the Kozuki Clan!",
+	976: "Back to the Present Day! 20 Years Later!",
+	977: "The Sea Is for Pirates! Raid! To Onigashima!",
+	978: "The Worst Generation Charges In! The Battle of the Stormy Sea!",
+	979: "Good Luck?! Leader Kin'emon's Plot!",
+	980: "A Tearful Promise! The Kidnapped Momonosuke!",
+	981: "A New Member! 'First Son of the Sea' Jimbei!",
+	982: "Kaido's Trump Card! The Tobi Roppo Appear!",
+	983: "The Samurai Warriors' Earnestness! The Straw Hats Land at Onigashima!",
+	984: "Luffy Goes Out of Control?! Sneaking Into Kaido's Banquet!",
+	985: "Thinking of Otama! Luffy's Furious Strike!",
+	986: "Fighting Music! An Ability That Harms Luffy!",
+	987: "His Dream Broken?! The Trap That Lures Sanji!",
+	988: "Reinforcements Arrive! The Commander of the Whitebeard Pirates!",
+	989: "The Pact Between Men! The Fierce Fighting of Brachio Tank!",
+	990: "Thunder Bagua! Here Comes Kaido's Son!",
+	991: "Enemy or Ally? Luffy and Yamato!",
+	992: "Desire To Be Oden! Yamato's Dream!",
+	993: "Explosive?! The Handcuffs That Shackle Yamato's Freedom!",
+	994: "The Akazaya Face-off! Kikunojo vs. Kanjuro!",
+	995: "Raid! Inheriting Oden's Will",
+	996: "Onigashima in Tumult! Luffy's All-out War Begins!",
+	997: "The Battle Under the Moon! The Berserker, Sulong the Moon Lion!",
+	998: "Zeus' Treason?! The Cornered Nami!",
+	999: "I'll Protect You! Yamato Meets Momonosuke!",
+	1000: "Overwhelming Strength! The Straw Hats Come Together!",
+	1001: "A Risky Invitation! A Plot to Eliminate Queen!",
+	1002: "A New Rivalry! Nami and Ulti!",
+	1003: "A Heroic Blade! Akazaya vs. Kaido, Again Once More!",
+	1004: "An Inherited Technique! Unleashing Oden's Secret Swordplay!",
+	1005: "The Power of the Ice Oni! A New Version of the Plague Rounds!",
+	1006: "I Won't Forgive Him! Chopper's Determination!",
+	1007: "Zoro's Pursuit! Ice Oni Tag!",
+	1008: "Nami Surrenders?! Ulti's Fierce Headbutt!",
+	1009: "Sasaki's Onslaught! Armored Division vs. Yamato!",
+	1010: "Eliminate the Ice Oni! Chopper's Fire Trick!",
+	1011: "It's Not Okay! The Spider Lures Sanji!",
+	1012: "A Turnaround Move! The Flames of Marco the Phoenix!",
+	1013: "Yamato's Past! The Man Who Came for an Emperor of the Sea!",
+	1014: "Marco's Tears! The Bond of the Whitebeard Pirates!",
+	1015: "Straw Hat Luffy! The Man Who Will Become the King of the Pirates!",
+	1016: "The Battle of the Monsters! The Three Stubborn Captains!",
+	1017: "A Barrage of Powerful Techniques! The Fierce Attacks of the Worst Generation!",
+	1018: "Kaido Laughs! The Emperors of the Sea vs. New Generation!",
+	1019: "Otama's Secret Plan! Operation Kibi Dango!",
+	1020: "Sanji's Scream! An SOS Echoes Over the Island!",
+	1021: "Spank Strikes! Sanji's Woman-trouble!",
+	1022: "No Regrets! Luffy and Boss, a Master-Disciple Bond!",
+	1023: "All Set! Chopperhage Nebulizer!",
+	1024: "Oden Appears! The Confused Hearts of the Akazaya Members!",
+	1025: "The Worst Generation Gets Wiped Out?! The Emperors' Deadly Attack!",
+	1026: "The Supernovas Strike Back! The Mission to Tear Apart the Four Emperors!",
+	1027: "Defend Luffy! Zoro and Law's Sword Technique!",
+	1028: "Surpass the Emperor of the Sea! Luffy Strikes Back with an Iron Fist!",
+	1029: "A Faint Memory! Luffy and Red-Haired's Daughter Uta!",
+	1030: "A Pledge for the New Genesis! Luffy and Uta!",
+	1031: "Nami Screams! A Deadly Death Race!",
+	1032: "The Dawn of the Land of Wano - The All-Out Battle Heats Up!",
+	1033: "The Conclusion! Luffy, Accelerating Fist of the Supreme King",
+	1034: "Luffy Defeated! The Straw Hats in Jeopardy?!",
+	1035: "The Animal Kingdom Pirates Trample Down! The End of the Kozuki Clan!",
+	1036: "Fight Against the Dark Night! The Commander-in-Chief of the Land of Wano Sounds Off!",
+	1037: "Believe in Luffy! The Alliance's Counterattack Begins!",
+	1038: "Nami's Lethal Attack! Otama's Desperate Challenge!",
+	1039: "A Dramatic Increase of Allies! Straw Hats Fight Back!",
+	1040: "The Pride of a Helmsman? The Enraged Jinbei!",
+	1041: "Showdown Battles of the Monsters! Yamato and Franky",
+	1042: "The Predator's Trap - Black Maria's Temptation",
+	1043: "Slash the Nightmare - Brook Draws His Freezing Sword!",
+	1044: "Clutch! A Demon Incarnate, Robin!",
+	1045: "A Spell! Kid and Zoro Facing Threats!",
+	1046: "Taking a Chance! The Two Arms Go into Battle!",
+	1047: "Ascend to the Dawn! A Pink Dragon Gets Agitated",
+	1048: "For the Future! Yamato and the Great Swordsmen's Pledge",
+	1049: "Luffy Soars! Revenge Against the King of the Beasts",
+	1050: "Two Dragons Face Off! Momonosuke's Determination!",
+	1051: "A Legend All Over Again! Luffy's Fist Roars in the Sky!",
+	1052: "The Situation Has Grown Tense! The End of Onigashima!",
+	1053: "Sanji's Mutation? The Two Arms in Crisis!",
+	1054: "Death to Your Partner! Killer's Deadly Gamble!",
+	1055: "A Shadowy Figure Pulls the Strings! Onigashima in Flames",
+	1056: "A Countercharge! Law and Kid's Return-Attack Combination",
+	1057: "For Luffy? Sanji and Zoro's Oath",
+	1058: "The Onslaught of Kazenbo - Orochi's Evil Clutches Close in",
+	1059: "Zoro Faces Adversity - A Monster! King the Wildfire",
+	1060: "The Secret of Enma! The Cursed Sword Entrusted to Zoro",
+	1061: "The Strike of an Ifrit! Sanji vs. Queen",
+	1062: "The Three-Sword Style of the Supreme King! Zoro vs. King",
+	1063: "Luffy is on the Move! A Turning Point to a New Era!",
+	1064: "Drunken Dragon Bagua! The Lawless Dragon Closing in on Luffy",
+	1065: "The Destruction of the Alliance?! Fire up, the Will of the New Generation!",
+	1066: "Here Comes the Main Act! Powerful Techniques of Shockwave and Magnetism",
+	1067: "To the New Era! Settled! The Determination of the Brats",
+	1068: "Moon Princess Echoes! The Final Phase of the Land of Wano!",
+	1069: "There is Only One Winner - Luffy vs. Kaido",
+	1070: "Luffy is Defeated?! The Determination of those Left Behind!",
+	1071: "Luffy's Peak - Attained! Gear Five",
+	1072: "The Ridiculous Power! Gear Five in Full Play",
+	1073: "No Way Out! A Hellish Scene on Onigashima",
+	1074: "I Trust Momo - Luffy's Final Powerful Technique!",
+	1075: "20 Years Worth of Prayer! Take Back the Land Wano",
+	1076: "The World That Luffy Wants!",
+	1077: "The Curtain Falls! The Winner, Straw Hat Luffy!",
+	1078: "He Returns! The Shogun of the Land of Wano, Kozuki Momonosuke",
+	1079: "The Morning Comes! Luffy and the Others Rest!",
+	1080: "A Celebration Banquet! The New Emperors of the Sea!",
+	1081: "The World Will Burn! The Onslaught of a Navy Admiral!",
+	1082: "The Coming of the New Era! The Red-Haired's Imperial Rage",
+	1083: "The World That Moves On! A New Organization, Cross Guild",
+	1084: "Time to Depart - The Land of Wano and the Straw Hats",
+	1085: "The Last Curtain! Luffy and Momonosuke's Vow",
+	1086: "A New Emperor! Buggy the Genius Jester!",
+	1087: "The War on the Island of Women! A Case Involving Koby the Hero",
+	1088: "Luffy's Dream",
+	1089: "Entering a New Chapter! Luffy and Sabo's Paths!",
+	1090: "A New Island! Future Island Egghead",
+	1091: "Brimming with the Future! An Adventure on the Island of Science!",
+	1092: "Bonney's Lamentation! Darkness Lurking on the Future Island",
+	1093: "The Winner Takes All! Law vs. Blackbeard!",
+	1094: "The Mystery Deepens! Egghead Labophase!",
+	1095: "The Brain of a Genius - Six Vegapunks!",
+	1096: "A Forbidden Piece of History! A Theory Concerning a Kingdom",
+	1097: "The Will of Ohara! The Inherited Research",
+	1098: "The Eccentric Dream of a Genius!",
+	1099: "Preparations for Interception! Rob Lucci Strikes!",
+	1100: "Powers on a Different Level! Luffy vs. Lucci!",
+	1101: "The Strongest Form of Humanity! The Seraphim's Powers!",
+	1102: "Sinister Schemes! The Operation to Escape Egghead",
+	1103: "Turn Back My Father! Bonney's Futile Wish!",
+	1104: "A Desperate Situation! The Seraphim's All-out Attack!",
+	1105: "A Beautiful Act of Treason! The Spy, Stussy",
+	1106: "Trouble Occurs! Seek Dr. Vegapunk!",
+	1107: "A Shudder! The Evil Hand Creeping Up on the Laboratory",
+	1108: "Incomprehensible! The Seraphim's Rebellion!",
+	1109: "A Tough Decision! An Unusual United Front!",
+	1110: "Survive! Deadly Combat with the Strongest Form of Humanity!",
+	1111: "The Second Ohara! The Mastermind's Ambition!",
+	1112: "Clash! Shanks vs. Eustass Kid",
+	1113: "Run, Koby! A Desperate Escape Strategy!",
+	1114: "For the Beloved Pupil - The Fist of Vice Admiral Garp!",
+	1115: "The Navy Surprised! The Navy Headquarters' Former Admiral, Kuzan",
+	1116: "Let's Go Get It! Buggy's Big Declaration",
+	1117: "Sabo Returns - The Shocking Truth to Be Told!",
+	1118: "The Holy Land in Tumult! Sai and Leo's Full-Power Blow!",
+	1119: "The Entrusted Message! King Cobra's Resolve",
+	1120: "The World Is Shaken! The Ruler's Judgment and the Five Elders' Actions!",
+	1121: "Garp and Kuzan - A Master and a Pupil's Beliefs Clash",
+	1122: "The Last Lesson! Impact Inherited",
+	1123: "The World Shakes! The Straw Hats' Hostage Situation",
+	1124: "Completely Surrounded! The Operation to Escape Egghead",
+	1125: "A Clash of Two Men's Determination! Kizaru and Sentomaru",
+	1126: "Looming Despair! Admiral Kizaru's Depressing Mission",
+	1127: "Luffy Vs. Kizaru! A Fierce Kaleidoscopic Battle",
+	1128: "The Nightmare Strikes - Godhead of Science & Defense, St. Saturn",
+	1129: "Kuma's Past - Better Off Dead in This World",
+	1130: "A History Erased! God Valley of Despair",
+	1131: "A Fleeting Moment of Happiness - Kumachi and Ginny",
+	1132: "A Pledge to Ginny - Kuma Becomes a Father",
+	1133: "To Save His Daughter - Kuma the Timid Pacifist",
+	1134: "Cruel Fate - Kuma's Decision as a Father",
+	1135: "To the Sea Where My Father is! The Future Bonney Chooses",
+	1136: "Kuma's Life",
+	1137: "I'm Sorry, Dad - Bonney's Tears and Kuma's Fist",
+	1138: "Thank You, Dad - Bonney and Kuma's Warm Embrace",
+	1139: "Destroy Egghead - The Buster Call is Invoked",
+	1140: "An Admired Hero - The Warrior of Liberation Who Saves Bonney",
+	1141: "Reliable Reinforcements! Dorry and Brogy Arrive!",
+	1142: "Come in, World - Vegapunk's Message",
+	1143: "Vegapunk's Secret Plan - A Tense Worldwide Broadcast",
+	1144: "The Worst Nightmare - The Five Elders Come Together",
+	1145: "Friends Fight Together! Luffy and the Warriors of Elbaph",
+	1146: "An Imminent Threat - Stussy and Edison's Resolve",
+	1147: "A Stunning Conclusion - Vegapunk's Great Prediction",
+	1148: "The Lost History - Joyboy, the First Pirate",
+	1149: "The Void Century - A Revelation About a Sinking World",
+	1150: "Get the Ship Moving! The Iron Giant Activates",
+	1151: "Her and Her Father's Dream! Bonney's Free Future",
+	1152: "Her Father and Mother's Legacy! Bonney's Nika Punch",
+	1153: "The Upheaval of an Era! The Color of the Supreme King That Leads Luffy",
+	1154: "The Truth Behind the Secret Plan - Vegapunk Claims Victory",
+	1155: "The Promised Horizon - Off to the Long-Awaited Elbaph!",
+	1156: "The Long-sought Elbaph! The Big Reunion Banquet!",
+	1157: "Nami in a Fix! An Adventure in Block Kingdom",
+	1158: "A Quest in the Land of Mystery! The Secret of the Sun God",
+	1159: "Destroy the Miniature Garden - Escape Block Kingdom",
+	1160: "An Encounter on a Snowfield - Loki, the Accursed Prince",
+	1161: "A Dangerous Deal! Loki of the Underworld and Luffy",
+	1162: "A Gargantuan Wave of Emotion - The Dreamlike Scenery of Elbaph",
+	1163: "I Want You to Praise Me - The Reunion of Robin and Saul",
+	1164: "Saul's Resolve - The Inherited Will of Ohara",
+	1165: "A Welcome with Friends' Cups and Intruders Seeking Loki",
+	1166: "Encountering Loki - Gunko of the Knights of God",
+	1167: "Shamrock Appears - Commander of the Knights of God",
+	1168: "Ancient History - The Harley Passed Down by Elbaph",
+	1169: "The Legend Lurking in Elbaph - The Identity of the Mountain-Eater",
+	1170: "Get the Key! Luffy vs. Scopper Gaban",
+	1171: "Elbaph's Heinous Sinner - Loki of the Underworld Freed!?",
+	1172: "Monsters Appear in Elbaph - 'What I Fear Most'",
+	1173: "A Nightmarish Game - The Dark Plot of the Knights of God",
+	1174: "Save the Children! The Elbaph Warriors Rise Up",
+	1175: "Elbaph in Flames! Jinbe's Shoulder Throw Explodes!",
 };
 
+// Sagas Master Dataset
 const SAGAS_DATA = [
   {
     id: 'east-blue',
@@ -1310,11 +2410,13 @@ function getEpisodeTitle(epNumber, arcTitle) {
 }
 
 export default function App() {
+  // Theme state with localStorage persistence
   const [activeThemeId, setActiveThemeId] = useState(() => {
     return localStorage.getItem('op_tracker_theme') || 'classic';
   });
   const [showThemePicker, setShowThemePicker] = useState(false);
 
+  // Watched items state
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
       const saved = localStorage.getItem('op_tracker_watched');
@@ -1324,6 +2426,17 @@ export default function App() {
     }
   });
 
+  // Skipped items state (not marked as watched/completed, but skipped in sequence)
+  const [skippedIds, setSkippedIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('op_tracker_skipped');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  // Micro-episode sub-progress: stores current absolute episode (e.g. { "arc-34": 585 })
   const [subProgress, setSubProgress] = useState(() => {
     try {
       const saved = localStorage.getItem('op_tracker_subprogress');
@@ -1333,6 +2446,7 @@ export default function App() {
     }
   });
 
+  // User Wanted Poster Customization
   const [pirateName, setPirateName] = useState(() => {
     return localStorage.getItem('op_pirate_name') || 'MUGIWARA';
   });
@@ -1345,6 +2459,7 @@ export default function App() {
   const [photoFilter, setPhotoFilter] = useState('sepia');
   const [photoZoom, setPhotoZoom] = useState(1);
 
+  // Global Settings & Navigation
   const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('roadmap');
@@ -1354,6 +2469,7 @@ export default function App() {
   });
   const [dailyPace, setDailyPace] = useState(3);
 
+  // Modals & Refs
   const [showResetModal, setShowResetModal] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const fileInputRef = useRef(null);
@@ -1361,6 +2477,7 @@ export default function App() {
 
   const theme = THEMES[activeThemeId] || THEMES.classic;
 
+  // Persist settings
   useEffect(() => {
     localStorage.setItem('op_tracker_theme', activeThemeId);
   }, [activeThemeId]);
@@ -1368,6 +2485,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('op_tracker_watched', JSON.stringify(Array.from(watchedIds)));
   }, [watchedIds]);
+
+  useEffect(() => {
+    localStorage.setItem('op_tracker_skipped', JSON.stringify(Array.from(skippedIds)));
+  }, [skippedIds]);
 
   useEffect(() => {
     localStorage.setItem('op_tracker_subprogress', JSON.stringify(subProgress));
@@ -1387,8 +2508,10 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
+  // Flattened item list in sequential order
   const allItems = useMemo(() => SAGAS_DATA.flatMap(s => s.items), []);
 
+  // Total episode counts
   const totalEpisodesCount = useMemo(() => {
     return allItems.reduce((acc, curr) => acc + (curr.epCount || 0), 0);
   }, [allItems]);
@@ -1412,13 +2535,14 @@ export default function App() {
     Math.round((watchedEpisodesCount / Math.max(1, totalEpisodesCount)) * 100)
   );
 
+  // Cumulative Watch Time Calculations
   const watchTimeStats = useMemo(() => {
     const minutesWatched = watchedEpisodesCount * 23.5;
     const hoursWatched = (minutesWatched / 60).toFixed(1);
     const daysEquivalent = (minutesWatched / (60 * 24)).toFixed(1);
 
     const skippedFillerEps = allItems
-      .filter(item => item.type === 'filler' && !watchedIds.has(item.id))
+      .filter(item => item.type === 'filler' && (!watchedIds.has(item.id) || skippedIds.has(item.id)))
       .reduce((sum, item) => sum + (item.epCount || 0), 0);
     const fillerHoursSaved = ((skippedFillerEps * 20) / 60).toFixed(1);
 
@@ -1427,8 +2551,9 @@ export default function App() {
       daysEquivalent,
       fillerHoursSaved
     };
-  }, [watchedEpisodesCount, allItems, watchedIds]);
+  }, [watchedEpisodesCount, allItems, watchedIds, skippedIds]);
 
+  // Dynamic Bounty Calculation
   const calculatedBounty = useMemo(() => {
     let bounty = 0;
     allItems.forEach(item => {
@@ -1448,6 +2573,7 @@ export default function App() {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
+  // Helper for item episode position
   const getItemCurrentEpisode = (item) => {
     if (watchedIds.has(item.id)) {
       return item.endEp || item.epCount;
@@ -1458,29 +2584,7 @@ export default function App() {
     return null;
   };
 
-  const upNextData = useMemo(() => {
-    for (const saga of SAGAS_DATA) {
-      for (const item of saga.items) {
-        if (!watchedIds.has(item.id)) {
-          const start = item.startEp || 1;
-          const end = item.endEp || item.epCount || 1;
-          const current = subProgress[item.id] !== undefined ? subProgress[item.id] : start;
-          const episodeTitle = getEpisodeTitle(current, item.title);
-
-          return {
-            saga,
-            item,
-            currentEp: current,
-            startEp: start,
-            endEp: end,
-            episodeTitle
-          };
-        }
-      }
-    }
-    return null;
-  }, [watchedIds, subProgress]);
-
+  // Crew Unlocked calculation
   const unlockedCrew = useMemo(() => {
     const list = ['Luffy'];
     if (watchedIds.has('arc-1')) list.push('Zoro');
@@ -1495,11 +2599,48 @@ export default function App() {
     return Array.from(new Set(list));
   }, [watchedIds]);
 
+  // Find the active "Up Next" item (skips completed AND explicitly skipped items)
+  const upNextData = useMemo(() => {
+    for (let i = 0; i < allItems.length; i++) {
+      const item = allItems[i];
+      if (!watchedIds.has(item.id) && !skippedIds.has(item.id)) {
+        const parentSaga = SAGAS_DATA.find(s => s.items.some(it => it.id === item.id));
+        const isEpBased = Boolean(item.startEp && item.endEp);
+
+        const currentEp = isEpBased
+          ? (subProgress[item.id] !== undefined ? subProgress[item.id] : item.startEp)
+          : null;
+
+        const episodeTitle = isEpBased
+          ? getEpisodeTitle(currentEp, item.title)
+          : item.title;
+
+        return {
+          index: i,
+          item,
+          saga: parentSaga,
+          isEpBased,
+          currentEp,
+          startEp: item.startEp,
+          endEp: item.endEp,
+          episodeTitle
+        };
+      }
+    }
+    return null;
+  }, [allItems, watchedIds, skippedIds, subProgress]);
+
+  // Stepper logic for setting episode
   const handleSetCurrentEpisode = (item, newEpisode) => {
     if (!item.startEp || !item.endEp) return;
 
     if (newEpisode >= item.endEp) {
       setWatchedIds(prev => new Set(prev).add(item.id));
+      setSkippedIds(prev => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
       setSubProgress(prev => {
         const next = { ...prev };
         delete next[item.id];
@@ -1529,17 +2670,76 @@ export default function App() {
     }
   };
 
+  // Continuous Advancement: Advances +1 ep, or transitions to the next item in the watch order
   const advanceUpNext = () => {
     if (!upNextData) return;
-    const { item, currentEp } = upNextData;
-    handleSetCurrentEpisode(item, currentEp + 1);
-    showToast(`Advanced to Episode ${currentEp + 1}!`);
+    const { item, isEpBased, currentEp, endEp } = upNextData;
+
+    if (isEpBased) {
+      if (currentEp < endEp) {
+        // Step within current arc
+        handleSetCurrentEpisode(item, currentEp + 1);
+        showToast(`Advanced to Episode ${currentEp + 1}!`);
+      } else {
+        // Completed final episode of arc -> complete arc & advance to next item
+        setWatchedIds(prev => new Set(prev).add(item.id));
+        setSubProgress(prev => {
+          const next = { ...prev };
+          delete next[item.id];
+          return next;
+        });
+
+        const nextIndex = upNextData.index + 1;
+        if (nextIndex < allItems.length) {
+          const nextItem = allItems[nextIndex];
+          showToast(`Completed ${item.title}! Starting ${nextItem.title}.`);
+        } else {
+          showToast(`Congratulations! You have completed the entire Grand Line voyage!`);
+        }
+      }
+    } else {
+      // Movie / OVA / Special: Mark as watched and move on
+      setWatchedIds(prev => new Set(prev).add(item.id));
+      const nextIndex = upNextData.index + 1;
+      if (nextIndex < allItems.length) {
+        showToast(`Completed ${item.title}! Starting ${allItems[nextIndex].title}.`);
+      }
+    }
   };
 
+  // Skip Current Item: Bypasses without marking as completed in the checklist
+  const skipUpNext = () => {
+    if (!upNextData) return;
+    const { item } = upNextData;
+
+    setSkippedIds(prev => new Set(prev).add(item.id));
+    setSubProgress(prev => {
+      const next = { ...prev };
+      delete next[item.id];
+      return next;
+    });
+
+    const nextIndex = upNextData.index + 1;
+    if (nextIndex < allItems.length) {
+      showToast(`Skipped ${item.title}. Up next: ${allItems[nextIndex].title}`);
+    } else {
+      showToast(`Skipped ${item.title}.`);
+    }
+  };
+
+  // Restore skipped items
+  const resetSkippedItems = () => {
+    setSkippedIds(new Set());
+    showToast('Restored all skipped items to the queue.');
+  };
+
+  // Smooth scroll to active arc
   const scrollToActiveArc = () => {
     if (!upNextData) return;
     setActiveTab('roadmap');
-    setExpandedSagas(prev => new Set(prev).add(upNextData.saga.id));
+    if (upNextData.saga) {
+      setExpandedSagas(prev => new Set(prev).add(upNextData.saga.id));
+    }
     setTimeout(() => {
       const el = document.getElementById(`arc-card-${upNextData.item.id}`);
       if (el) {
@@ -1548,6 +2748,7 @@ export default function App() {
     }, 100);
   };
 
+  // Toggle item completion
   const toggleItem = (item) => {
     setWatchedIds(prev => {
       const next = new Set(prev);
@@ -1555,6 +2756,11 @@ export default function App() {
         next.delete(item.id);
       } else {
         next.add(item.id);
+        setSkippedIds(sk => {
+          const s = new Set(sk);
+          s.delete(item.id);
+          return s;
+        });
         setSubProgress(sub => {
           const s = { ...sub };
           delete s[item.id];
@@ -1580,6 +2786,11 @@ export default function App() {
       return next;
     });
     if (markAsWatched) {
+      setSkippedIds(prev => {
+        const next = new Set(prev);
+        saga.items.forEach(item => next.delete(item.id));
+        return next;
+      });
       setSubProgress(prev => {
         const next = { ...prev };
         saga.items.forEach(item => delete next[item.id]);
@@ -1600,6 +2811,7 @@ export default function App() {
     });
   };
 
+  // Handle Photo Upload
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -1616,6 +2828,7 @@ export default function App() {
     }
   };
 
+  // Render & Download Canvas Wanted Poster
   const downloadWantedPoster = () => {
     const canvas = posterCanvasRef.current;
     if (!canvas) return;
@@ -1719,15 +2932,17 @@ export default function App() {
     showToast('Wanted Poster downloaded successfully!');
   };
 
+  // Export Data JSON
   const exportProgressJSON = () => {
     const backupData = {
-      version: '2.6',
+      version: '2.7',
       exportDate: new Date().toISOString(),
       theme: activeThemeId,
       pirateName,
       pirateEpithet,
       userPhoto,
       watchedIds: Array.from(watchedIds),
+      skippedIds: Array.from(skippedIds),
       subProgress,
       dailyPace
     };
@@ -1741,6 +2956,7 @@ export default function App() {
     showToast('Voyage progress saved to JSON!');
   };
 
+  // Import Data JSON
   const importProgressJSON = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -1749,6 +2965,7 @@ export default function App() {
       try {
         const data = JSON.parse(event.target?.result);
         if (data.watchedIds) setWatchedIds(new Set(data.watchedIds));
+        if (data.skippedIds) setSkippedIds(new Set(data.skippedIds));
         if (data.subProgress) setSubProgress(data.subProgress);
         if (data.theme) setActiveThemeId(data.theme);
         if (data.pirateName) setPirateName(data.pirateName);
@@ -1763,6 +2980,7 @@ export default function App() {
     reader.readAsText(file);
   };
 
+  // Generate Shareable Link
   const shareVoyageLink = () => {
     const params = new URLSearchParams();
     if (upNextData?.currentEp) params.set('ep', upNextData.currentEp.toString());
@@ -1776,6 +2994,7 @@ export default function App() {
     showToast('Shareable voyage link copied to clipboard!');
   };
 
+  // Filtered Sagas
   const filteredSagas = useMemo(() => {
     return SAGAS_DATA.map(saga => {
       const filteredItems = saga.items.filter(item => {
@@ -1800,6 +3019,7 @@ export default function App() {
     }).filter(saga => saga.items.length > 0);
   }, [filterType, searchQuery]);
 
+  // Pacing Calculator Target Dates
   const pacingStats = useMemo(() => {
     const remainingEpisodes = Math.max(0, totalEpisodesCount - watchedEpisodesCount);
     const daysToFinish = Math.ceil(remainingEpisodes / Math.max(1, dailyPace));
@@ -1832,19 +3052,25 @@ export default function App() {
       {/* Hidden Canvas for High-Res Poster Export */}
       <canvas ref={posterCanvasRef} className="hidden" />
 
-      {/* STICKY "UP NEXT / CONTINUE VOYAGE" BAR WITH EPISODE TITLE */}
+      {/* STICKY "UP NEXT / CONTINUE VOYAGE" BAR WITH SEAMLESS CONTINUATION & SKIP */}
       {upNextData && (
         <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-4 py-2.5 shadow-xl transition">
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                <PlayCircle className="w-5 h-5 text-amber-400 animate-pulse" />
+                {upNextData.item.type === 'movie' ? (
+                  <Film className="w-5 h-5 text-amber-400 animate-pulse" />
+                ) : (
+                  <PlayCircle className="w-5 h-5 text-amber-400 animate-pulse" />
+                )}
               </div>
 
               <div className="truncate">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                    Up Next &bull; Episode {upNextData.currentEp}
+                    {upNextData.isEpBased
+                      ? `Up Next • Episode ${upNextData.currentEp}`
+                      : `Up Next • ${upNextData.item.type.toUpperCase()}`}
                   </span>
                   <span className="text-xs font-bold text-slate-400 truncate">
                     {upNextData.item.title}
@@ -1853,28 +3079,54 @@ export default function App() {
 
                 {/* Specific Episode Name Display */}
                 <h4 className="text-xs md:text-sm font-black text-slate-100 truncate mt-0.5 flex items-center gap-1.5">
-                  <span className="text-amber-300">Ep {upNextData.currentEp}:</span>
+                  {upNextData.isEpBased && (
+                    <span className="text-amber-300">Ep {upNextData.currentEp}:</span>
+                  )}
                   <span className="italic text-slate-200">"{upNextData.episodeTitle}"</span>
                 </h4>
               </div>
             </div>
 
-            {/* Quick Actions: Jump to Arc & +1 Next Episode */}
+            {/* Quick Actions: Jump to Arc, Skip Item, & Next Action */}
             <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
               <button
                 onClick={scrollToActiveArc}
                 className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400" />
-                <span>Jump to Arc</span>
+                <span className="hidden sm:inline">Jump to Arc</span>
               </button>
 
+              {/* Skip Current Arc / Movie Button */}
+              <button
+                onClick={skipUpNext}
+                title="Skip this item in Up Next queue without marking as watched"
+                className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-amber-300 text-xs font-semibold border border-slate-700/80 transition flex items-center gap-1.5"
+              >
+                <SkipForward className="w-3.5 h-3.5" />
+                <span>Skip</span>
+              </button>
+
+              {/* Continuous Advance Button */}
               <button
                 onClick={advanceUpNext}
                 className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center gap-1"
               >
-                <span>Next Episode (+1)</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                {upNextData.isEpBased ? (
+                  <>
+                    <span>
+                      {upNextData.currentEp === upNextData.endEp
+                        ? 'Finish Arc & Next'
+                        : 'Next Episode (+1)'}
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                ) : (
+                  <>
+                    <span>Watch & Continue</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -1915,20 +3167,26 @@ export default function App() {
                     <ChevronDown className="w-3 h-3" />
                   </button>
 
-                  {/* Dropdown Menu with Spoiler Masking */}
+                  {/* Dropdown Menu */}
                   {showThemePicker && (
                     <div className="absolute left-0 mt-2 w-64 bg-slate-900/95 border border-slate-800 rounded-2xl p-2.5 shadow-2xl z-50 backdrop-blur-md grid grid-cols-1 gap-1 max-h-80 overflow-y-auto">
                       <div className="text-[11px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">
                         Choose Straw Hat Theme
                       </div>
                       {Object.values(THEMES).map(t => {
-                        const isCrewTheme = ['luffy', 'zoro', 'usopp', 'sanji', 'nami', 'chopper', 'robin', 'franky', 'brook', 'jinbe'].includes(t.id);
-                        const isMemberRecruited = !isCrewTheme || unlockedCrew.some(
-                          c => c.toLowerCase().includes(t.id) || (t.id === 'robin' && c === 'Nico Robin')
-                        );
-                        const isNikaTheme = t.id === 'nika';
-                        const isNikaUnlocked = watchedIds.has('arc-47');
-                        const isThemeShielded = spoilerShield && ((isCrewTheme && !isMemberRecruited) || (isNikaTheme && !isNikaUnlocked));
+                        const isUnlocked =
+                          t.id === 'classic' ||
+                          t.id === 'luffy' ||
+                          unlockedCrew.some(
+                            c =>
+                              c.toLowerCase() === t.id.toLowerCase() ||
+                              (t.id === 'robin' && c === 'Nico Robin')
+                          );
+
+                        const isNika = t.id === 'nika';
+                        const nikaUnlocked = watchedIds.has('arc-47');
+
+                        const isThemeLocked = spoilerShield && !isUnlocked && (!isNika || !nikaUnlocked);
 
                         return (
                           <button
@@ -1938,36 +3196,20 @@ export default function App() {
                               setShowThemePicker(false);
                               showToast(`Switched theme to ${t.character}!`);
                             }}
-                            title={isThemeShielded ? '🔒 Mystery Theme (Hover to reveal spoiler)' : t.name}
-                            className={`group/theme flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
+                            className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
                               activeThemeId === t.id
                                 ? 'bg-slate-800 text-white'
                                 : 'text-slate-300 hover:bg-slate-800/60'
                             }`}
                           >
-                            <span className="text-base shrink-0">
-                              {isThemeShielded ? (
-                                <span className="inline-flex items-center">
-                                  <span className="group-hover/theme:hidden text-xs">🔒</span>
-                                  <span className="hidden group-hover/theme:inline">{t.avatar}</span>
-                                </span>
-                              ) : (
-                                t.avatar
-                              )}
-                            </span>
+                            <span className="text-base">{isThemeLocked ? '🔒' : t.avatar}</span>
                             <div className="flex-1 truncate">
-                              <div
-                                className={`font-bold transition-all duration-200 ${
-                                  isThemeShielded
-                                    ? 'filter blur-[4.5px] group-hover/theme:blur-none select-none text-slate-400 group-hover/theme:text-white'
-                                    : ''
-                                }`}
-                              >
-                                {t.name}
+                              <div className={`font-bold ${isThemeLocked ? 'filter blur-[3px] select-none' : ''}`}>
+                                {isThemeLocked ? 'Locked Member' : t.name}
                               </div>
                             </div>
                             <span
-                              className="w-3 h-3 rounded-full border border-white/20 shrink-0"
+                              className="w-3 h-3 rounded-full border border-white/20"
                               style={{ backgroundColor: t.primary }}
                             />
                           </button>
@@ -2072,7 +3314,7 @@ export default function App() {
                   const isRecruited = unlockedCrew.includes(
                     member.name === 'Robin' ? 'Nico Robin' : member.name
                   );
-                  const isShielded = spoilerShield && !isRecruited;
+                  const isMasked = spoilerShield && !isRecruited;
 
                   return (
                     <button
@@ -2082,41 +3324,30 @@ export default function App() {
                         showToast(`Active Straw Hat: ${member.name}!`);
                       }}
                       title={
-                        isShielded
-                          ? '🔒 Mystery Straw Hat (Hover to reveal - Spoiler Shield Active)'
-                          : isRecruited
-                          ? `Recruited: Click to activate ${member.name} theme`
-                          : `Yet to join: ${member.name}`
+                        isMasked
+                          ? 'Locked Crew Member (Spoiler Shield Active)'
+                          : `Click to activate ${member.name} theme`
                       }
-                      className={`group/crew text-[11px] px-2.5 py-0.5 rounded-full font-medium transition-all flex items-center gap-1.5 relative overflow-hidden ${
+                      className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${
                         isRecruited
-                          ? 'bg-slate-800 text-slate-200 border border-slate-700 hover:border-amber-500/50 cursor-pointer'
-                          : isShielded
-                          ? 'bg-slate-950/70 text-slate-400 border border-slate-800/80 hover:border-slate-700 cursor-pointer'
-                          : 'bg-slate-950/40 text-slate-600 border border-slate-900 opacity-60'
+                          ? 'bg-slate-800 text-slate-200 border border-slate-700 hover:border-amber-500/50'
+                          : 'bg-slate-950/40 text-slate-600 border border-slate-900 opacity-70 group'
                       }`}
                     >
-                      <span className="shrink-0 text-xs">
-                        {isRecruited ? (
-                          member.icon
-                        ) : isShielded ? (
-                          <span className="inline-flex items-center">
-                            <span className="group-hover/crew:hidden text-[10px]">🔒</span>
-                            <span className="hidden group-hover/crew:inline text-xs">{member.icon}</span>
+                      {isMasked ? (
+                        <>
+                          <Lock className="w-3 h-3 text-slate-500 group-hover:hidden" />
+                          <span className="hidden group-hover:inline">{member.icon}</span>
+                          <span className="filter blur-[3.5px] group-hover:filter-none select-none transition">
+                            {member.name}
                           </span>
-                        ) : (
-                          member.icon
-                        )}
-                      </span>
-                      <span
-                        className={`transition-all duration-200 ${
-                          isShielded
-                            ? 'filter blur-[4.5px] group-hover/crew:blur-none select-none text-slate-400 group-hover/crew:text-slate-200'
-                            : ''
-                        }`}
-                      >
-                        {member.name}
-                      </span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{member.icon}</span>
+                          <span>{member.name}</span>
+                        </>
+                      )}
                     </button>
                   );
                 })}
@@ -2126,7 +3357,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Navigation and Content Sections */}
+      {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 mt-8">
         {/* Navigation Tabs Bar */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6 gap-4 overflow-x-auto">
@@ -2183,8 +3414,19 @@ export default function App() {
             </button>
           </div>
 
-          {/* Utility Tools: Share URL, Spoiler Shield, Backup JSON, Reset */}
+          {/* Utility Tools: Share URL, Spoiler Shield, Restore Skips, Backup JSON, Reset */}
           <div className="flex items-center gap-2">
+            {skippedIds.size > 0 && (
+              <button
+                onClick={resetSkippedItems}
+                title="Restore skipped items to the Up Next queue"
+                className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 border border-slate-800 transition flex items-center gap-1.5 text-xs font-semibold"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span className="hidden md:inline">Reset Skips ({skippedIds.size})</span>
+              </button>
+            )}
+
             <button
               onClick={shareVoyageLink}
               title="Share Current Voyage URL"
@@ -2357,6 +3599,7 @@ export default function App() {
                         <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                           {saga.items.map(item => {
                             const isWatched = watchedIds.has(item.id);
+                            const isSkipped = skippedIds.has(item.id);
                             const isMustWatch = item.tier === 'Must Watch';
                             const isFiller = item.type === 'filler';
                             const currentEp = getItemCurrentEpisode(item);
@@ -2370,6 +3613,8 @@ export default function App() {
                                 className={`relative p-4 rounded-2xl border transition-all flex flex-col justify-between ${
                                   isWatched
                                     ? 'bg-slate-950/60 border-emerald-500/30 text-slate-300'
+                                    : isSkipped
+                                    ? 'bg-slate-950/30 border-amber-500/20 text-slate-400 opacity-60'
                                     : isMustWatch
                                     ? 'bg-slate-900/90 border-amber-500/40 shadow-md shadow-amber-500/5'
                                     : isFiller
@@ -2415,6 +3660,12 @@ export default function App() {
                                       {isMustWatch && (
                                         <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 flex items-center gap-0.5 font-bold">
                                           <Star className="w-2.5 h-2.5 fill-current" /> Essential
+                                        </span>
+                                      )}
+
+                                      {isSkipped && (
+                                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-amber-400/80 border border-amber-500/20">
+                                          Skipped in Queue
                                         </span>
                                       )}
                                     </div>
@@ -2991,11 +4242,13 @@ export default function App() {
       {upNextData && (
         <button
           onClick={scrollToActiveArc}
-          title={`Jump to ${upNextData.item.title} (Ep ${upNextData.currentEp})`}
+          title={`Jump to ${upNextData.item.title}`}
           className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-4 py-3 rounded-2xl shadow-2xl font-black text-xs flex items-center gap-2 border border-amber-300/40 hover:scale-105 active:scale-95 transition"
         >
           <Compass className="w-4 h-4 animate-spin-slow" />
-          <span>Ep {upNextData.currentEp} &bull; Jump to Arc</span>
+          <span>
+            {upNextData.isEpBased ? `Ep ${upNextData.currentEp} • ` : ''}Jump to Arc
+          </span>
         </button>
       )}
 
@@ -3006,7 +4259,7 @@ export default function App() {
             <AlertTriangle className="w-12 h-12 mx-auto text-rose-500 mb-3" />
             <h3 className="text-lg font-bold text-slate-100">Reset Voyage Progress?</h3>
             <p className="text-xs text-slate-400 mt-2">
-              This will reset all checked arcs, episode steppers, and bounty counters back to zero. You can export a JSON backup first if you want to save your progress.
+              This will reset all checked arcs, episode steppers, skipped items, and bounty counters back to zero. You can export a JSON backup first if you want to save your progress.
             </p>
             <div className="flex gap-3 mt-6">
               <button
@@ -3018,6 +4271,7 @@ export default function App() {
               <button
                 onClick={() => {
                   setWatchedIds(new Set());
+                  setSkippedIds(new Set());
                   setSubProgress({});
                   setShowResetModal(false);
                   showToast('Voyage progress reset to start.');
@@ -3033,3 +4287,15 @@ export default function App() {
     </div>
   );
 }
+```eof
+
+---
+
+### How the New Flow Operates:
+
+1. **Continuous Watch Order Advance**:
+   - If you are on **Episode 3 of Romance Dawn**, the button displays **"Finish Arc & Next"**. Clicking it automatically checks Romance Dawn off as completed and smoothly transitions your "Up Next" queue to **Orange Town (Episode 4)**.
+   - If an OVA or movie is positioned next (e.g. *Defeat Him! Ganzack!* or *Film Z*), the banner says **"Watch & Continue"**, checking off the movie and moving into the subsequent arc.
+2. **The New "Skip" Button**:
+   - Clicking **Skip** bypasses that item in your active queue immediately—moving to the next arc or film—without marking it checked or adding its bounty.
+   - If you ever want to re-queue skipped items, click the **"Reset Skips"** button in the utility bar.
