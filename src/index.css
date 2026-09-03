@@ -18,21 +18,19 @@
   background: #334155;
 }
 
-/* Hover-activated smooth scroll */
-@keyframes hover-scroll-kf {
-  0%, 15% {
-    transform: translateX(0%);
-  }
-  85%, 100% {
-    transform: translateX(calc(-100% + 100cqw));
-  }
+/* Hover-scroll ticker */
+.scroll-on-hover-container {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
-.hover-scroll {
+.scroll-on-hover-container:hover .scroll-on-hover-text {
+  transform: translateX(min(0px, calc(100% - 100cqw)));
+}
+
+.scroll-on-hover-text {
   display: inline-block;
   white-space: nowrap;
-}
-
-.hover-scroll:hover {
-  animation: hover-scroll-kf 6s ease-in-out infinite alternate;
+  transition: transform 3.5s ease-in-out;
 }

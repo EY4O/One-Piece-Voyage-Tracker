@@ -803,7 +803,11 @@ export default function App() {
                 )}
               </div>
 
-              <div className="min-w-0 flex-1 overflow-hidden">
+              {/* Title Container with Overflow Guard */}
+              <div 
+                className="min-w-0 flex-1 overflow-hidden select-none group"
+                title={upNextData.episodeTitle}
+              >
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
                     {upNextData.isEpBased
@@ -815,14 +819,10 @@ export default function App() {
                   </span>
                 </div>
 
-                {/* Title Container: truncate with hover-scroll support */}
-                <div className="overflow-hidden whitespace-nowrap max-w-full mt-0.5">
-                  <h4
-                    className="text-xs md:text-sm font-black text-slate-100 truncate hover-scroll inline-block"
-                    title={upNextData.episodeTitle}
-                  >
+                <div className="relative overflow-hidden w-full mt-0.5">
+                  <h4 className="text-xs md:text-sm font-black text-slate-100 truncate group-hover:overflow-visible transition-all duration-300">
                     {upNextData.isEpBased && (
-                      <span className="text-amber-300 mr-1.5">Ep {upNextData.currentEp}:</span>
+                      <span className="text-amber-300 mr-1.5 shrink-0">Ep {upNextData.currentEp}:</span>
                     )}
                     <span className="italic text-slate-200">"{upNextData.episodeTitle}"</span>
                   </h4>
