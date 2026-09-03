@@ -4287,15 +4287,3 @@ export default function App() {
     </div>
   );
 }
-```eof
-
----
-
-### How the New Flow Operates:
-
-1. **Continuous Watch Order Advance**:
-   - If you are on **Episode 3 of Romance Dawn**, the button displays **"Finish Arc & Next"**. Clicking it automatically checks Romance Dawn off as completed and smoothly transitions your "Up Next" queue to **Orange Town (Episode 4)**.
-   - If an OVA or movie is positioned next (e.g. *Defeat Him! Ganzack!* or *Film Z*), the banner says **"Watch & Continue"**, checking off the movie and moving into the subsequent arc.
-2. **The New "Skip" Button**:
-   - Clicking **Skip** bypasses that item in your active queue immediately—moving to the next arc or film—without marking it checked or adding its bounty.
-   - If you ever want to re-queue skipped items, click the **"Reset Skips"** button in the utility bar.
