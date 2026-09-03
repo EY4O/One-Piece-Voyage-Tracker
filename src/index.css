@@ -17,3 +17,22 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* Hover-activated smooth scroll */
+@keyframes hover-scroll-kf {
+  0%, 15% {
+    transform: translateX(0%);
+  }
+  85%, 100% {
+    transform: translateX(calc(-100% + 100cqw));
+  }
+}
+
+.hover-scroll {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hover-scroll:hover {
+  animation: hover-scroll-kf 6s ease-in-out infinite alternate;
+}

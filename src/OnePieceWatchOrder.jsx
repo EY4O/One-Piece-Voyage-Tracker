@@ -789,11 +789,12 @@ export default function App() {
         </div>
       )}
 
-      {/* STICKY "UP NEXT" BAR */}
+      {/* STICKY "UP NEXT" BAR WITH FLEX/TRUNCATE/HOVER FIX */}
       {upNextData && (
         <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-4 py-2.5 shadow-xl transition">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            {/* Left Episode Metadata Column: min-w-0 ensures truncation works */}
+            <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
               <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
                 {upNextData.item.type === 'movie' ? (
                   <Film className="w-5 h-5 text-amber-400 animate-pulse" />
@@ -802,9 +803,9 @@ export default function App() {
                 )}
               </div>
 
-              <div className="truncate">
+              <div className="min-w-0 flex-1 overflow-hidden">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
                     {upNextData.isEpBased
                       ? `Up Next • Episode ${upNextData.currentEp}`
                       : `Up Next • ${upNextData.item.type.toUpperCase()}`}
@@ -813,19 +814,27 @@ export default function App() {
                     {upNextData.item.title}
                   </span>
                 </div>
-                <h4 className="text-xs md:text-sm font-black text-slate-100 truncate mt-0.5 flex items-center gap-1.5">
-                  {upNextData.isEpBased && (
-                    <span className="text-amber-300">Ep {upNextData.currentEp}:</span>
-                  )}
-                  <span className="italic text-slate-200">"{upNextData.episodeTitle}"</span>
-                </h4>
+
+                {/* Title Container: truncate with hover-scroll support */}
+                <div className="overflow-hidden whitespace-nowrap max-w-full mt-0.5">
+                  <h4
+                    className="text-xs md:text-sm font-black text-slate-100 truncate hover-scroll inline-block"
+                    title={upNextData.episodeTitle}
+                  >
+                    {upNextData.isEpBased && (
+                      <span className="text-amber-300 mr-1.5">Ep {upNextData.currentEp}:</span>
+                    )}
+                    <span className="italic text-slate-200">"{upNextData.episodeTitle}"</span>
+                  </h4>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+            {/* Action Buttons Column: shrink-0 guarantees rigid layout */}
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={scrollToActiveArc}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5 whitespace-nowrap"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400" />
                 <span className="hidden sm:inline">Jump to Arc</span>
@@ -834,7 +843,7 @@ export default function App() {
               <button
                 onClick={skipUpNext}
                 title="Skip this item without marking as watched"
-                className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-amber-300 text-xs font-semibold border border-slate-700/80 transition flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-amber-300 text-xs font-semibold border border-slate-700/80 transition flex items-center gap-1.5 whitespace-nowrap"
               >
                 <SkipForward className="w-3.5 h-3.5" />
                 <span>Skip</span>
@@ -842,7 +851,7 @@ export default function App() {
 
               <button
                 onClick={advanceUpNext}
-                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center gap-1"
+                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center gap-1 whitespace-nowrap"
               >
                 {upNextData.isEpBased ? (
                   <>
