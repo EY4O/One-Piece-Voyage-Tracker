@@ -17,20 +17,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
-
-/* Hover-scroll ticker */
-.scroll-on-hover-container {
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 100%;
-}
-
-.scroll-on-hover-container:hover .scroll-on-hover-text {
-  transform: translateX(min(0px, calc(100% - 100cqw)));
-}
-
-.scroll-on-hover-text {
-  display: inline-block;
-  white-space: nowrap;
-  transition: transform 3.5s ease-in-out;
-}
