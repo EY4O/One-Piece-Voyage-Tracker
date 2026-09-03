@@ -954,23 +954,32 @@ export default function App() {
               </p>
             </div>
 
-            {/* Achievements Summary Banner */}
+            {/* Live Marine Bounty & Achievements Quick Card */}
             <div
               onClick={() => setActiveTab('achievements')}
               className="cursor-pointer group bg-slate-900/90 border border-slate-800 hover:border-amber-500/60 p-4 rounded-3xl shadow-xl transition flex items-center gap-4 relative overflow-hidden"
             >
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl group-hover:scale-105 transition">
-                🏆
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl group-hover:scale-105 transition shrink-0">
+                💰
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1">
-                  <Award className="w-3 h-3 text-amber-400" /> Pirate Achievements
+                  <Trophy className="w-3 h-3 text-amber-400" /> Active Marine Bounty
                 </div>
-                <div className="text-xl md:text-2xl font-black text-amber-400 tracking-tight font-mono">
-                  {unlockedCount} / {ACHIEVEMENTS.length}
+                
+                <div className="text-2xl md:text-3xl font-black text-amber-400 tracking-tight font-mono truncate mt-0.5">
+                  ฿ {formatBounty(calculatedBounty)}
                 </div>
-                <div className="text-[11px] text-slate-400 font-medium">
-                  Bounty: <span className="text-amber-300 font-mono font-bold">฿ {formatBounty(calculatedBounty)}</span>
+
+                <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
+                  <Award className="w-3 h-3 text-amber-500/80 shrink-0" />
+                  <span>Achievements:</span>
+                  <span className="text-slate-200 font-bold font-mono">
+                    {unlockedCount} / {ACHIEVEMENTS.length}
+                  </span>
+                  <span className="text-emerald-400 font-semibold font-mono text-[10px]">
+                    ({Math.round((unlockedCount / ACHIEVEMENTS.length) * 100)}%)
+                  </span>
                 </div>
               </div>
             </div>
