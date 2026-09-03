@@ -61,5 +61,8 @@ An interactive, spoiler-safe companion web application engineered to navigate al
 Ensure you have **Node.js** (*v18 or newer*) and **npm** installed:
 
 ```bash
-node -v
-npm -v
+npm install
+npm run dev
+
+Open your browser and navigate to http://localhost:5173.
+
