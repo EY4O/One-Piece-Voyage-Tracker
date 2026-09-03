@@ -1,7 +1,24 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
-import headerBg1 from './bg1.jpg';
-import headerBg2 from './bg2.jpg';
+
+// 11 Saga Background Artworks (src/assets/sagas/)
+import bgEastBlue from './assets/sagas/1east-blue.jpg';
+import bgAlabasta from './assets/sagas/2alabasta.jpg';
+import bgSkypiea from './assets/sagas/3skypiea.jpg';
+import bgWater7 from './assets/sagas/4water-7.jpg';
+import bgThrillerBark from './assets/sagas/5thriller-bark.jpg';
+import bgSummitWar from './assets/sagas/6summit-war.jpg';
+import bgFishmanIsland from './assets/sagas/7fishman-island.jpg';
+import bgDressrosa from './assets/sagas/8dressrosa-saga.jpg';
+import bgWholeCake from './assets/sagas/9whole-cake.jpg';
+import bgWano from './assets/sagas/10wano.jpg';
+import bgFinalSaga from './assets/sagas/11final-saga.jpg';
+
+// 3 Custom Showcase Backgrounds (src/assets/sagas/)
+import bgSunny from './assets/sagas/sunny.jpg';
+import bgStrawHat from './assets/sagas/strawhat.jpg';
+import bgMerry from './assets/sagas/merry.jpg';
+
 import {
   Compass,
   Film,
@@ -42,6 +59,27 @@ import {
   Award,
   Image as ImageIcon
 } from 'lucide-react';
+
+// Background Map: Sagas + Custom Ship & Iconography Backgrounds
+const BACKGROUND_ARTWORKS = {
+  // Sagas
+  'east-blue': { name: 'East Blue', img: bgEastBlue, type: 'saga' },
+  'alabasta': { name: 'Alabasta', img: bgAlabasta, type: 'saga' },
+  'skypiea': { name: 'Skypiea', img: bgSkypiea, type: 'saga' },
+  'water-7': { name: 'Water 7', img: bgWater7, type: 'saga' },
+  'thriller-bark': { name: 'Thriller Bark', img: bgThrillerBark, type: 'saga' },
+  'summit-war': { name: 'Summit War', img: bgSummitWar, type: 'saga' },
+  'fishman-island': { name: 'Fish-Man Island', img: bgFishmanIsland, type: 'saga' },
+  'dressrosa-saga': { name: 'Dressrosa', img: bgDressrosa, type: 'saga' },
+  'whole-cake': { name: 'Whole Cake Island', img: bgWholeCake, type: 'saga' },
+  'wano': { name: 'Wano Country', img: bgWano, type: 'saga' },
+  'final-saga': { name: 'Final Saga (Egghead)', img: bgFinalSaga, type: 'saga' },
+
+  // Custom Showcases
+  'sunny': { name: 'Thousand Sunny', img: bgSunny, type: 'custom', icon: '🦁' },
+  'strawhat': { name: 'Straw Hat', img: bgStrawHat, type: 'custom', icon: '👒' },
+  'merry': { name: 'Going Merry', img: bgMerry, type: 'custom', icon: '🐑' }
+};
 
 // Straw Hat Themes
 const THEMES = {
@@ -327,7 +365,7 @@ const SAGAS_DATA = [
     crewJoined: ['Grand Fleet Formed'],
     items: [
       { id: 'arc-33', title: 'Z’s Ambition Arc', type: 'filler', episodes: '575 – 578', startEp: 575, endEp: 578, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Neo Navy filler leading into Film Z.', watchTip: 'Watch right before Film Z.', tier: 'Recommended' },
-      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 2000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
+      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 20000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
       { id: 'arc-34', title: 'Punk Hazard Arc', type: 'canon', episodes: '579 – 625', startEp: 579, endEp: 625, epCount: 47, chapters: 'Ch 654 – 699', onePace: '22 eps (10 hr 15m)', bountyReward: 60000000, description: 'Half-ice half-fire island. Law and Luffy forge alliance.', highlights: 'Pirate Alliance formed, Caesar Clown defeat.', tier: 'Core' },
       { id: 'arc-35', title: 'Caesar Retrieval Arc', type: 'filler', episodes: '626 – 628', startEp: 626, endEp: 628, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arc where Breed kidnaps Caesar.', watchTip: 'Filler. Skip to 629.', tier: 'Filler' },
       { id: 'arc-36', title: 'Dressrosa Arc', type: 'canon', episodes: '629 – 746', startEp: 629, endEp: 746, epCount: 118, chapters: 'Ch 700 – 801', onePace: '48 eps (23 hr 30m)', bountyReward: 200000000, description: 'Corrida Colosseum, Doflamingo Birdcage, Gear 4th.', highlights: 'Sabo inherits flame fruit, Gear 4th Boundman. 500M Bounty!', tier: 'Core' },
@@ -421,7 +459,10 @@ function getEpisodeTitle(epNumber, arcTitle) {
 export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
   const [showThemePicker, setShowThemePicker] = useState(false);
-  const [activeBg, setActiveBg] = useState(() => localStorage.getItem('op_header_bg') || 'bg1');
+
+  // Background mode: 'auto' (syncs to active arc's saga) or locked to a key in BACKGROUND_ARTWORKS
+  const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
+  const [showBgPicker, setShowBgPicker] = useState(false);
 
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
@@ -463,7 +504,7 @@ export default function App() {
   const theme = THEMES[activeThemeId] || THEMES.classic;
 
   useEffect(() => { localStorage.setItem('op_tracker_theme', activeThemeId); }, [activeThemeId]);
-  useEffect(() => { localStorage.setItem('op_header_bg', activeBg); }, [activeBg]);
+  useEffect(() => { localStorage.setItem('op_header_bg_mode', bgMode); }, [bgMode]);
   useEffect(() => { localStorage.setItem('op_tracker_watched', JSON.stringify(Array.from(watchedIds))); }, [watchedIds]);
   useEffect(() => { localStorage.setItem('op_tracker_skipped', JSON.stringify(Array.from(skippedIds))); }, [skippedIds]);
   useEffect(() => { localStorage.setItem('op_tracker_subprogress', JSON.stringify(subProgress)); }, [subProgress]);
@@ -578,6 +619,19 @@ export default function App() {
     }
     return null;
   }, [allItems, watchedIds, skippedIds, subProgress]);
+
+  // Determine active background (auto-sync with active arc or locked selection)
+  const activeBgKey = useMemo(() => {
+    if (bgMode !== 'auto' && BACKGROUND_ARTWORKS[bgMode]) {
+      return bgMode;
+    }
+    return upNextData?.saga?.id || 'east-blue';
+  }, [bgMode, upNextData]);
+
+  const activeHeaderArtwork = BACKGROUND_ARTWORKS[activeBgKey]?.img || bgEastBlue;
+  const activeHeaderLabel = bgMode === 'auto'
+    ? `Auto (${BACKGROUND_ARTWORKS[activeBgKey]?.name || 'Arc'})`
+    : BACKGROUND_ARTWORKS[activeBgKey]?.name || 'Custom';
 
   const handleSetCurrentEpisode = (item, newEpisode) => {
     if (!item.startEp || !item.endEp) return;
@@ -703,7 +757,7 @@ export default function App() {
       version: '3.0',
       exportDate: new Date().toISOString(),
       theme: activeThemeId,
-      headerBg: activeBg,
+      bgMode,
       watchedIds: Array.from(watchedIds),
       skippedIds: Array.from(skippedIds),
       subProgress,
@@ -730,7 +784,7 @@ export default function App() {
         if (data.skippedIds) setSkippedIds(new Set(data.skippedIds));
         if (data.subProgress) setSubProgress(data.subProgress);
         if (data.theme) setActiveThemeId(data.theme);
-        if (data.headerBg) setActiveBg(data.headerBg);
+        if (data.bgMode) setBgMode(data.bgMode);
         if (data.dailyPace) setDailyPace(data.dailyPace);
         showToast('Voyage progress restored successfully!');
       } catch {
@@ -876,18 +930,19 @@ export default function App() {
         </div>
       )}
 
-      {/* Header Banner with Custom Dynamic Tinted Background */}
+      {/* Header Banner with Dynamic Arc/Saga & Showcase Artwork */}
       <header className="relative bg-slate-950 border-b border-slate-800 px-4 py-8 md:py-12 overflow-hidden">
-        {/* 1. Base Selected Artwork Layer */}
+        {/* 1. Dynamic Background Artwork Layer */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <img
-            src={activeBg === 'bg2' ? headerBg2 : headerBg1}
-            alt="One Piece Header Art"
-            className="w-full h-full object-cover object-center opacity-30 filter contrast-125 brightness-95"
+            key={activeBgKey}
+            src={activeHeaderArtwork}
+            alt="One Piece Background Artwork"
+            className="w-full h-full object-cover object-center opacity-30 filter contrast-125 brightness-95 transition-opacity duration-1000"
           />
         </div>
 
-        {/* 2. Dynamic Theme Tint Overlay */}
+        {/* 2. Dynamic Straw Hat Theme Tint Overlay */}
         <div
           className="absolute inset-0 z-0 pointer-events-none transition-all duration-700 mix-blend-color"
           style={{
@@ -973,19 +1028,92 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Wallpaper Toggle (bg1 vs bg2) */}
-                <button
-                  onClick={() => {
-                    const next = activeBg === 'bg1' ? 'bg2' : 'bg1';
-                    setActiveBg(next);
-                    showToast(`Header wallpaper switched to ${next.toUpperCase()}!`);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
-                  title="Toggle between header background images"
-                >
-                  <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Art: <strong>{activeBg.toUpperCase()}</strong></span>
-                </button>
+                {/* Background Selector Dropdown (Sagas + Ships & Icons) */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowBgPicker(!showBgPicker)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
+                    title="Change header background artwork"
+                  >
+                    <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Background: <strong>{activeHeaderLabel}</strong></span>
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+
+                  {showBgPicker && (
+                    <div className="absolute left-0 mt-2 w-64 bg-slate-900/95 border border-slate-800 rounded-2xl p-2.5 shadow-2xl z-50 backdrop-blur-md grid grid-cols-1 gap-1 max-h-80 overflow-y-auto">
+                      <div className="text-[11px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">
+                        Header Background Mode
+                      </div>
+                      
+                      <button
+                        onClick={() => {
+                          setBgMode('auto');
+                          setShowBgPicker(false);
+                          showToast('Header art set to Auto-Sync with your active arc!');
+                        }}
+                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
+                          bgMode === 'auto' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'text-slate-300 hover:bg-slate-800/60'
+                        }`}
+                      >
+                        <span>🔄 Auto (Follow Active Arc)</span>
+                        {bgMode === 'auto' && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />}
+                      </button>
+
+                      {/* Custom Showcases Group (Sunny, Straw Hat, Merry) */}
+                      <div className="my-1 border-t border-slate-800" />
+                      <div className="text-[10px] font-bold text-amber-400/90 px-2 uppercase tracking-wider">
+                        Special Showcases
+                      </div>
+
+                      {['sunny', 'strawhat', 'merry'].map(customKey => {
+                        const item = BACKGROUND_ARTWORKS[customKey];
+                        return (
+                          <button
+                            key={customKey}
+                            onClick={() => {
+                              setBgMode(customKey);
+                              setShowBgPicker(false);
+                              showToast(`Header background locked to ${item.name}!`);
+                            }}
+                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
+                              bgMode === customKey ? 'bg-slate-800 text-amber-300' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                            }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <span>{item.icon}</span>
+                              <strong className="font-semibold">{item.name}</strong>
+                            </span>
+                            {bgMode === customKey && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                          </button>
+                        );
+                      })}
+
+                      {/* Saga Collection Group */}
+                      <div className="my-1 border-t border-slate-800" />
+                      <div className="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-wider">
+                        Lock to Specific Saga
+                      </div>
+
+                      {SAGAS_DATA.map((saga, idx) => (
+                        <button
+                          key={saga.id}
+                          onClick={() => {
+                            setBgMode(saga.id);
+                            setShowBgPicker(false);
+                            showToast(`Header background locked to ${saga.title}!`);
+                          }}
+                          className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
+                            bgMode === saga.id ? 'bg-slate-800 text-amber-300' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                          }`}
+                        >
+                          <span className="truncate">{idx + 1}. {saga.title}</span>
+                          {bgMode === saga.id && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
@@ -1785,7 +1913,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             <span>One Piece Voyage Tracker</span>
             <span>&bull;</span>
-            <span>Made for Pirates seeking to navigate the Grand Line.</span>
+            <span>Made for Straw Hat Pirates across the Grand Line</span>
           </div>
 
           <div className="flex items-center gap-3">
