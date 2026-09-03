@@ -3,6 +3,7 @@ import { EPISODE_TITLES } from './data/episodeTitles';
 import {
   Compass,
   Film,
+  Github,
   CheckCircle2,
   Circle,
   Sparkles,
@@ -1734,6 +1735,31 @@ export default function App() {
           </div>
         )}
       </main>
+
+	  {/* Footer & Social Links */}
+      <footer className="max-w-6xl mx-auto px-4 mt-16">
+        <hr className="border-slate-800/80 mb-8" />
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pb-8">
+          <div className="flex items-center gap-2">
+            <span>One Piece Voyage Tracker</span>
+            <span>&bull;</span>
+            <span>Made for Straw Hat Pirates across the Grand Line</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com/EY4O/One-Piece-Voyage-Tracker"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition duration-200 group"
+              title="View Repository on GitHub"
+            >
+              <Github className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+              <span className="font-semibold text-xs">GitHub</span>
+            </a>
+          </div>
+        </div>
+      </footer>
 
       {/* FLOATING ACTION BUTTON */}
       {upNextData && (
