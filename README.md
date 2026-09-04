@@ -18,22 +18,19 @@ An interactive, spoiler-protected watch order companion engineered for the entir
 ## ✨ Features
 
 ### 🎨 Dynamic Theme & Background Engine
-* **12 Straw Hat Character Themes**: Canonical color palettes matching Straw Hat crew members (*Romance Dawn Gold*, *Luffy*, *Zoro*, *Nami*, *Usopp*, *Sanji*, *Chopper*, *Robin*, *Franky*, *Brook*, *Jinbe*, and *Sun God Nika*) dynamically tint borders, badges, glow effects, and overlays.
+* **12 Straw Hat Character Themes**: Canonical color palettes matching Straw Hat crew members dynamically tint borders, badges, glow effects, and overlays.
 * **14 Adaptive Header Artworks**:
-  * **11 Saga-Synced Artworks**: Dynamically adjusts artwork based on your current active arc (*East Blue* through *Egghead*) or locks to any preferred saga.
-  * **3 Showcase Wallpapers**: Dedicated illustrations for the *Thousand Sunny*, *Going Merry*, and the iconic *Straw Hat*.
-* **CSS Blend Mode Pipeline**: Applies `mix-blend-color` paired with vignette depth fades to naturally tint background assets without sacrificing text readability.
 
 ### 🧭 Navigation & Watch Queue
 * **Sticky "Up Next" Command Bar**: Locks your active episode or movie to the top of the viewport with rapid **Jump to Arc**, **Skip**, and **Next (+1)** actions.
-* **Mobile-First Layout**: Fully responsive interface tuned for handheld viewing (including iPhone Pro Max displays) using an ergonomic two-row layout and 3-button touch grid.
+* **Mobile-First Layout**: Fully responsive interface tuned for handheld viewing.
 * **Precision Episode Steppers**: Advance progress via granular controls (`+1`, `-1`, `+5`) or type exact episode numbers directly inside arc cards.
 * **One Pace Integration**: View condensed runtimes and fan-edit episode equivalents alongside canonical broadcast metrics.
 * **Quick Navigation FAB**: Floating action button to instantly jump straight to your active milestone on the roadmap.
 
 ### 💰 Pirate Milestones & Analytics
-* **Live Marine Bounty Metric**: Increases your personal bounty score in real time as you check off episodes and canonical sagas.
-* **24 Grand Line Achievements**: Unlock collectible badges tiered across **Bronze**, **Silver**, **Gold**, and **Platinum**.
+* **Live Marine Bounty Metric**: Increases your personal bounty in real time as you check off episodes and complete sagas.
+* **24 Grand Line Achievements**: Unlock collectible badges scattered throughout the Sea.
 * **Visual Crew Roster**: Tracks recruited Straw Hat crew members as your voyage advances across the Grand Line.
 * **Screen Time Analytics**: Aggregates cumulative watch time into total hours, continuous 24-hour days, and total filler hours avoided.
 
