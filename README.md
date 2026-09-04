@@ -70,5 +70,8 @@ An interactive, spoiler-protected watch order companion engineered for the entir
 Ensure you have **Node.js** (*v18 or newer*) and **npm** installed:
 
 ```bash
-node -v
-npm -v
+git clone https://github.com/EY4O/One-Piece-Voyage-Tracker.git
+cd One-Piece-Voyage-Tracker
+npm install
+npm run dev
+npm run build
