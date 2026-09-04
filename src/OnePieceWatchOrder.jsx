@@ -396,7 +396,7 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 909 – 1057',
     crewJoined: ['Jinbe'],
     items: [
-      { id: 'arc-42', title: 'Wano Country Arc – Act 1', type: 'canon', episodes: '890 – 894', startEp: 890, endEp: 894, epCount: 5, chapters: 'Ch 909 – 924', onePace: '3 eps (1 hr 20m)', bountyReward: 50000000, description: 'Entering Wano. Clashing with Kaido.', highlights: 'Kaido Thunder Bagua one-shot.', tier: 'Core' },
+      { id: 'arc-42', title: 'Wano Country Arc – Act 1', type: 'canon', episodes: '890 – 894', startEp: 890, endEp: 894, epCount: 5, chapters: 'Ch 909 – 924', onePace: '3 eps (1 hr 20m)', bountyReward: 50000050, description: 'Entering Wano. Clashing with Kaido.', highlights: 'Kaido Thunder Bagua one-shot.', tier: 'Core' },
       { id: 'arc-43', title: 'Cidre Guild (Stampede Tie-in)', type: 'filler', episodes: '895 – 896', startEp: 895, endEp: 896, epCount: 2, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Tie-in for Stampede.', watchTip: 'Watch before Stampede.', tier: 'Recommended' },
       { id: 'mov-14', title: 'Movie 14: One Piece: Stampede', type: 'movie', episodes: 'Movie (101 min)', epCount: 5, bountyReward: 40000000, description: 'Pirate festival vs Douglas Bullet.', watchTip: '⭐ Non-stop dream team fights.', tier: 'Must Watch' },
       { id: 'arc-44', title: 'Wano Act 2 & Udon Prison', type: 'canon', episodes: '897 – 958', startEp: 897, endEp: 958, epCount: 62, chapters: 'Ch 925 – 955', onePace: '26 eps (12 hr 30m)', bountyReward: 150000000, description: 'Luffy masters Advanced Ryou in prison.', highlights: 'Zoro receives blade Enma.', tier: 'Core' },
@@ -460,7 +460,6 @@ export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
   const [showThemePicker, setShowThemePicker] = useState(false);
 
-  // Background mode: 'auto' or one of the 14 keys in BACKGROUND_ARTWORKS
   const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
   const [showBgPicker, setShowBgPicker] = useState(false);
 
@@ -620,7 +619,6 @@ export default function App() {
     return null;
   }, [allItems, watchedIds, skippedIds, subProgress]);
 
-  // Determine active background (auto-sync with active arc or locked selection)
   const activeBgKey = useMemo(() => {
     if (bgMode !== 'auto' && BACKGROUND_ARTWORKS[bgMode]) {
       return bgMode;
@@ -850,9 +848,12 @@ export default function App() {
         </div>
       )}
 
-      {/* STICKY "UP NEXT" BAR (MOBILE-RESPONSIVE) */}
+      {/* STICKY "UP NEXT" BAR WITH iOS SAFE-AREA SUPPORT */}
       {upNextData && (
-        <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-3 sm:px-4 py-2 sm:py-2.5 shadow-xl transition">
+        <div 
+          className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-3 sm:px-4 pb-2 sm:pb-2.5 shadow-xl transition"
+          style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
+        >
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
             
             {/* Row 1 on Mobile: Episode Metadata */}
@@ -932,8 +933,11 @@ export default function App() {
         </div>
       )}
 
-      {/* Header Banner with Dynamic Arc/Saga & Showcase Artwork */}
-      <header className="relative bg-slate-950 border-b border-slate-800 px-4 py-8 md:py-12 overflow-hidden">
+      {/* Header Banner with Dynamic Safe-Area Padding */}
+      <header 
+        className="relative bg-slate-950 border-b border-slate-800 px-4 pb-8 md:py-12 overflow-hidden"
+        style={{ paddingTop: 'max(2rem, calc(env(safe-area-inset-top) + 1.5rem))' }}
+      >
         {/* 1. Dynamic Background Artwork Layer */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <img
@@ -1030,7 +1034,7 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Background Selector Dropdown (Sagas + Ships & Icons) */}
+                {/* Background Selector Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setShowBgPicker(!showBgPicker)}
@@ -1062,7 +1066,7 @@ export default function App() {
                         {bgMode === 'auto' && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />}
                       </button>
 
-                      {/* Custom Showcases Group (Sunny, Straw Hat, Merry) */}
+                      {/* Custom Showcases Group */}
                       <div className="my-1 border-t border-slate-800" />
                       <div className="text-[10px] font-bold text-amber-400/90 px-2 uppercase tracking-wider">
                         Special Showcases
@@ -1915,7 +1919,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             <span>One Piece Voyage Tracker</span>
             <span>&bull;</span>
-            <span>Made for Pirates navigating the Grand Line.</span>
+            <span>Made for Straw Hat Pirates across the Grand Line</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -1943,12 +1947,13 @@ export default function App() {
         </div>
       </footer>
 
-      {/* FLOATING ACTION BUTTON */}
+      {/* FLOATING ACTION BUTTON WITH iOS SAFE-AREA BOTTOM SUPPORT */}
       {upNextData && (
         <button
           onClick={scrollToActiveArc}
           title={`Jump to ${upNextData.item.title}`}
-          className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-4 py-3 rounded-2xl shadow-2xl font-black text-xs flex items-center gap-2 border border-amber-300/40 hover:scale-105 active:scale-95 transition"
+          style={{ bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom) + 1rem))' }}
+          className="fixed left-6 z-40 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-4 py-3 rounded-2xl shadow-2xl font-black text-xs flex items-center gap-2 border border-amber-300/40 hover:scale-105 active:scale-95 transition"
         >
           <Compass className="w-4 h-4 animate-spin-slow" />
           <span>{upNextData.isEpBased ? `Ep ${upNextData.currentEp} • ` : ''}Jump to Arc</span>
