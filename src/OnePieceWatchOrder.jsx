@@ -1915,7 +1915,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             <span>One Piece Voyage Tracker</span>
             <span>&bull;</span>
-            <span>Made for Straw Hat Pirates across the Grand Line</span>
+            <span>Made for Pirates navigating the Grand Line.</span>
           </div>
 
           <div className="flex items-center gap-3">
