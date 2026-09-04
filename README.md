@@ -19,7 +19,7 @@ An interactive, spoiler-protected watch order companion engineered for the entir
 
 ### 🎨 Dynamic Theme & Background Engine
 * **12 Straw Hat Character Themes**: Canonical color palettes matching Straw Hat crew members dynamically tint borders, badges, glow effects, and overlays.
-* **14 Adaptive Header Artworks**:
+* **14 Adaptive Header Artworks**: Banner background changes dynamically as you progress through the story.
 
 ### 🧭 Navigation & Watch Queue
 * **Sticky "Up Next" Command Bar**: Locks your active episode or movie to the top of the viewport with rapid **Jump to Arc**, **Skip**, and **Next (+1)** actions.
