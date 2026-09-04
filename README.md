@@ -1,12 +1,14 @@
 <div align="center">
 
-# 🏴‍☠️ One Piece Voyage Tracker
+# 🏴‍☠️ The One Piece Voyage Tracker
 
-An interactive, spoiler-safe companion web application engineered to navigate all **1,120+ anime episodes** and **15 theatrical movies** in definitive chronological order.
+An interactive, spoiler-protected watch order companion engineered for the entire *One Piece* anime journey—spanning **1,120+ episodes**, **theatrical films**, **canonical specials**, and **OVAs**.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Voyage-E53935?style=for-the-badge&logo=google-chrome&logoColor=white)](https://ey4o.github.io/One-Piece-Voyage-Tracker/)
-[![Node Version](https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](#prerequisites)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](#disclaimer)
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react&logoColor=black)](#tech-stack)
+[![Vite](https://img.shields.io/badge/Vite-Ready-646CFF?style=flat-square&logo=vite&logoColor=white)](#tech-stack)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styled-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](#tech-stack)
+[![Node](https://img.shields.io/badge/Node.js-v18+-339933?style=flat-square&logo=node.js&logoColor=white)](#prerequisites)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](#)
 
 </div>
 
@@ -14,55 +16,59 @@ An interactive, spoiler-safe companion web application engineered to navigate al
 
 ## ✨ Features
 
-- 🧭 **Definitive Watch Roadmap**  
-  Every canon arc, filler, OVA, and film positioned at its optimal milestone to eliminate character, plot, and ability spoilers.
-- 🔢 **Global Episode Stepping & Direct Jumps**  
-  Progress displays your actual current episode number (e.g., `Ep 579` ➔ `Ep 580` ➔ `Ep 581` in *Punk Hazard*). Includes `+1`, `-1`, and `+5` quick-advance buttons, alongside direct episode input.
-- ⚓ **"Up Next" Sticky Quick Bar & Floating Beacon**  
-  A persistent top banner shows your active arc and episode with an instant `+1 Next Episode` action. The floating action button (FAB) instantly scrolls back to your current arc card.
-- ⏱️ **Cumulative Watch-Time & Filler Savings**  
-  Real-time voyage metrics calculating total hours watched, days logged, and precise hours saved by bypassing non-canon filler.
-- 🏆 **Visual Milestone Achievements**  
-  Unlock animated badges across critical story peaks—from conquering *Arlong Park* and *Enies Lobby* to surviving *Marineford* and awakening *Sun God Nika (Gear 5)*.
-- 🔗 **Shareable URL Query Strings**  
-  Encode progress, captain aliases, and visual themes into reproducible links (e.g., `?ep=489&name=Mugiwara&theme=luffy`) with automated state restoration.
-- 🛡️ **Spoiler Shield**  
-  Blurs narrative summaries and milestone highlights for uncompleted episodes until actively hovered or marked as watched.
-- 💰 **Dynamic Marine Bounty Progression**  
-  Climb the World Government's most-wanted tier in real time as you complete sagas, log episodes, and recruit crew members.
-- ⏳ **Pacing & Catch-Up Estimator**  
-  Configure your daily viewing capacity to compute arrival dates for future milestones—from *Reverse Mountain* to *Wano* and *Egghead*.
-- 🎨 **12 Straw Hat Themes**  
-  Canonical palettes matching every crewmate, including *Luffy's Red Hawk Crimson*, *Zoro's Santoryu Emerald*, *Nami's Tangerine*, and *Sun God Nika*.
-- ⚡ **Manga & One Pace Cross-References**  
-  Direct chapter-to-episode alignments paired with runtime comparisons and time savings for *One Pace* releases.
-- 💾 **Zero-Backend Persistence**  
-  All states, custom bounty configurations, uploaded portraits, and themes persist client-side via `localStorage`, accompanied by full JSON import/export support.
+### 🎨 Dynamic Theme & Background Engine
+* **12 Straw Hat Character Themes**: Canonical color palettes matching Straw Hat crew members (*Romance Dawn Gold*, *Luffy*, *Zoro*, *Nami*, *Usopp*, *Sanji*, *Chopper*, *Robin*, *Franky*, *Brook*, *Jinbe*, and *Sun God Nika*) dynamically tint borders, badges, glow effects, and overlays.
+* **14 Adaptive Header Artworks**:
+  * **11 Saga-Synced Artworks**: Dynamically adjusts artwork based on your current active arc (*East Blue* through *Egghead*) or locks to any preferred saga.
+  * **3 Showcase Wallpapers**: Dedicated illustrations for the *Thousand Sunny*, *Going Merry*, and the iconic *Straw Hat*.
+* **CSS Blend Mode Pipeline**: Applies `mix-blend-color` paired with vignette depth fades to naturally tint background assets without sacrificing text readability.
+
+### 🧭 Navigation & Watch Queue
+* **Sticky "Up Next" Command Bar**: Locks your active episode or movie to the top of the viewport with rapid **Jump to Arc**, **Skip**, and **Next (+1)** actions.
+* **Mobile-First Layout**: Fully responsive interface tuned for handheld viewing (including iPhone Pro Max displays) using an ergonomic two-row layout and 3-button touch grid.
+* **Precision Episode Steppers**: Advance progress via granular controls (`+1`, `-1`, `+5`) or type exact episode numbers directly inside arc cards.
+* **One Pace Integration**: View condensed runtimes and fan-edit episode equivalents alongside canonical broadcast metrics.
+* **Quick Navigation FAB**: Floating action button to instantly jump straight to your active milestone on the roadmap.
+
+### 💰 Pirate Milestones & Analytics
+* **Live Marine Bounty Metric**: Increases your personal bounty score in real time as you check off episodes and canonical sagas.
+* **24 Grand Line Achievements**: Unlock collectible badges tiered across **Bronze**, **Silver**, **Gold**, and **Platinum**.
+* **Visual Crew Roster**: Tracks recruited Straw Hat crew members as your voyage advances across the Grand Line.
+* **Screen Time Analytics**: Aggregates cumulative watch time into total hours, continuous 24-hour days, and total filler hours avoided.
+
+### 🛡️ Spoiler Shield
+* **Global Redaction Mode**: Actively blurs summaries, unearned achievement titles, descriptions, and crew themes until explicitly hovered or unlocked.
+
+### ⏳ Planning & Pacing Tools
+* **Catch-Up Estimator**: Set a daily watch quota (**1–15 episodes/day**) to calculate remaining milestones and forecast exact target completion dates.
+* **Theatrical Movie Guide**: Chronological placement guide integrating all 15 movies at safe, spoiler-free viewing junctures.
+* **Curated Watch Advisories**: Distinguishes between essential anime-original arcs (e.g., *G-8 Navarone Base*) and skippable non-canon filler.
+
+### 💾 Data Portability & Sharing
+* **Zero-Backend Persistence**: Progress, themes, and steppers are preserved locally via `localStorage`.
+* **JSON Backup & Migration**: One-click JSON data export and import for seamless cross-device syncing.
+* **Shareable Voyage URLs**: Generates query-string links containing your active theme and current episode coordinates.
 
 ---
 
-## 📦 Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 | :--- | :--- |
-| **Core Framework** | React 18 |
-| **Build Tooling** | Vite |
+| **Framework** | React 18+ |
+| **Build Tool** | Vite |
 | **Styling** | Tailwind CSS |
-| **Iconography** | Lucide React |
-| **Graphics Engine** | Native HTML5 Canvas API *(Wanted Poster rendering)* |
-| **CI/CD & Hosting** | GitHub Pages via GitHub Actions |
+| **Component Icons** | Lucide React |
+| **State Storage** | Web Storage API (`localStorage`) |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
 
 Ensure you have **Node.js** (*v18 or newer*) and **npm** installed:
 
 ```bash
-npm install
-npm run dev
-
-Open your browser and navigate to http://localhost:5173.
-
+node -v
+npm -v
