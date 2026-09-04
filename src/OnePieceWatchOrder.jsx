@@ -460,7 +460,7 @@ export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
   const [showThemePicker, setShowThemePicker] = useState(false);
 
-  // Background mode: 'auto' (syncs to active arc's saga) or locked to a key in BACKGROUND_ARTWORKS
+  // Background mode: 'auto' or one of the 14 keys in BACKGROUND_ARTWORKS
   const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
   const [showBgPicker, setShowBgPicker] = useState(false);
 
@@ -850,39 +850,40 @@ export default function App() {
         </div>
       )}
 
-      {/* STICKY "UP NEXT" BAR */}
+      {/* STICKY "UP NEXT" BAR (MOBILE-RESPONSIVE) */}
       {upNextData && (
-        <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-4 py-2.5 shadow-xl transition">
-          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-            {/* Left Episode Metadata Column */}
-            <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
+        <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-3 sm:px-4 py-2 sm:py-2.5 shadow-xl transition">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+            
+            {/* Row 1 on Mobile: Episode Metadata */}
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 w-full sm:flex-1 overflow-hidden">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
                 {upNextData.item.type === 'movie' ? (
-                  <Film className="w-5 h-5 text-amber-400 animate-pulse" />
+                  <Film className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 animate-pulse" />
                 ) : (
-                  <PlayCircle className="w-5 h-5 text-amber-400 animate-pulse" />
+                  <PlayCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 animate-pulse" />
                 )}
               </div>
 
               <div 
-                className="min-w-0 flex-1 overflow-hidden select-none group"
+                className="min-w-0 flex-1 overflow-hidden select-none"
                 title={upNextData.episodeTitle}
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
                     {upNextData.isEpBased
-                      ? `Up Next • Episode ${upNextData.currentEp}`
+                      ? `Up Next • Ep ${upNextData.currentEp}`
                       : `Up Next • ${upNextData.item.type.toUpperCase()}`}
                   </span>
-                  <span className="text-xs font-bold text-slate-400 truncate">
+                  <span className="text-[11px] sm:text-xs font-bold text-slate-400 truncate">
                     {upNextData.item.title}
                   </span>
                 </div>
 
                 <div className="relative overflow-hidden w-full mt-0.5">
-                  <h4 className="text-xs md:text-sm font-black text-slate-100 truncate group-hover:overflow-visible transition-all duration-300">
+                  <h4 className="text-xs sm:text-sm font-black text-slate-100 truncate">
                     {upNextData.isEpBased && (
-                      <span className="text-amber-300 mr-1.5 shrink-0">Ep {upNextData.currentEp}:</span>
+                      <span className="text-amber-300 mr-1 shrink-0">Ep {upNextData.currentEp}:</span>
                     )}
                     <span className="italic text-slate-200">"{upNextData.episodeTitle}"</span>
                   </h4>
@@ -890,42 +891,43 @@ export default function App() {
               </div>
             </div>
 
-            {/* Action Buttons Column */}
-            <div className="flex items-center gap-2 shrink-0">
+            {/* Row 2 on Mobile: Action Buttons (Equal Grid on Mobile, Flex on Desktop) */}
+            <div className="grid grid-cols-3 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
               <button
                 onClick={scrollToActiveArc}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5 whitespace-nowrap"
+                className="px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] sm:text-xs font-semibold border border-slate-700 transition flex items-center justify-center gap-1 whitespace-nowrap"
               >
-                <Compass className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden sm:inline">Jump to Arc</span>
+                <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Jump</span>
               </button>
 
               <button
                 onClick={skipUpNext}
                 title="Skip this item without marking as watched"
-                className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-amber-300 text-xs font-semibold border border-slate-700/80 transition flex items-center gap-1.5 whitespace-nowrap"
+                className="px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-amber-300 text-[11px] sm:text-xs font-semibold border border-slate-700/80 transition flex items-center justify-center gap-1 whitespace-nowrap"
               >
-                <SkipForward className="w-3.5 h-3.5" />
+                <SkipForward className="w-3.5 h-3.5 shrink-0" />
                 <span>Skip</span>
               </button>
 
               <button
                 onClick={advanceUpNext}
-                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center gap-1 whitespace-nowrap"
+                className="px-2.5 sm:px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-[11px] sm:text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-1 whitespace-nowrap col-span-1"
               >
                 {upNextData.isEpBased ? (
                   <>
-                    <span>{upNextData.currentEp === upNextData.endEp ? 'Finish Arc & Next' : 'Next Episode (+1)'}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>{upNextData.currentEp === upNextData.endEp ? 'Finish' : 'Next (+1)'}</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                   </>
                 ) : (
                   <>
-                    <span>Watch & Continue</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Continue</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                   </>
                 )}
               </button>
             </div>
+
           </div>
         </div>
       )}
