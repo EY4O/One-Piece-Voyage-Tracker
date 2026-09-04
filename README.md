@@ -4,7 +4,7 @@
 
 An interactive, spoiler-protected watch order companion engineered for the entire *One Piece* anime journey—spanning **1,120+ episodes**, **theatrical films**, **canonical specials**, and **OVAs**.
 
-[![Live App](https://img.shields.io/badge/Live_Site-Visit_Tracker-E53935?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ey4o.github.io/One-Piece-Voyage-Tracker/)
+[![Live App](https://img.shields.io/badge/Live_Site-Set_Sail-E53935?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ey4o.github.io/One-Piece-Voyage-Tracker/)
 
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react&logoColor=black)](#tech-stack)
 [![Vite](https://img.shields.io/badge/Vite-Ready-646CFF?style=flat-square&logo=vite&logoColor=white)](#tech-stack)
