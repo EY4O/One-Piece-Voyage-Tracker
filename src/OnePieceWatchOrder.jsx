@@ -63,8 +63,7 @@ import {
   Settings,
   X,
   Coffee,
-  Heart,
-  Check
+  Heart
 } from 'lucide-react';
 
 // Background Map: Sagas + Custom Ship & Iconography Backgrounds
@@ -371,7 +370,7 @@ const SAGAS_DATA = [
     crewJoined: ['Grand Fleet Formed'],
     items: [
       { id: 'arc-33', title: 'Z’s Ambition Arc', type: 'filler', episodes: '575 – 578', startEp: 575, endEp: 578, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Neo Navy filler leading into Film Z.', watchTip: 'Watch right before Film Z.', skipReason: 'Anime tie-in prologue set up strictly for Film: Z.', tier: 'Recommended' },
-      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 2000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
+      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 20000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
       { id: 'arc-34', title: 'Punk Hazard Arc', type: 'canon', episodes: '579 – 625', startEp: 579, endEp: 625, epCount: 47, chapters: 'Ch 654 – 699', onePace: '22 eps (10 hr 15m)', bountyReward: 60000000, description: 'Half-ice half-fire island. Law and Luffy forge alliance.', highlights: 'Pirate Alliance formed, Caesar Clown defeat.', tier: 'Core' },
       { id: 'arc-35', title: 'Caesar Retrieval Arc', type: 'filler', episodes: '626 – 628', startEp: 626, endEp: 628, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arc where Breed kidnaps Caesar.', watchTip: 'Filler. Skip to 629.', skipReason: 'Brief side detour between Punk Hazard and Dressrosa with no canonical stakes.', tier: 'Filler' },
       { id: 'arc-36', title: 'Dressrosa Arc', type: 'canon', episodes: '629 – 746', startEp: 629, endEp: 746, epCount: 118, chapters: 'Ch 700 – 801', onePace: '48 eps (23 hr 30m)', bountyReward: 200000000, description: 'Corrida Colosseum, Doflamingo Birdcage, Gear 4th.', highlights: 'Sabo inherits flame fruit, Gear 4th Boundman. 500M Bounty!', tier: 'Core' },
@@ -472,11 +471,17 @@ export default function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [compactView, setCompactView] = useState(() => localStorage.getItem('op_compact_view') === 'true');
+  const [canonPuristMode, setCanonPuristMode] = useState(() => localStorage.getItem('op_canon_purist_mode') === 'true');
   const [expandedSkipReasons, setExpandedSkipReasons] = useState(() => new Set());
+  const [expandedArcSummaries, setExpandedArcSummaries] = useState(() => new Set());
 
   useEffect(() => {
     localStorage.setItem('op_compact_view', compactView.toString());
   }, [compactView]);
+
+  useEffect(() => {
+    localStorage.setItem('op_canon_purist_mode', canonPuristMode.toString());
+  }, [canonPuristMode]);
 
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
@@ -531,6 +536,15 @@ export default function App() {
 
   const toggleCompactSkipReason = (id) => {
     setExpandedSkipReasons(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleCompactArcSummary = (id) => {
+    setExpandedArcSummaries(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
@@ -620,6 +634,9 @@ export default function App() {
   const upNextData = useMemo(() => {
     for (let i = 0; i < allItems.length; i++) {
       const item = allItems[i];
+      if (canonPuristMode && item.type !== 'canon' && item.type !== 'mixed') {
+        continue;
+      }
       if (!watchedIds.has(item.id) && !skippedIds.has(item.id)) {
         const parentSaga = SAGAS_DATA.find(s => s.items.some(it => it.id === item.id));
         const isEpBased = Boolean(item.startEp && item.endEp);
@@ -641,7 +658,7 @@ export default function App() {
       }
     }
     return null;
-  }, [allItems, watchedIds, skippedIds, subProgress]);
+  }, [allItems, watchedIds, skippedIds, subProgress, canonPuristMode]);
 
   const activeBgKey = useMemo(() => {
     if (bgMode !== 'auto' && BACKGROUND_ARTWORKS[bgMode]) {
@@ -780,7 +797,8 @@ export default function App() {
       watchedIds: Array.from(watchedIds),
       skippedIds: Array.from(skippedIds),
       subProgress,
-      dailyPace
+      dailyPace,
+      canonPuristMode
     };
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -805,6 +823,7 @@ export default function App() {
         if (data.theme) setActiveThemeId(data.theme);
         if (data.bgMode) setBgMode(data.bgMode);
         if (data.dailyPace) setDailyPace(data.dailyPace);
+        if (typeof data.canonPuristMode === 'boolean') setCanonPuristMode(data.canonPuristMode);
         showToast('Voyage progress restored successfully!');
       } catch {
         showToast('Invalid backup JSON file.');
@@ -816,12 +835,17 @@ export default function App() {
   const filteredSagas = useMemo(() => {
     return SAGAS_DATA.map(saga => {
       const filteredItems = saga.items.filter(item => {
+        // Enforce manga canon only when Purist Mode is active
+        if (canonPuristMode && item.type !== 'canon' && item.type !== 'mixed') {
+          return false;
+        }
+
         const matchSearch =
           item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.episodes.toLowerCase().includes(searchQuery.toLowerCase());
         if (!matchSearch) return false;
-        if (filterType === 'purist') return item.type === 'canon' || item.type === 'mixed';
+
         if (filterType === 'canon') return item.type === 'canon' || item.type === 'mixed';
         if (filterType === 'movies') return item.type === 'movie' || item.type === 'special';
         if (filterType === 'must-watch') return item.tier === 'Must Watch' || item.type === 'canon';
@@ -830,7 +854,7 @@ export default function App() {
       });
       return { ...saga, items: filteredItems };
     }).filter(saga => saga.items.length > 0);
-  }, [filterType, searchQuery]);
+  }, [filterType, searchQuery, canonPuristMode]);
 
   const pacingStats = useMemo(() => {
     const remainingEpisodes = Math.max(0, totalEpisodesCount - watchedEpisodesCount);
@@ -1280,22 +1304,7 @@ export default function App() {
               </div>
 
               <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-                {/* 1-Click Canon Purist Mode Button */}
-                <button
-                  onClick={() => setFilterType(filterType === 'purist' ? 'all' : 'purist')}
-                  className={`text-xs px-3 py-1.5 rounded-xl font-black flex items-center gap-1.5 transition ${
-                    filterType === 'purist'
-                      ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                      : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/20'
-                  }`}
-                  title="Hide all filler, movies, and specials with one click"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Canon Purist Mode</span>
-                  {filterType === 'purist' && <Check className="w-3.5 h-3.5" />}
-                </button>
-
-                <span className="text-xs text-slate-500 font-semibold mx-1 hidden sm:inline flex items-center gap-1">
+                <span className="text-xs text-slate-500 font-semibold mr-1 flex items-center gap-1">
                   <Filter className="w-3 h-3" /> Filter:
                 </span>
 
@@ -1335,7 +1344,6 @@ export default function App() {
                   const sagaTotalCount = saga.items.length;
                   const isSagaComplete = sagaTotalCount > 0 && sagaWatchedCount === sagaTotalCount;
 
-                  // High-level saga breakdown numbers for Compact Mode
                   const canonCount = saga.items.filter(i => i.type === 'canon' || i.type === 'mixed').length;
                   const fillerCount = saga.items.filter(i => i.type === 'filler' || i.type === 'recommended_filler').length;
                   const movieCount = saga.items.filter(i => i.type === 'movie' || i.type === 'special').length;
@@ -1368,7 +1376,6 @@ export default function App() {
                                   <CheckCheck className="w-3.5 h-3.5" /> Saga Completed
                                 </span>
                               )}
-                              {/* Saga-Level Summary Pills for Compact Mode */}
                               {compactView && (
                                 <span className="text-[11px] font-mono text-slate-400 bg-slate-950/80 px-2.5 py-0.5 rounded-md border border-slate-800 flex items-center gap-1.5">
                                   <span className="text-blue-400 font-bold">{canonCount} Canon</span>
@@ -1416,6 +1423,7 @@ export default function App() {
                             const hasStepper = Boolean(item.startEp && item.endEp);
                             const currentEpTitle = currentEp !== null ? getEpisodeTitle(currentEp, item.title) : null;
                             const isSkipReasonExpanded = expandedSkipReasons.has(item.id);
+                            const isSummaryExpanded = expandedArcSummaries.has(item.id);
 
                             // COMPACT ROW VIEW
                             if (compactView) {
@@ -1442,15 +1450,23 @@ export default function App() {
                                         )}
                                       </button>
 
-                                      <span className={`text-xs font-bold truncate ${isWatched ? 'line-through text-slate-500' : 'text-slate-200'}`}>
-                                        {item.title}
-                                      </span>
+                                      <button
+                                        onClick={() => toggleCompactArcSummary(item.id)}
+                                        className="flex items-center gap-1.5 min-w-0 text-left hover:text-amber-300 transition group"
+                                        title="Click to view arc recap"
+                                      >
+                                        <span className={`text-xs font-bold truncate ${isWatched ? 'line-through text-slate-500' : 'text-slate-200'}`}>
+                                          {item.title}
+                                        </span>
+                                        <span className="text-[10px] text-slate-500 group-hover:text-amber-400 transition shrink-0">
+                                          {isSummaryExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                                        </span>
+                                      </button>
 
                                       <span className="text-[10px] text-amber-400/80 font-mono shrink-0 hidden sm:inline">
                                         {item.episodes}
                                       </span>
 
-                                      {/* Interactive Compact Badge for Fillers */}
                                       {item.type === 'filler' && (
                                         <button
                                           onClick={() => toggleCompactSkipReason(item.id)}
@@ -1467,7 +1483,6 @@ export default function App() {
                                       )}
                                     </div>
 
-                                    {/* Stepper Quick-Actions for Compact View */}
                                     {hasStepper && !isWatched && (
                                       <div className="flex items-center gap-1.5 shrink-0 text-xs">
                                         <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
@@ -1490,7 +1505,26 @@ export default function App() {
                                     )}
                                   </div>
 
-                                  {/* Expandable Compact Why-Skip Subtext */}
+                                  {isSummaryExpanded && (
+                                    <div className="px-3.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-300 leading-relaxed ml-6 space-y-1">
+                                      <div className="relative">
+                                        <p className={`${spoilerShield && !isWatched ? 'filter blur-[3.5px] hover:filter-none select-none hover:select-text transition' : ''}`}>
+                                          {item.description}
+                                        </p>
+                                        {spoilerShield && !isWatched && (
+                                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-slate-300 bg-slate-950/60 rounded pointer-events-none">
+                                            🔒 Hover to view recap (Spoiler Shield Active)
+                                          </span>
+                                        )}
+                                      </div>
+                                      {item.highlights && (!spoilerShield || isWatched) && (
+                                        <div className="text-[10px] text-amber-400/90 font-medium pt-0.5 border-t border-slate-800/60">
+                                          Key moments: {item.highlights}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+
                                   {isSkipReasonExpanded && item.skipReason && (
                                     <div className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-amber-500/30 text-[11px] text-slate-400 flex items-start gap-2 ml-6">
                                       <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
@@ -1530,17 +1564,14 @@ export default function App() {
                                       {item.type === 'recommended_filler' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Top Filler</span>}
                                       {item.type === 'filler' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Filler (Skip)</span>}
                                       
-                                      {/* Reserved strictly for true canon */}
                                       {item.type === 'canon' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 flex items-center gap-0.5 font-bold"><Star className="w-2.5 h-2.5 fill-current" /> Essential</span>}
                                       
-                                      {/* Non-canon Must Watches renamed to Fan Favorite */}
                                       {item.type !== 'canon' && item.tier === 'Must Watch' && (
                                         <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-0.5 font-bold">
                                           <Star className="w-2.5 h-2.5 fill-current" /> Fan Favorite
                                         </span>
                                       )}
 
-                                      {/* Demoted early film badges */}
                                       {item.tier === 'Vintage Side Story' && (
                                         <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-amber-400/80 border border-slate-700">
                                           Vintage Side Story
@@ -1581,7 +1612,6 @@ export default function App() {
                                     )}
                                   </div>
 
-                                  {/* Detailed Card "Why Skip?" Subtext */}
                                   {item.type === 'filler' && item.skipReason && (
                                     <div className="mt-2 text-[11px] bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 text-slate-400 flex items-start gap-2">
                                       <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
@@ -2190,6 +2220,43 @@ export default function App() {
                         {bgMode === key && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
                       </button>
                     ))}
+                </div>
+              </div>
+
+              {/* SECTION 3: Content & Viewing Modes */}
+              <div>
+                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" /> Content & Viewing Preferences
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-slate-200">Canon Purist Mode</span>
+                      <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        Manga Only
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                      Hides all filler arcs, theatrical films, and specials from your queue and roadmap, leaving only 100% canon story progression.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setCanonPuristMode(!canonPuristMode);
+                      showToast(`Canon Purist Mode ${!canonPuristMode ? 'Enabled' : 'Disabled'}!`);
+                    }}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      canonPuristMode ? 'bg-emerald-500' : 'bg-slate-800'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                        canonPuristMode ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
                 </div>
               </div>
             </div>
