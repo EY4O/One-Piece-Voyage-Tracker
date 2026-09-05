@@ -876,6 +876,23 @@ export default function App() {
         '--theme-hover': theme.primaryHover
       }}
     >
+      {/* THEMED ACTIVE ARC PULSE & GLOW STYLES */}
+      <style>{`
+        @keyframes activeArcGlow {
+          0%, 100% {
+            border-color: var(--theme-primary);
+            box-shadow: 0 0 0 1px var(--theme-primary), 0 0 20px -2px var(--theme-primary);
+          }
+          50% {
+            border-color: var(--theme-hover);
+            box-shadow: 0 0 0 1px var(--theme-hover), 0 0 9px -3px var(--theme-hover);
+          }
+        }
+        .active-arc-glow {
+          animation: activeArcGlow 2.4s ease-in-out infinite;
+        }
+      `}</style>
+
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-amber-500/50 text-amber-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
           <Sparkles className="w-4 h-4 text-amber-400" />
@@ -1425,13 +1442,18 @@ export default function App() {
                             const isSkipReasonExpanded = expandedSkipReasons.has(item.id);
                             const isSummaryExpanded = expandedArcSummaries.has(item.id);
 
+                            // Active Arc Glow detection based on Up Next target
+                            const isActiveArc = upNextData?.item?.id === item.id;
+
                             // COMPACT ROW VIEW
                             if (compactView) {
                               return (
                                 <div key={item.id} id={`arc-card-${item.id}`} className="space-y-1">
                                   <div
                                     className={`px-3 py-2 rounded-xl border transition-all flex items-center justify-between gap-3 ${
-                                      isWatched
+                                      isActiveArc
+                                        ? 'active-arc-glow bg-slate-900/90 text-slate-100'
+                                        : isWatched
                                         ? 'bg-slate-950/50 border-emerald-500/20 text-slate-400'
                                         : isSkipped
                                         ? 'bg-slate-950/20 border-slate-900 opacity-50'
@@ -1543,7 +1565,9 @@ export default function App() {
                                 key={item.id}
                                 id={`arc-card-${item.id}`}
                                 className={`relative p-4 rounded-2xl border transition-all flex flex-col justify-between ${
-                                  isWatched
+                                  isActiveArc
+                                    ? 'active-arc-glow bg-slate-900/95 text-slate-100'
+                                    : isWatched
                                     ? 'bg-slate-950/60 border-emerald-500/30 text-slate-300'
                                     : isSkipped
                                     ? 'bg-slate-950/30 border-amber-500/20 text-slate-400 opacity-60'
