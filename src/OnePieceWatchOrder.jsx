@@ -63,12 +63,12 @@ import {
   Settings,
   X,
   Coffee,
-  Heart
+  Heart,
+  Check
 } from 'lucide-react';
 
 // Background Map: Sagas + Custom Ship & Iconography Backgrounds
 const BACKGROUND_ARTWORKS = {
-  // Sagas
   'east-blue': { name: 'East Blue', img: bgEastBlue, type: 'saga' },
   'alabasta': { name: 'Alabasta', img: bgAlabasta, type: 'saga' },
   'skypiea': { name: 'Skypiea', img: bgSkypiea, type: 'saga' },
@@ -82,7 +82,6 @@ const BACKGROUND_ARTWORKS = {
   'final-saga': { name: 'Final Saga (Egghead)', img: bgFinalSaga, type: 'saga' },
   'elbaph': { name: 'Elbaph', img: bgElbaph, type: 'saga' },
 
-  // Custom Showcases
   'sunny': { name: 'Thousand Sunny', img: bgSunny, type: 'custom', icon: '🦁' },
   'strawhat': { name: 'Straw Hat', img: bgStrawHat, type: 'custom', icon: '👒' },
   'merry': { name: 'Going Merry', img: bgMerry, type: 'custom', icon: '🐑' }
@@ -260,14 +259,14 @@ const SAGAS_DATA = [
     items: [
       { id: 'arc-1', title: 'Romance Dawn Arc', type: 'canon', episodes: '1 – 3', startEp: 1, endEp: 3, epCount: 3, chapters: 'Ch 1 – 7', onePace: '1 ep (39 min)', bountyReward: 1000000, description: 'Luffy sets sail, meets Koby, and recruits Pirate Hunter Zoro.', highlights: 'Luffy meets Zoro, Gum-Gum Fruit backstory with Shanks.', tier: 'Core' },
       { id: 'arc-2', title: 'Orange Town Arc', type: 'canon', episodes: '4 – 8', startEp: 4, endEp: 8, epCount: 5, chapters: 'Ch 8 – 21', onePace: '3 eps (1 hr 15m)', bountyReward: 2000000, description: 'Encounter with Buggy the Clown. Introduces Nami.', highlights: 'Chouchou the loyal dog, Luffy vs. Buggy.', tier: 'Core' },
-      { id: 'ova-1', title: 'Defeat Him! The Pirate Ganzack! (OVA)', type: 'special', episodes: 'OVA (1998)', epCount: 1, bountyReward: 500000, description: 'First animated adaptation ever produced by Production I.G.', watchTip: 'Optional vintage novelty. Watch right after Orange Town.', tier: 'Optional' },
+      { id: 'ova-1', title: 'Defeat Him! The Pirate Ganzack! (OVA)', type: 'special', episodes: 'OVA (1998)', epCount: 1, bountyReward: 500000, description: 'First animated adaptation ever produced by Production I.G.', watchTip: 'Optional vintage novelty. Watch right after Orange Town.', tier: 'Vintage Side Story' },
       { id: 'arc-3', title: 'Syrup Village Arc', type: 'canon', episodes: '9 – 18', startEp: 9, endEp: 18, epCount: 10, chapters: 'Ch 22 – 41', onePace: '4 eps (1 hr 45m)', bountyReward: 5000000, description: 'Straw Hats defend Kaya from Captain Kuro. Usopp joins with Going Merry.', highlights: 'Usopp joins the crew, Going Merry gifted.', tier: 'Core' },
-      { id: 'mov-1', title: 'Movie 1: One Piece: The Movie (2000)', type: 'movie', episodes: 'Movie (50 min)', epCount: 2, bountyReward: 1000000, description: 'The original film. Hunts for pirate Woonan treasure.', watchTip: 'Optional standalone film. Skippable unless you want extra early Straw Hat nostalgia.', tier: 'Vintage Novelty' },
+      { id: 'mov-1', title: 'Movie 1: One Piece: The Movie (2000)', type: 'movie', episodes: 'Movie (50 min)', epCount: 2, bountyReward: 1000000, description: 'The original film. Hunts for pirate Woonan treasure.', watchTip: 'Optional standalone film. Skippable unless you want extra early Straw Hat nostalgia.', skipReason: 'Standard non-canon Toei filler not written by Oda; hard to find and breaks early story momentum.', tier: 'Vintage Side Story' },
       { id: 'arc-4', title: 'Baratie Arc', type: 'canon', episodes: '19 – 30', startEp: 19, endEp: 30, epCount: 12, chapters: 'Ch 42 – 68', onePace: '6 eps (2 hr 40m)', bountyReward: 15000000, description: 'Ocean restaurant attacked by Don Krieg. Zoro duels Mihawk.', highlights: 'Sanji joins, Mihawk vs Zoro, Baratie defense.', tier: 'Core' },
       { id: 'arc-5', title: 'Arlong Park Arc', type: 'canon', episodes: '31 – 44', startEp: 31, endEp: 44, epCount: 14, chapters: 'Ch 69 – 95', onePace: '7 eps (3 hr 10m)', bountyReward: 30000000, description: 'Confronting Arlong to liberate Nami and Cocoyasi Village.', highlights: 'Walk to Arlong Park, Nami officially joins with 30M Bounty!', tier: 'Core' },
       { id: 'arc-6', title: 'Loguetown Arc', type: 'canon', episodes: '45, 48 – 53', startEp: 45, endEp: 53, epCount: 7, chapters: 'Ch 96 – 100', onePace: '3 eps (1 hr 15m)', bountyReward: 5000000, description: 'Where Gol D. Roger was executed. Smoker and Tashigi debut.', highlights: 'Luffy execution platform smile, Dragon in storm.', tier: 'Core' },
-      { id: 'mov-2', title: 'Movie 2: Clockwork Island Adventure (2001)', type: 'movie', episodes: 'Movie (55 min)', epCount: 2, bountyReward: 1000000, description: 'Going Merry is stolen by the Trump Pirates!', watchTip: 'Watch after Episode 53 before Reverse Mountain.', tier: 'Classic' },
-      { id: 'arc-7', title: 'Warship Island Arc', type: 'filler', episodes: '54 – 61', startEp: 54, endEp: 61, epCount: 8, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Apis and Millennium Dragon filler adventure.', watchTip: 'Filler. Skip straight to Episode 62.', tier: 'Filler' }
+      { id: 'mov-2', title: 'Movie 2: Clockwork Island Adventure (2001)', type: 'movie', episodes: 'Movie (55 min)', epCount: 2, bountyReward: 1000000, description: 'Going Merry is stolen by the Trump Pirates!', watchTip: 'Watch after Episode 53 before Reverse Mountain.', skipReason: 'Early non-canon standalone film with zero impact on the overarching plot.', tier: 'Vintage Side Story' },
+      { id: 'arc-7', title: 'Warship Island Arc', type: 'filler', episodes: '54 – 61', startEp: 54, endEp: 61, epCount: 8, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Apis and Millennium Dragon filler adventure.', watchTip: 'Filler. Skip straight to Episode 62.', skipReason: 'Anime-original side arc; has zero bearing on the Grand Line journey and disrupts momentum into Reverse Mountain.', tier: 'Filler' }
     ]
   },
   {
@@ -281,9 +280,9 @@ const SAGAS_DATA = [
       { id: 'arc-8', title: 'Reverse Mountain & Whisky Peak', type: 'canon', episodes: '62 – 67', startEp: 62, endEp: 67, epCount: 6, chapters: 'Ch 101 – 114', onePace: '4 eps (1 hr 45m)', bountyReward: 5000000, description: 'Entering Grand Line, meeting Laboon, uncovering Baroque Works.', highlights: 'Laboon promise, Princess Vivi reveal.', tier: 'Core' },
       { id: 'arc-9', title: 'Little Garden Arc', type: 'canon', episodes: '70 – 77', startEp: 70, endEp: 77, epCount: 8, chapters: 'Ch 115 – 129', onePace: '5 eps (2 hr 10m)', bountyReward: 8000000, description: 'Battling giants Dorry and Brogy and agent Mr. 3.', highlights: 'Giant warriors honor, Usopp warrior dream.', tier: 'Core' },
       { id: 'arc-10', title: 'Drum Island Arc', type: 'canon', episodes: '78 – 91', startEp: 78, endEp: 91, epCount: 14, chapters: 'Ch 130 – 154', onePace: '7 eps (3 hr 00m)', bountyReward: 15000000, description: 'Winter kingdom ruled by tyrant Wapol. Chopper joins.', highlights: 'Chopper joins, Dr. Hiriluk cherry blossom speech.', tier: 'Core' },
-      { id: 'mov-3', title: 'Movie 3: Chopper’s Kingdom on Strange Island', type: 'movie', episodes: 'Movie (56 min)', epCount: 2, bountyReward: 1000000, description: 'Chopper crowned animal king of Crown Island.', watchTip: 'Watch right after Drum Island (Episode 91).', tier: 'Classic' },
+      { id: 'mov-3', title: 'Movie 3: Chopper’s Kingdom on Strange Island', type: 'movie', episodes: 'Movie (56 min)', epCount: 2, bountyReward: 1000000, description: 'Chopper crowned animal king of Crown Island.', watchTip: 'Watch right after Drum Island (Episode 91).', skipReason: 'Early standalone festival movie not written by Oda; completely non-essential.', tier: 'Vintage Side Story' },
       { id: 'arc-11', title: 'Alabasta Arc', type: 'canon', episodes: '92 – 130', startEp: 92, endEp: 130, epCount: 39, chapters: 'Ch 155 – 217', onePace: '15 eps (7 hr 30m)', bountyReward: 70000000, description: 'Desert civil war by Crocodile. Showdown with Ace & Vivi.', highlights: 'Luffy vs Crocodile 1-3, Robin joins. 100M Bounty!', tier: 'Core' },
-      { id: 'arc-12', title: 'Post-Alabasta Filler Episodes', type: 'filler', episodes: '131 – 135', startEp: 131, endEp: 135, epCount: 5, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Standalone character focus episodes.', watchTip: 'Filler. Skippable.', tier: 'Filler' }
+      { id: 'arc-12', title: 'Post-Alabasta Filler Episodes', type: 'filler', episodes: '131 – 135', startEp: 131, endEp: 135, epCount: 5, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Standalone character focus episodes.', watchTip: 'Filler. Skippable.', skipReason: 'Slice-of-life episodic vignettes with no ongoing narrative progression.', tier: 'Filler' }
     ]
   },
   {
@@ -294,9 +293,9 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 218 – 302',
     crewJoined: [],
     items: [
-      { id: 'arc-13', title: 'Goat Island & Ruluka Island Arcs', type: 'filler', episodes: '136 – 143', startEp: 136, endEp: 143, epCount: 8, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arcs with Zenny goats and Rainbow Mist.', watchTip: 'Filler. Skip to 144.', tier: 'Filler' },
+      { id: 'arc-13', title: 'Goat Island & Ruluka Island Arcs', type: 'filler', episodes: '136 – 143', startEp: 136, endEp: 143, epCount: 8, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arcs with Zenny goats and Rainbow Mist.', watchTip: 'Filler. Skip to 144.', skipReason: 'Standalone anime-original detours that delay the Jaya & Skypiea storyline.', tier: 'Filler' },
       { id: 'mov-4', title: 'Movie 4: Dead End Adventure (2003)', type: 'movie', episodes: 'Movie (95 min)', epCount: 4, bountyReward: 5000000, description: 'Straw Hats join underground pirate regatta race.', watchTip: '⭐ Highly Recommended! Watch between Ep 138-143.', tier: 'Must Watch' },
-      { id: 'mov-5', title: 'Movie 5: The Cursed Holy Sword (2004)', type: 'movie', episodes: 'Movie (95 min)', epCount: 4, bountyReward: 2000000, description: 'Zoro-centric film dealing with cursed sword.', watchTip: 'Skippable movie.', tier: 'Classic' },
+      { id: 'mov-5', title: 'Movie 5: The Cursed Holy Sword (2004)', type: 'movie', episodes: 'Movie (95 min)', epCount: 4, bountyReward: 2000000, description: 'Zoro-centric film dealing with cursed sword.', watchTip: 'Skippable movie.', skipReason: 'Non-canon movie contradicting Zoro swordsmanship rules; skippable.', tier: 'Vintage Side Story' },
       { id: 'arc-14', title: 'Jaya Arc', type: 'canon', episodes: '144 – 152', startEp: 144, endEp: 152, epCount: 9, chapters: 'Ch 218 – 236', onePace: '5 eps (2 hr 10m)', bountyReward: 10000000, description: 'Mock Town pirate haven. Meeting Blackbeard.', highlights: 'Blackbeard dreams speech, Knock Up Stream.', tier: 'Core' },
       { id: 'arc-15', title: 'Skypiea Arc', type: 'canon', episodes: '153 – 195', startEp: 153, endEp: 195, epCount: 43, chapters: 'Ch 237 – 302', onePace: '24 eps (10 hr 30m)', bountyReward: 50000000, description: 'White clouds 10,000m high. Survival against God Enel.', highlights: 'Golden Bell rings, Mont Blanc Noland story.', tier: 'Core' },
       { id: 'arc-16', title: 'G-8 Arc (Navarone Marine Base)', type: 'recommended_filler', episodes: '196 – 206', startEp: 196, endEp: 206, epCount: 11, chapters: 'Anime Original', onePace: 'Retained by Fans', bountyReward: 10000000, description: 'Falling into Vice Admiral Jonathan fortress.', watchTip: '🔥 MUST WATCH FILLER! Elite writing.', tier: 'Must Watch' }
@@ -312,8 +311,8 @@ const SAGAS_DATA = [
     items: [
       { id: 'mov-6', title: 'Movie 6: Baron Omatsuri (2005)', type: 'movie', episodes: 'Movie (91 min)', epCount: 4, bountyReward: 8000000, description: 'Directed by Mamoru Hosoda. Dark psychological thriller.', watchTip: '⭐ MASTERPIECE FILM! Watch before Water 7.', tier: 'Must Watch' },
       { id: 'arc-17', title: 'Long Ring Long Land (Davy Back)', type: 'mixed', episodes: '207 – 219', startEp: 207, endEp: 219, epCount: 13, chapters: 'Ch 303 – 321', onePace: '5 eps (2 hr 10m)', bountyReward: 5000000, description: 'Sports contest vs Foxy; Admiral Aokiji debut.', highlights: 'Afro Luffy, Admiral Aokiji ice power.', tier: 'Core' },
-      { id: 'arc-18', title: 'Ocean’s Dream & Foxy Return', type: 'filler', episodes: '220 – 226', startEp: 220, endEp: 226, epCount: 7, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Memory theft filler. Skip to 227.', watchTip: 'Filler.', tier: 'Filler' },
-      { id: 'mov-7', title: 'Movie 7: Mechanical Soldier of Karakuri', type: 'movie', episodes: 'Movie (94 min)', epCount: 4, bountyReward: 3000000, description: 'Mecha puzzle adventure on Karakuri Island.', watchTip: 'Watch before 227.', tier: 'Classic' },
+      { id: 'arc-18', title: 'Ocean’s Dream & Foxy Return', type: 'filler', episodes: '220 – 226', startEp: 220, endEp: 226, epCount: 7, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Memory theft filler. Skip to 227.', watchTip: 'Filler.', skipReason: 'Based on a PS1 video game plot line followed by non-canon Foxy filler; completely skippable before Water 7.', tier: 'Filler' },
+      { id: 'mov-7', title: 'Movie 7: Mechanical Soldier of Karakuri', type: 'movie', episodes: 'Movie (94 min)', epCount: 4, bountyReward: 3000000, description: 'Mecha puzzle adventure on Karakuri Island.', watchTip: 'Watch before 227.', skipReason: 'Puzzle comedy film with zero canonical bearing on CP9 or Water 7.', tier: 'Vintage Side Story' },
       { id: 'arc-19', title: 'Water 7 Arc', type: 'canon', episodes: '227 – 263', startEp: 227, endEp: 263, epCount: 37, chapters: 'Ch 322 – 374', onePace: '20 eps (9 hr 10m)', bountyReward: 40000000, description: 'City of water. Merry unfixable, CP9 unmasked.', highlights: 'Luffy vs Usopp, CP9 undercover reveal.', tier: 'Core' },
       { id: 'arc-20', title: 'Enies Lobby Arc', type: 'canon', episodes: '264 – 312', startEp: 264, endEp: 312, epCount: 49, chapters: 'Ch 375 – 430', onePace: '26 eps (12 hr 00m)', bountyReward: 200000000, description: 'Straw Hats declare war on world government for Robin.', highlights: 'Gear 2nd/3rd, "I Want To Live!", Merry farewell. 300M Bounty!', tier: 'Core' },
       { id: 'arc-21', title: 'Post-Enies Lobby Arc', type: 'canon', episodes: '313 – 325', startEp: 313, endEp: 325, epCount: 13, chapters: 'Ch 431 – 441', onePace: '6 eps (2 hr 40m)', bountyReward: 20000000, description: 'Garp reveals Dragon; Thousand Sunny completed.', highlights: 'Franky joins, Ace vs Blackbeard.', tier: 'Core' }
@@ -327,9 +326,9 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 442 – 489',
     crewJoined: ['Brook'],
     items: [
-      { id: 'arc-22', title: 'Ice Hunter Arc', type: 'filler', episodes: '326 – 335', startEp: 326, endEp: 335, epCount: 10, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Accino bounty hunters steal pirate flag.', watchTip: 'Filler. Skip to 337.', tier: 'Filler' },
+      { id: 'arc-22', title: 'Ice Hunter Arc', type: 'filler', episodes: '326 – 335', startEp: 326, endEp: 335, epCount: 10, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Accino bounty hunters steal pirate flag.', watchTip: 'Filler. Skip to 337.', skipReason: 'Anime-only bounty hunter conflict with no canon continuity consequences.', tier: 'Filler' },
       { id: 'arc-23', title: 'Thriller Bark Arc', type: 'canon', episodes: '337 – 381', startEp: 337, endEp: 381, epCount: 45, chapters: 'Ch 442 – 489', onePace: '23 eps (10 hr 30m)', bountyReward: 60000000, description: 'Ghost island in Florian Triangle. Battles vs zombies.', highlights: 'Binks Sake, Zoro "Nothing Happened" sacrifice.', tier: 'Core' },
-      { id: 'arc-24', title: 'Spa Island & Romance Dawn Story', type: 'filler', episodes: '382 – 384', startEp: 382, endEp: 384, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Vacation filler with Foxy cameos.', watchTip: 'Filler. Skip to 385.', tier: 'Filler' }
+      { id: 'arc-24', title: 'Spa Island & Romance Dawn Story', type: 'filler', episodes: '382 – 384', startEp: 382, endEp: 384, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Vacation filler with Foxy cameos.', watchTip: 'Filler. Skip to 385.', skipReason: 'Comedy resort filler; skip straight to the Sabaody Archipelago Arc.', tier: 'Filler' }
     ]
   },
   {
@@ -342,13 +341,13 @@ const SAGAS_DATA = [
     items: [
       { id: 'arc-25', title: 'Sabaody Archipelago Arc', type: 'canon', episodes: '385 – 405', startEp: 385, endEp: 405, epCount: 21, chapters: 'Ch 490 – 513', onePace: '11 eps (5 hr 15m)', bountyReward: 50000000, description: 'Celestial dragon punched; Kuma separates crew.', highlights: 'Rayleigh intro, tragic separation of Straw Hats.', tier: 'Core' },
       { id: 'arc-26', title: 'Amazon Lily Arc', type: 'canon', episodes: '408 – 421', startEp: 408, endEp: 421, epCount: 14, chapters: 'Ch 514 – 524', onePace: '6 eps (2 hr 45m)', bountyReward: 20000000, description: 'Luffy lands on women-only island of Boa Hancock.', highlights: 'Boa Hancock backstory, Ace execution news.', tier: 'Core' },
-      { id: 'arc-27', title: 'Little East Blue Arc', type: 'filler', episodes: '426 – 429', startEp: 426, endEp: 429, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Prologue tie-in to Strong World film.', watchTip: 'Watch right before Strong World!', tier: 'Recommended' },
+      { id: 'arc-27', title: 'Little East Blue Arc', type: 'filler', episodes: '426 – 429', startEp: 426, endEp: 429, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Prologue tie-in to Strong World film.', watchTip: 'Watch right before Strong World!', skipReason: 'Prequel tie-in specifically produced for Film Strong World; optional if not watching the movie.', tier: 'Recommended' },
       { id: 'mov-10', title: 'Movie 10: Film Strong World & Ep 0', type: 'movie', episodes: 'Movie (115 min)', epCount: 5, bountyReward: 15000000, description: 'Written by Oda. Battle against Golden Lion Shiki.', watchTip: '⭐ MUST WATCH! Watch Ep 0 first.', tier: 'Must Watch' },
-      { id: 'mov-11', title: 'Movie 11: Straw Hat Chase 3D', type: 'movie', episodes: 'Short (30 min)', epCount: 1, bountyReward: 1000000, description: 'Fast 3D chase to recover Straw Hat.', watchTip: 'Fun short.', tier: 'Classic' },
+      { id: 'mov-11', title: 'Movie 11: Straw Hat Chase 3D', type: 'movie', episodes: 'Short (30 min)', epCount: 1, bountyReward: 1000000, description: 'Fast 3D chase to recover Straw Hat.', watchTip: 'Fun short.', tier: 'Side Story' },
       { id: 'arc-28', title: 'Impel Down Arc', type: 'canon', episodes: '422 – 425, 430 – 456', startEp: 422, endEp: 456, epCount: 31, chapters: 'Ch 525 – 549', onePace: '16 eps (7 hr 40m)', bountyReward: 80000000, description: 'Underwater prison break with Buggy, Bon Clay, Jinbe.', highlights: 'Warden Magellan, Bon Clay heroic sacrifice.', tier: 'Core' },
       { id: 'arc-29', title: 'Marineford Arc (Paramount War)', type: 'canon', episodes: '457 – 489', startEp: 457, endEp: 489, epCount: 33, chapters: 'Ch 550 – 580', onePace: '16 eps (7 hr 30m)', bountyReward: 100000000, description: 'Whitebeard and Luffy storm Marine HQ to rescue Ace.', highlights: '"The One Piece is real!", Ace & Luffy brotherhood. 400M Bounty!', tier: 'Core' },
       { id: 'arc-30', title: 'Post-War Arc & ASL Flashback', type: 'canon', episodes: '490 – 516', startEp: 490, endEp: 516, epCount: 27, chapters: 'Ch 581 – 597', onePace: '10 eps (4 hr 45m)', bountyReward: 30000000, description: 'Luffy, Ace, and Sabo childhood; 3D2Y message.', highlights: 'Sake cup oath, Rayleigh training begins.', tier: 'Core' },
-      { id: 'sp-3d2y', title: 'Special: 3D2Y', type: 'special', episodes: 'Special (107 min)', epCount: 4, bountyReward: 10000000, description: '2-year training period on Rusukaina Island.', watchTip: '⭐ Great bridge special! Watch after Ep 516.', tier: 'Recommended' }
+      { id: 'sp-3d2y', title: 'Special: 3D2Y (Timeskip Special)', type: 'special', episodes: 'Special (107 min)', epCount: 4, bountyReward: 10000000, description: '2-year training period on Rusukaina Island.', watchTip: '⭐ Great bridge special! Watch after Ep 516.', tier: 'Recommended' }
     ]
   },
   {
@@ -371,10 +370,10 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 654 – 801',
     crewJoined: ['Grand Fleet Formed'],
     items: [
-      { id: 'arc-33', title: 'Z’s Ambition Arc', type: 'filler', episodes: '575 – 578', startEp: 575, endEp: 578, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Neo Navy filler leading into Film Z.', watchTip: 'Watch right before Film Z.', tier: 'Recommended' },
-      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 20000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
+      { id: 'arc-33', title: 'Z’s Ambition Arc', type: 'filler', episodes: '575 – 578', startEp: 575, endEp: 578, epCount: 4, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Neo Navy filler leading into Film Z.', watchTip: 'Watch right before Film Z.', skipReason: 'Anime tie-in prologue set up strictly for Film: Z.', tier: 'Recommended' },
+      { id: 'mov-12', title: 'Movie 12: Film: Z (2012)', type: 'movie', episodes: 'Movie (108 min)', epCount: 5, bountyReward: 2000000, description: 'Former Admiral Zephyr plans to destroy the New World.', watchTip: '⭐ MASTERPIECE FILM! Considered top film.', tier: 'Must Watch' },
       { id: 'arc-34', title: 'Punk Hazard Arc', type: 'canon', episodes: '579 – 625', startEp: 579, endEp: 625, epCount: 47, chapters: 'Ch 654 – 699', onePace: '22 eps (10 hr 15m)', bountyReward: 60000000, description: 'Half-ice half-fire island. Law and Luffy forge alliance.', highlights: 'Pirate Alliance formed, Caesar Clown defeat.', tier: 'Core' },
-      { id: 'arc-35', title: 'Caesar Retrieval Arc', type: 'filler', episodes: '626 – 628', startEp: 626, endEp: 628, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arc where Breed kidnaps Caesar.', watchTip: 'Filler. Skip to 629.', tier: 'Filler' },
+      { id: 'arc-35', title: 'Caesar Retrieval Arc', type: 'filler', episodes: '626 – 628', startEp: 626, endEp: 628, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Filler arc where Breed kidnaps Caesar.', watchTip: 'Filler. Skip to 629.', skipReason: 'Brief side detour between Punk Hazard and Dressrosa with no canonical stakes.', tier: 'Filler' },
       { id: 'arc-36', title: 'Dressrosa Arc', type: 'canon', episodes: '629 – 746', startEp: 629, endEp: 746, epCount: 118, chapters: 'Ch 700 – 801', onePace: '48 eps (23 hr 30m)', bountyReward: 200000000, description: 'Corrida Colosseum, Doflamingo Birdcage, Gear 4th.', highlights: 'Sabo inherits flame fruit, Gear 4th Boundman. 500M Bounty!', tier: 'Core' },
       { id: 'sp-sabo', title: 'Special: Episode of Sabo & Nebulandia', type: 'special', episodes: 'Specials', epCount: 4, bountyReward: 5000000, description: 'Sabo perspective retelling and Nebulandia.', watchTip: 'Optional bonus watches.', tier: 'Optional' }
     ]
@@ -387,10 +386,10 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 802 – 908',
     crewJoined: [],
     items: [
-      { id: 'arc-37', title: 'Silver Mine & Heart of Gold', type: 'filler', episodes: '747 – 750 + Special', startEp: 747, endEp: 750, epCount: 6, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 5000000, description: 'Film Gold tie-in adventure.', watchTip: 'Watch right before Film Gold.', tier: 'Recommended' },
+      { id: 'arc-37', title: 'Silver Mine & Heart of Gold', type: 'filler', episodes: '747 – 750 + Special', startEp: 747, endEp: 750, epCount: 6, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 5000000, description: 'Film Gold tie-in adventure.', watchTip: 'Watch right before Film Gold.', skipReason: 'Lead-in adventure designed exclusively to promote Film: Gold.', tier: 'Recommended' },
       { id: 'mov-13', title: 'Movie 13: Film: Gold (2016)', type: 'movie', episodes: 'Movie (120 min)', epCount: 5, bountyReward: 25000000, description: 'Glamorous casino heist thriller aboard Gran Tesoro.', watchTip: '⭐ Fantastic spectacle. Watch after 750.', tier: 'Must Watch' },
       { id: 'arc-38', title: 'Zou Arc', type: 'canon', episodes: '751 – 779', startEp: 751, endEp: 779, epCount: 29, chapters: 'Ch 802 – 824', onePace: '12 eps (5 hr 30m)', bountyReward: 50000000, description: 'Elephant island Zunesha. Mink Tribe and Road Poneglyphs.', highlights: '"Raizo is safe!", Road Poneglyphs explained.', tier: 'Core' },
-      { id: 'arc-39', title: 'Marine Rookie Arc', type: 'filler', episodes: '780 – 782', startEp: 780, endEp: 782, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Luffy raids a marine base for food.', watchTip: 'Filler. Skip to 783.', tier: 'Filler' },
+      { id: 'arc-39', title: 'Marine Rookie Arc', type: 'filler', episodes: '780 – 782', startEp: 780, endEp: 782, epCount: 3, chapters: 'Anime Original', onePace: 'Skipped', bountyReward: 0, description: 'Luffy raids a marine base for food.', watchTip: 'Filler. Skip to 783.', skipReason: 'Short food-raid diversion right before infiltrating Big Mom territory.', tier: 'Filler' },
       { id: 'arc-40', title: 'Whole Cake Island Arc', type: 'canon', episodes: '783 – 877', startEp: 783, endEp: 877, epCount: 95, chapters: 'Ch 825 – 902', onePace: '39 eps (19 hr 00m)', bountyReward: 500000000, description: 'Crashing Big Mom Tea Party to rescue Sanji.', highlights: 'Luffy vs Katakuri, Snakeman form. 1.5 Billion Bounty!', tier: 'Core' },
       { id: 'arc-41', title: 'Levely / Reverie Arc', type: 'canon', episodes: '878 – 889', startEp: 878, endEp: 889, epCount: 12, chapters: 'Ch 903 – 908', onePace: '5 eps (2 hr 15m)', bountyReward: 100000000, description: 'Monarchs assemble; Im-sama and Empty Throne.', highlights: 'Fifth Emperor headline, giant straw hat.', tier: 'Core' }
     ]
@@ -404,11 +403,11 @@ const SAGAS_DATA = [
     crewJoined: ['Jinbe'],
     items: [
       { id: 'arc-42', title: 'Wano Country Arc – Act 1', type: 'canon', episodes: '890 – 894', startEp: 890, endEp: 894, epCount: 5, chapters: 'Ch 909 – 924', onePace: '3 eps (1 hr 20m)', bountyReward: 50000050, description: 'Entering Wano. Clashing with Kaido.', highlights: 'Kaido Thunder Bagua one-shot.', tier: 'Core' },
-      { id: 'arc-43', title: 'Cidre Guild (Stampede Tie-in)', type: 'filler', episodes: '895 – 896', startEp: 895, endEp: 896, epCount: 2, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Tie-in for Stampede.', watchTip: 'Watch before Stampede.', tier: 'Recommended' },
+      { id: 'arc-43', title: 'Cidre Guild (Stampede Tie-in)', type: 'filler', episodes: '895 – 896', startEp: 895, endEp: 896, epCount: 2, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 2000000, description: 'Tie-in for Stampede.', watchTip: 'Watch before Stampede.', skipReason: 'Two-episode anime filler introducing Bounty Hunter Guild Cidre to promote Stampede.', tier: 'Recommended' },
       { id: 'mov-14', title: 'Movie 14: One Piece: Stampede', type: 'movie', episodes: 'Movie (101 min)', epCount: 5, bountyReward: 40000000, description: 'Pirate festival vs Douglas Bullet.', watchTip: '⭐ Non-stop dream team fights.', tier: 'Must Watch' },
       { id: 'arc-44', title: 'Wano Act 2 & Udon Prison', type: 'canon', episodes: '897 – 958', startEp: 897, endEp: 958, epCount: 62, chapters: 'Ch 925 – 955', onePace: '26 eps (12 hr 30m)', bountyReward: 150000000, description: 'Luffy masters Advanced Ryou in prison.', highlights: 'Zoro receives blade Enma.', tier: 'Core' },
       { id: 'arc-45', title: 'Wano Act 3: Oden & Raid Launch', type: 'canon', episodes: '959 – 1028', startEp: 959, endEp: 1028, epCount: 70, chapters: 'Ch 956 – 1010', onePace: '32 eps (15 hr 45m)', bountyReward: 300000000, description: 'Oden voyage with Whitebeard and Roger. Raid begins.', highlights: 'Roger "He Laughed", Jinbe arrives.', tier: 'Core' },
-      { id: 'arc-46', title: 'Uta Past (Film Red Tie-in)', type: 'mixed', episodes: '1029 – 1030', startEp: 1029, endEp: 1030, epCount: 2, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 5000000, description: 'Luffy childhood with Uta.', watchTip: 'Watch before Film Red.', tier: 'Recommended' },
+      { id: 'arc-46', title: 'Uta Past (Film Red Tie-in)', type: 'mixed', episodes: '1029 – 1030', startEp: 1029, endEp: 1030, epCount: 2, chapters: 'Film Tie-in', onePace: 'Skipped', bountyReward: 5000000, description: 'Luffy childhood with Uta.', watchTip: 'Watch before Film Red.', skipReason: 'Flashback prologue tie-in specifically produced for Film: Red.', tier: 'Recommended' },
       { id: 'mov-15', title: 'Movie 15: Film: Red (2022)', type: 'movie', episodes: 'Movie (115 min)', epCount: 5, bountyReward: 50000000, description: 'Diva Uta on Elegia island. Shanks in action.', watchTip: '⭐ Phenomenal soundtrack by Ado.', tier: 'Must Watch' },
       { id: 'arc-47', title: 'Wano Climax & Gear 5 Awakening', type: 'canon', episodes: '1031 – 1085', startEp: 1031, endEp: 1085, epCount: 55, chapters: 'Ch 1011 – 1057', onePace: '25 eps (12 hr 00m)', bountyReward: 1500000000, description: 'Gear 5 Drums of Liberation defeats Kaido.', highlights: 'Ep 1071 Gear 5, Emperor Luffy. 3 Billion Bounty!', tier: 'Core' }
     ]
@@ -473,6 +472,7 @@ export default function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [compactView, setCompactView] = useState(() => localStorage.getItem('op_compact_view') === 'true');
+  const [expandedSkipReasons, setExpandedSkipReasons] = useState(() => new Set());
 
   useEffect(() => {
     localStorage.setItem('op_compact_view', compactView.toString());
@@ -529,6 +529,15 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
+  const toggleCompactSkipReason = (id) => {
+    setExpandedSkipReasons(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const allItems = useMemo(() => SAGAS_DATA.flatMap(s => s.items), []);
 
   const totalEpisodesCount = useMemo(() => {
@@ -553,7 +562,7 @@ export default function App() {
     const hoursWatched = (minutesWatched / 60).toFixed(1);
     const daysEquivalent = (minutesWatched / (60 * 24)).toFixed(1);
     const skippedFillerEps = allItems
-      .filter(item => item.type === 'filler' && (!watchedIds.has(item.id) || skippedIds.has(item.id)))
+      .filter(item => (item.type === 'filler' || item.type === 'recommended_filler') && (!watchedIds.has(item.id) || skippedIds.has(item.id)))
       .reduce((sum, item) => sum + (item.epCount || 0), 0);
     const fillerHoursSaved = ((skippedFillerEps * 20) / 60).toFixed(1);
 
@@ -598,7 +607,7 @@ export default function App() {
   }, [watchedIds]);
 
   const evaluatedAchievements = useMemo(() => {
-    return ACHIECHEMENTS_LIST.map(ach => {
+    return ACHIEVEMENTS.map(ach => {
       const isUnlocked = ach.check(watchedIds, subProgress, watchedEpisodesCount, totalEpisodesCount);
       return { ...ach, isUnlocked };
     });
@@ -812,6 +821,7 @@ export default function App() {
           item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.episodes.toLowerCase().includes(searchQuery.toLowerCase());
         if (!matchSearch) return false;
+        if (filterType === 'purist') return item.type === 'canon' || item.type === 'mixed';
         if (filterType === 'canon') return item.type === 'canon' || item.type === 'mixed';
         if (filterType === 'movies') return item.type === 'movie' || item.type === 'special';
         if (filterType === 'must-watch') return item.tier === 'Must Watch' || item.type === 'canon';
@@ -833,8 +843,6 @@ export default function App() {
       completionDateStr: completionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     };
   }, [totalEpisodesCount, watchedEpisodesCount, dailyPace]);
-
-  const ACHIECHEMENTS_LIST = ACHIEVEMENTS;
 
   return (
     <div
@@ -1272,9 +1280,25 @@ export default function App() {
               </div>
 
               <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-                <span className="text-xs text-slate-500 font-semibold mr-1 flex items-center gap-1">
+                {/* 1-Click Canon Purist Mode Button */}
+                <button
+                  onClick={() => setFilterType(filterType === 'purist' ? 'all' : 'purist')}
+                  className={`text-xs px-3 py-1.5 rounded-xl font-black flex items-center gap-1.5 transition ${
+                    filterType === 'purist'
+                      ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                      : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/20'
+                  }`}
+                  title="Hide all filler, movies, and specials with one click"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Canon Purist Mode</span>
+                  {filterType === 'purist' && <Check className="w-3.5 h-3.5" />}
+                </button>
+
+                <span className="text-xs text-slate-500 font-semibold mx-1 hidden sm:inline flex items-center gap-1">
                   <Filter className="w-3 h-3" /> Filter:
                 </span>
+
                 {[
                   { id: 'all', label: 'All Content' },
                   { id: 'canon', label: 'Canon Arcs' },
@@ -1311,6 +1335,11 @@ export default function App() {
                   const sagaTotalCount = saga.items.length;
                   const isSagaComplete = sagaTotalCount > 0 && sagaWatchedCount === sagaTotalCount;
 
+                  // High-level saga breakdown numbers for Compact Mode
+                  const canonCount = saga.items.filter(i => i.type === 'canon' || i.type === 'mixed').length;
+                  const fillerCount = saga.items.filter(i => i.type === 'filler' || i.type === 'recommended_filler').length;
+                  const movieCount = saga.items.filter(i => i.type === 'movie' || i.type === 'special').length;
+
                   return (
                     <div
                       key={saga.id}
@@ -1337,6 +1366,20 @@ export default function App() {
                               {isSagaComplete && (
                                 <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/20 flex items-center gap-1">
                                   <CheckCheck className="w-3.5 h-3.5" /> Saga Completed
+                                </span>
+                              )}
+                              {/* Saga-Level Summary Pills for Compact Mode */}
+                              {compactView && (
+                                <span className="text-[11px] font-mono text-slate-400 bg-slate-950/80 px-2.5 py-0.5 rounded-md border border-slate-800 flex items-center gap-1.5">
+                                  <span className="text-blue-400 font-bold">{canonCount} Canon</span>
+                                  <span>&bull;</span>
+                                  <span className="text-slate-500 font-bold">{fillerCount} Filler</span>
+                                  {movieCount > 0 && (
+                                    <>
+                                      <span>&bull;</span>
+                                      <span className="text-rose-400 font-bold">{movieCount} Film/Spec</span>
+                                    </>
+                                  )}
                                 </span>
                               )}
                             </div>
@@ -1368,79 +1411,99 @@ export default function App() {
                           {saga.items.map(item => {
                             const isWatched = watchedIds.has(item.id);
                             const isSkipped = skippedIds.has(item.id);
-                            const isMustWatch = item.tier === 'Must Watch';
                             const isFiller = item.type === 'filler';
                             const currentEp = getItemCurrentEpisode(item);
                             const hasStepper = Boolean(item.startEp && item.endEp);
                             const currentEpTitle = currentEp !== null ? getEpisodeTitle(currentEp, item.title) : null;
+                            const isSkipReasonExpanded = expandedSkipReasons.has(item.id);
 
                             // COMPACT ROW VIEW
                             if (compactView) {
                               return (
-                                <div
-                                  key={item.id}
-                                  id={`arc-card-${item.id}`}
-                                  className={`px-3 py-2 rounded-xl border transition-all flex items-center justify-between gap-3 ${
-                                    isWatched
-                                      ? 'bg-slate-950/50 border-emerald-500/20 text-slate-400'
-                                      : isSkipped
-                                      ? 'bg-slate-950/20 border-slate-900 opacity-50'
-                                      : 'bg-slate-900/60 border-slate-800/80 text-slate-200 hover:border-slate-700'
-                                  }`}
-                                >
-                                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                    <button
-                                      onClick={() => toggleItem(item)}
-                                      className="shrink-0 p-0.5 text-slate-400 hover:text-amber-400 transition"
-                                    >
-                                      {isWatched ? (
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 fill-emerald-500/20" />
-                                      ) : (
-                                        <Circle className="w-4 h-4" />
-                                      )}
-                                    </button>
+                                <div key={item.id} id={`arc-card-${item.id}`} className="space-y-1">
+                                  <div
+                                    className={`px-3 py-2 rounded-xl border transition-all flex items-center justify-between gap-3 ${
+                                      isWatched
+                                        ? 'bg-slate-950/50 border-emerald-500/20 text-slate-400'
+                                        : isSkipped
+                                        ? 'bg-slate-950/20 border-slate-900 opacity-50'
+                                        : 'bg-slate-900/60 border-slate-800/80 text-slate-200 hover:border-slate-700'
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                      <button
+                                        onClick={() => toggleItem(item)}
+                                        className="shrink-0 p-0.5 text-slate-400 hover:text-amber-400 transition"
+                                      >
+                                        {isWatched ? (
+                                          <CheckCircle2 className="w-4 h-4 text-emerald-400 fill-emerald-500/20" />
+                                        ) : (
+                                          <Circle className="w-4 h-4" />
+                                        )}
+                                      </button>
 
-                                    <span className={`text-xs font-bold truncate ${isWatched ? 'line-through text-slate-500' : 'text-slate-200'}`}>
-                                      {item.title}
-                                    </span>
-
-                                    <span className="text-[10px] text-amber-400/80 font-mono shrink-0 hidden sm:inline">
-                                      {item.episodes}
-                                    </span>
-
-                                    {item.type === 'filler' && (
-                                      <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 shrink-0">
-                                        Filler
+                                      <span className={`text-xs font-bold truncate ${isWatched ? 'line-through text-slate-500' : 'text-slate-200'}`}>
+                                        {item.title}
                                       </span>
+
+                                      <span className="text-[10px] text-amber-400/80 font-mono shrink-0 hidden sm:inline">
+                                        {item.episodes}
+                                      </span>
+
+                                      {/* Interactive Compact Badge for Fillers */}
+                                      {item.type === 'filler' && (
+                                        <button
+                                          onClick={() => toggleCompactSkipReason(item.id)}
+                                          className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded border shrink-0 transition flex items-center gap-1 ${
+                                            isSkipReasonExpanded
+                                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                                              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+                                          }`}
+                                          title="Click to view why this arc is skipped"
+                                        >
+                                          <span>Filler ?</span>
+                                          {isSkipReasonExpanded ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+                                        </button>
+                                      )}
+                                    </div>
+
+                                    {/* Stepper Quick-Actions for Compact View */}
+                                    {hasStepper && !isWatched && (
+                                      <div className="flex items-center gap-1.5 shrink-0 text-xs">
+                                        <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
+                                          Ep {currentEp || item.startEp}/{item.endEp}
+                                        </span>
+                                        <button
+                                          onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp) - 1)}
+                                          disabled={currentEp === null || currentEp <= item.startEp}
+                                          className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-20 flex items-center justify-center text-slate-300"
+                                        >
+                                          <Minus className="w-3 h-3" />
+                                        </button>
+                                        <button
+                                          onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp - 1) + 1)}
+                                          className="w-6 h-6 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center justify-center font-bold"
+                                        >
+                                          <Plus className="w-3 h-3" />
+                                        </button>
+                                      </div>
                                     )}
                                   </div>
 
-                                  {/* Stepper Quick-Actions for Compact View */}
-                                  {hasStepper && !isWatched && (
-                                    <div className="flex items-center gap-1.5 shrink-0 text-xs">
-                                      <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
-                                        Ep {currentEp || item.startEp}/{item.endEp}
+                                  {/* Expandable Compact Why-Skip Subtext */}
+                                  {isSkipReasonExpanded && item.skipReason && (
+                                    <div className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-amber-500/30 text-[11px] text-slate-400 flex items-start gap-2 ml-6">
+                                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                                      <span>
+                                        <strong className="text-slate-300">Why skip:</strong> {item.skipReason}
                                       </span>
-                                      <button
-                                        onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp) - 1)}
-                                        disabled={currentEp === null || currentEp <= item.startEp}
-                                        className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-20 flex items-center justify-center text-slate-300"
-                                      >
-                                        <Minus className="w-3 h-3" />
-                                      </button>
-                                      <button
-                                        onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp - 1) + 1)}
-                                        className="w-6 h-6 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center justify-center font-bold"
-                                      >
-                                        <Plus className="w-3 h-3" />
-                                      </button>
                                     </div>
                                   )}
                                 </div>
                               );
                             }
 
-                            // FULL DETAILED CARD (Original Layout)
+                            // FULL DETAILED CARD
                             return (
                               <div
                                 key={item.id}
@@ -1450,7 +1513,7 @@ export default function App() {
                                     ? 'bg-slate-950/60 border-emerald-500/30 text-slate-300'
                                     : isSkipped
                                     ? 'bg-slate-950/30 border-amber-500/20 text-slate-400 opacity-60'
-                                    : isMustWatch
+                                    : item.type === 'canon'
                                     ? 'bg-slate-900/90 border-amber-500/40 shadow-md shadow-amber-500/5'
                                     : isFiller
                                     ? 'bg-slate-950/40 border-slate-800/60 opacity-80'
@@ -1466,7 +1529,24 @@ export default function App() {
                                       {item.type === 'special' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">Special</span>}
                                       {item.type === 'recommended_filler' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Top Filler</span>}
                                       {item.type === 'filler' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Filler (Skip)</span>}
-                                      {isMustWatch && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 flex items-center gap-0.5 font-bold"><Star className="w-2.5 h-2.5 fill-current" /> Essential</span>}
+                                      
+                                      {/* Reserved strictly for true canon */}
+                                      {item.type === 'canon' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 flex items-center gap-0.5 font-bold"><Star className="w-2.5 h-2.5 fill-current" /> Essential</span>}
+                                      
+                                      {/* Non-canon Must Watches renamed to Fan Favorite */}
+                                      {item.type !== 'canon' && item.tier === 'Must Watch' && (
+                                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-0.5 font-bold">
+                                          <Star className="w-2.5 h-2.5 fill-current" /> Fan Favorite
+                                        </span>
+                                      )}
+
+                                      {/* Demoted early film badges */}
+                                      {item.tier === 'Vintage Side Story' && (
+                                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-amber-400/80 border border-slate-700">
+                                          Vintage Side Story
+                                        </span>
+                                      )}
+
                                       {isSkipped && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-amber-400/80 border border-amber-500/20">Skipped</span>}
                                     </div>
 
@@ -1500,6 +1580,16 @@ export default function App() {
                                       </span>
                                     )}
                                   </div>
+
+                                  {/* Detailed Card "Why Skip?" Subtext */}
+                                  {item.type === 'filler' && item.skipReason && (
+                                    <div className="mt-2 text-[11px] bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 text-slate-400 flex items-start gap-2">
+                                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                                      <span>
+                                        <strong className="text-slate-300">Why skip:</strong> {item.skipReason}
+                                      </span>
+                                    </div>
+                                  )}
                                 </div>
 
                                 {hasStepper && (
@@ -1727,12 +1817,12 @@ export default function App() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                { title: 'One Piece Film: Z (2012)', movieNum: 'Movie 12', placement: 'Watch after Episode 578 (Post-Fishman Island)', why: 'Widely hailed as the best film. Former Admiral Zephyr and Marine justice.', tier: 'S-Tier' },
-                { title: 'One Piece Film: Strong World (2009)', movieNum: 'Movie 10', placement: 'Watch after Episode 381 (or Ep 429)', why: 'First film written by Eiichiro Oda. The battle with Shiki the Golden Lion.', tier: 'S-Tier' },
-                { title: 'Baron Omatsuri & Secret Island (2005)', movieNum: 'Movie 6', placement: 'Watch after Episode 224 (before Water 7)', why: 'Directed by Mamoru Hosoda. Dark, psychological thriller exploring crew bonds.', tier: 'S-Tier' },
-                { title: 'One Piece Film: Red (2022)', movieNum: 'Movie 15', placement: 'Watch after Episode 1030 (Wano Act 3)', why: 'Global phenomenon with vocals by Ado as Uta and Red-Haired Shanks.', tier: 'S-Tier' },
-                { title: 'One Piece: Stampede (2019)', movieNum: 'Movie 14', placement: 'Watch after Episode 896 (between WCI and Wano)', why: '20th Anniversary festival war uniting Worst Generation, Marines, and Warlords.', tier: 'Must Watch' },
-                { title: 'One Piece Film: Gold (2016)', movieNum: 'Movie 13', placement: 'Watch after Episode 750 (Post-Dressrosa)', why: 'High-octane casino heist thriller aboard the 10km golden ship Gran Tesoro.', tier: 'Must Watch' },
+                { title: 'One Piece Film: Z (2012)', movieNum: 'Movie 12', placement: 'Watch after Episode 578 (Post-Fishman Island)', why: 'Widely hailed as the best film. Former Admiral Zephyr and Marine justice.', tier: 'Fan Favorite' },
+                { title: 'One Piece Film: Strong World (2009)', movieNum: 'Movie 10', placement: 'Watch after Episode 381 (or Ep 429)', why: 'First film written by Eiichiro Oda. The battle with Shiki the Golden Lion.', tier: 'Fan Favorite' },
+                { title: 'Baron Omatsuri & Secret Island (2005)', movieNum: 'Movie 6', placement: 'Watch after Episode 224 (before Water 7)', why: 'Directed by Mamoru Hosoda. Dark, psychological thriller exploring crew bonds.', tier: 'Fan Favorite' },
+                { title: 'One Piece Film: Red (2022)', movieNum: 'Movie 15', placement: 'Watch after Episode 1030 (Wano Act 3)', why: 'Global phenomenon with vocals by Ado as Uta and Red-Haired Shanks.', tier: 'Fan Favorite' },
+                { title: 'One Piece: Stampede (2019)', movieNum: 'Movie 14', placement: 'Watch after Episode 896 (between WCI and Wano)', why: '20th Anniversary festival war uniting Worst Generation, Marines, and Warlords.', tier: 'Fan Favorite' },
+                { title: 'One Piece Film: Gold (2016)', movieNum: 'Movie 13', placement: 'Watch after Episode 750 (Post-Dressrosa)', why: 'High-octane casino heist thriller aboard the 10km golden ship Gran Tesoro.', tier: 'Fan Favorite' },
                 { title: 'One Piece Film: God Valley (Summer 2027)', movieNum: 'Movie 16', placement: 'Watch after Egghead / Elbaph Arc', why: 'ONE PIECE FILM GOD VALLEY (ワンピース フィルム ゴッドバレー). Delves into the historic incident involving Roger, Garp, and the Rocks Pirates.', tier: 'Upcoming' },
                 { title: 'One Piece Film: Baad (2029)', movieNum: 'Movie 17', placement: 'Watch in the late Final Saga era', why: 'ONE PIECE FILM BAAD. The major theatrical follow-up releasing deep into the anime\'s final stretch.', tier: 'Upcoming' }
               ].map(m => (
