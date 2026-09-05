@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: '/One-Piece-Voyage-Tracker/',
+  base: '/',
   plugins: [
     react(),
     VitePWA({
@@ -15,27 +15,27 @@ export default defineConfig({
       },
       manifest: {
         name: 'The One Piece Voyage Tracker',
-        short_name: 'One Piece Tracker',
+        short_name: 'Eternal Pose',
         description: 'Definitive Watch Order, Marine Bounties & Episode Tracker',
         theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: '/One-Piece-Voyage-Tracker/',
-        scope: '/One-Piece-Voyage-Tracker/',
+        start_url: '/',
+        scope: '/',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: '/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
