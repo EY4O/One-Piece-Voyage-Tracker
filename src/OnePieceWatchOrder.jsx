@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
 
-// 11 Saga Background Artworks (src/assets/sagas/)
+// 12 Saga Background Artworks (src/assets/sagas/)
 import bgEastBlue from './assets/sagas/1east-blue.jpg';
 import bgAlabasta from './assets/sagas/2alabasta.jpg';
 import bgSkypiea from './assets/sagas/3skypiea.jpg';
@@ -125,7 +125,7 @@ const THEMES = {
     bgBadge: 'bg-emerald-500/10',
     textBadge: 'text-emerald-400',
     gradient: 'from-emerald-500 via-teal-600 to-green-700',
-    accentGlow: 'rgba(168, 85, 247, 0.15)'
+    accentGlow: 'rgba(16, 185, 129, 0.15)'
   },
   nami: {
     id: 'nami',
@@ -419,9 +419,9 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 1058 – Present',
     crewJoined: [],
     items: [
-      { id: 'arc-48', title: 'Egghead Island Arc', type: 'canon', episodes: '1086 – 1155', startEp: 1086, endEp: 1155, epCount: 69, chapters: 'Ch 1058 – 1125', onePace: 'In Production', bountyReward: 500000000, description: 'Future island of Dr. Vegapunk. Global broadcast.', highlights: 'Kuma backstory, Vegapunk broadcast. 3.5B Bounty!', tier: 'Core' },
+      { id: 'arc-48', title: 'Egghead Island Arc', type: 'canon', episodes: '1086 – 1155', startEp: 1086, endEp: 1155, epCount: 70, chapters: 'Ch 1058 – 1125', onePace: 'In Production', bountyReward: 500000000, description: 'Future island of Dr. Vegapunk. Global broadcast.', highlights: 'Kuma backstory, Vegapunk broadcast. 3.5B Bounty!', tier: 'Core' },
       { id: 'sp-fanletter', title: 'Special: ONE PIECE FAN LETTER (2024)', type: 'special', episodes: 'Special (25 min)', epCount: 2, bountyReward: 10000000, description: 'Masterpiece 25th anniversary episode by Megumi Ishitani.', watchTip: '⭐ MASTERPIECE OF ANIMATION.', tier: 'Must Watch' },
-      { id: 'arc-49', title: 'Elbaph Arc (Warland)', type: 'canon', episodes: '1156 – Present', startEp: 1156, endEp: 1177, epCount: 21, chapters: 'Ch 1126 – Present', onePace: 'TBA', bountyReward: 1000000000, description: 'Arrival at the legendary realm of warrior giants, ancient lore of the Sun God, and the mythical tree Yggdrasil.', highlights: 'Dorry & Brogy reunion, mystery of the Sun God, giants of Elbaph.', tier: 'Core' },
+      { id: 'arc-49', title: 'Elbaph Arc (Warland)', type: 'canon', episodes: '1156 – Present', startEp: 1156, endEp: 1177, epCount: 22, chapters: 'Ch 1126 – Present', onePace: 'TBA', bountyReward: 1000000000, description: 'Arrival at the legendary realm of warrior giants, ancient lore of the Sun God, and the mythical tree Yggdrasil.', highlights: 'Dorry & Brogy reunion, mystery of the Sun God, giants of Elbaph.', tier: 'Core' },
       { id: 'mov-16', title: 'Movie 16: One Piece Film: God Valley', type: 'movie', episodes: 'Theatrical (Summer 2027)', epCount: 5, bountyReward: 60000000, description: 'ONE PIECE FILM GOD VALLEY (Wan Pīsu Firumu Goddo Barē). The legendary incident that shook the world.', watchTip: 'Upcoming theatrical release (Summer 2027). Watch after the Egghead & Elbaph revelations.', tier: 'Must Watch' },
       { id: 'mov-17', title: 'Movie 17: One Piece Film: Baad', type: 'movie', episodes: 'Theatrical (2029)', epCount: 5, bountyReward: 75000000, description: 'ONE PIECE FILM BAAD. The high-stakes theatrical spectacle set in the climax era of the Final Saga.', watchTip: 'Upcoming theatrical release (2029). Anticipated for the late Final Saga.', tier: 'Must Watch' }
     ]
@@ -469,6 +469,7 @@ export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
   const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
 
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
@@ -885,7 +886,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Row 2 on Mobile: Action Buttons (Equal Grid on Mobile, Flex on Desktop) */}
+            {/* Row 2 on Mobile: Action Buttons */}
             <div className="grid grid-cols-3 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
               <button
                 onClick={scrollToActiveArc}
@@ -1180,7 +1181,7 @@ export default function App() {
               </button>
             )}
 
-            {/* Settings Gear Button (Yellow) */}
+            {/* Settings Gear Button */}
             <button
               onClick={() => setShowSettingsModal(true)}
               title="Voyage Settings"
@@ -1771,13 +1772,23 @@ export default function App() {
         <hr className="border-slate-800/80 mb-8" />
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pb-8">
           <div className="flex items-center gap-2">
-            <span>One Piece Voyage Tracker</span>
+            <span>Eternal Pose</span>
             <span>&bull;</span>
-            <span>Made for Straw Hat Pirates across the Grand Line</span>
+            <span>Made for Straw Hat Pirates across the Grand Line[cite: 3]</span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Ko-fi Donation Link in Footer */}
+          <div className="flex items-center gap-2.5">
+            {/* Legal / Info Button */}
+            <button
+              onClick={() => setShowDisclaimerModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition duration-200 font-semibold text-xs"
+              title="Legal Disclaimer & Credits"
+            >
+              <Info className="w-3.5 h-3.5 text-amber-400" />
+              <span>About & Legal</span>
+            </button>
+
+            {/* Ko-fi Donation Link */}
             <a
               href="https://ko-fi.com/looneth"
               target="_blank"
@@ -1789,6 +1800,7 @@ export default function App() {
               <span>Support on Ko-fi</span>
             </a>
 
+            {/* GitHub Link */}
             <a
               href="https://github.com/EY4O/One-Piece-Voyage-Tracker"
               target="_blank"
@@ -1972,31 +1984,31 @@ export default function App() {
                   })}
                 </div>
 
-				{/* Lock to Saga Artwork */}
-				<div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-				  Lock to Saga Artwork
-				</div>
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-				  {Object.entries(BACKGROUND_ARTWORKS)
-					.filter(([_, data]) => data.type === 'saga')
-					.map(([key, data], idx) => (
-					  <button
-						key={key}
-						onClick={() => {
-						  setBgMode(key);
-						  showToast(`Header background locked to ${data.name}!`);
-						}}
-						className={`flex items-center justify-between p-2 rounded-xl border text-xs font-medium transition ${
-						  bgMode === key
-							? 'bg-slate-800 border-amber-500/50 text-amber-300'
-							: 'bg-slate-950/40 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
-						}`}
-					  >
-						<span className="truncate">{idx + 1}. {data.name}</span>
-						{bgMode === key && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-					  </button>
-					))}
-				</div>
+                {/* Lock to Saga Artwork */}
+                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  Lock to Saga Artwork
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {Object.entries(BACKGROUND_ARTWORKS)
+                    .filter(([_, data]) => data.type === 'saga')
+                    .map(([key, data], idx) => (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          setBgMode(key);
+                          showToast(`Header background locked to ${data.name}!`);
+                        }}
+                        className={`flex items-center justify-between p-2 rounded-xl border text-xs font-medium transition ${
+                          bgMode === key
+                            ? 'bg-slate-800 border-amber-500/50 text-amber-300'
+                            : 'bg-slate-950/40 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <span className="truncate">{idx + 1}. {data.name}</span>
+                        {bgMode === key && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                      </button>
+                    ))}
+                </div>
               </div>
             </div>
 
@@ -2039,6 +2051,54 @@ export default function App() {
                 className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white transition"
               >
                 Confirm Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* LEGAL & CREDITS MODAL */}
+      {showDisclaimerModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                <ShieldCheck className="w-5 h-5 text-amber-400" />
+                <span className="text-slate-100 font-black text-base">About & Disclaimer</span>
+              </div>
+              <button
+                onClick={() => setShowDisclaimerModal(false)}
+                className="p-1 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
+              <p>
+                <strong>Eternal Pose</strong> is a free, open-source, non-profit fan application developed solely for informational, navigational, and entertainment purposes.
+              </p>
+
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400">
+                <span className="text-slate-200 font-semibold">Copyright & Trademark Notice:</span><br />
+                <em>One Piece</em> and all associated characters, artwork, audio, logos, names, and indicia are exclusive trademarks and copyrights of <strong>Eiichiro Oda</strong>, <strong>Shueisha</strong>, and <strong>Toei Animation</strong>.
+              </div>
+
+              <p className="text-slate-400">
+                This project claims no ownership over any official artwork, narrative content, or trademarks. All assets and episode titles are utilized strictly under non-commercial fair-use guidelines.
+              </p>
+
+              <p className="text-slate-400">
+                Voluntary tips through Ko-fi are purely non-commercial donations that go directly toward defraying third-party domain, hosting, and API server costs.
+              </p>
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-slate-800 flex justify-end">
+              <button
+                onClick={() => setShowDisclaimerModal(false)}
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition"
+              >
+                Close
               </button>
             </div>
           </div>
