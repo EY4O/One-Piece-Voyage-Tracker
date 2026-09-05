@@ -47,7 +47,6 @@ import {
   Calculator,
   Download,
   Upload,
-  Share2,
   Plus,
   Minus,
   FastForward,
@@ -57,7 +56,9 @@ import {
   SkipForward,
   Lock,
   Award,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Settings,
+  X
 } from 'lucide-react';
 
 // Background Map: Sagas + Custom Ship & Iconography Backgrounds
@@ -458,10 +459,8 @@ function getEpisodeTitle(epNumber, arcTitle) {
 
 export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
-  const [showThemePicker, setShowThemePicker] = useState(false);
-
   const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
-  const [showBgPicker, setShowBgPicker] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
@@ -627,9 +626,6 @@ export default function App() {
   }, [bgMode, upNextData]);
 
   const activeHeaderArtwork = BACKGROUND_ARTWORKS[activeBgKey]?.img || bgEastBlue;
-  const activeHeaderLabel = bgMode === 'auto'
-    ? `Auto (${BACKGROUND_ARTWORKS[activeBgKey]?.name || 'Arc'})`
-    : BACKGROUND_ARTWORKS[activeBgKey]?.name || 'Custom';
 
   const handleSetCurrentEpisode = (item, newEpisode) => {
     if (!item.startEp || !item.endEp) return;
@@ -792,17 +788,6 @@ export default function App() {
     reader.readAsText(file);
   };
 
-  const shareVoyageLink = () => {
-    const params = new URLSearchParams();
-    if (upNextData?.currentEp) params.set('ep', upNextData.currentEp.toString());
-    params.set('theme', activeThemeId);
-    const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-    navigator.clipboard?.writeText
-      ? navigator.clipboard.writeText(shareUrl)
-      : document.execCommand('copy');
-    showToast('Voyage link copied to clipboard!');
-  };
-
   const filteredSagas = useMemo(() => {
     return SAGAS_DATA.map(saga => {
       const filteredItems = saga.items.filter(item => {
@@ -933,7 +918,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Header Banner with Dynamic Safe-Area Padding */}
+      {/* Header Banner */}
       <header 
         className="relative bg-slate-950 border-b border-slate-800 px-4 pb-8 md:py-12 overflow-hidden"
         style={{ paddingTop: 'max(2rem, calc(env(safe-area-inset-top) + 1.5rem))' }}
@@ -979,146 +964,6 @@ export default function App() {
                 >
                   <Compass className="w-3.5 h-3.5 animate-spin-slow" />
                   Grand Line Definitive Order
-                </div>
-
-                {/* Theme Selector Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowThemePicker(!showThemePicker)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
-                  >
-                    <Palette className="w-3.5 h-3.5" style={{ color: theme.primary }} />
-                    <span>Theme: <strong>{theme.character}</strong></span>
-                    <ChevronDown className="w-3 h-3" />
-                  </button>
-
-                  {showThemePicker && (
-                    <div className="absolute left-0 mt-2 w-64 bg-slate-900/95 border border-slate-800 rounded-2xl p-2.5 shadow-2xl z-50 backdrop-blur-md grid grid-cols-1 gap-1 max-h-80 overflow-y-auto">
-                      <div className="text-[11px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">
-                        Choose Straw Hat Theme
-                      </div>
-                      {Object.values(THEMES).map(t => {
-                        const isUnlocked =
-                          t.id === 'classic' ||
-                          t.id === 'luffy' ||
-                          unlockedCrew.some(
-                            c => c.toLowerCase() === t.id.toLowerCase() || (t.id === 'robin' && c === 'Nico Robin')
-                          );
-                        const isNika = t.id === 'nika';
-                        const nikaUnlocked = watchedIds.has('arc-47');
-                        const isThemeLocked = spoilerShield && !isUnlocked && (!isNika || !nikaUnlocked);
-
-                        return (
-                          <button
-                            key={t.id}
-                            onClick={() => {
-                              setActiveThemeId(t.id);
-                              setShowThemePicker(false);
-                              showToast(`Switched theme to ${t.character}!`);
-                            }}
-                            className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
-                              activeThemeId === t.id ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800/60'
-                            }`}
-                          >
-                            <span className="text-base">{isThemeLocked ? '🔒' : t.avatar}</span>
-                            <div className="flex-1 truncate">
-                              <div className={`font-bold ${isThemeLocked ? 'filter blur-[3px] select-none' : ''}`}>
-                                {isThemeLocked ? 'Locked Member' : t.name}
-                              </div>
-                            </div>
-                            <span className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: t.primary }} />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                {/* Background Selector Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowBgPicker(!showBgPicker)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 transition"
-                    title="Change header background artwork"
-                  >
-                    <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Background: <strong>{activeHeaderLabel}</strong></span>
-                    <ChevronDown className="w-3 h-3" />
-                  </button>
-
-                  {showBgPicker && (
-                    <div className="absolute left-0 mt-2 w-64 bg-slate-900/95 border border-slate-800 rounded-2xl p-2.5 shadow-2xl z-50 backdrop-blur-md grid grid-cols-1 gap-1 max-h-80 overflow-y-auto">
-                      <div className="text-[11px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">
-                        Header Background Mode
-                      </div>
-                      
-                      <button
-                        onClick={() => {
-                          setBgMode('auto');
-                          setShowBgPicker(false);
-                          showToast('Header art set to Auto-Sync with your active arc!');
-                        }}
-                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
-                          bgMode === 'auto' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'text-slate-300 hover:bg-slate-800/60'
-                        }`}
-                      >
-                        <span>🔄 Auto (Follow Active Arc)</span>
-                        {bgMode === 'auto' && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />}
-                      </button>
-
-                      {/* Custom Showcases Group */}
-                      <div className="my-1 border-t border-slate-800" />
-                      <div className="text-[10px] font-bold text-amber-400/90 px-2 uppercase tracking-wider">
-                        Special Showcases
-                      </div>
-
-                      {['sunny', 'strawhat', 'merry'].map(customKey => {
-                        const item = BACKGROUND_ARTWORKS[customKey];
-                        return (
-                          <button
-                            key={customKey}
-                            onClick={() => {
-                              setBgMode(customKey);
-                              setShowBgPicker(false);
-                              showToast(`Header background locked to ${item.name}!`);
-                            }}
-                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
-                              bgMode === customKey ? 'bg-slate-800 text-amber-300' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-                            }`}
-                          >
-                            <span className="flex items-center gap-2">
-                              <span>{item.icon}</span>
-                              <strong className="font-semibold">{item.name}</strong>
-                            </span>
-                            {bgMode === customKey && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                          </button>
-                        );
-                      })}
-
-                      {/* Saga Collection Group */}
-                      <div className="my-1 border-t border-slate-800" />
-                      <div className="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-wider">
-                        Lock to Specific Saga
-                      </div>
-
-                      {SAGAS_DATA.map((saga, idx) => (
-                        <button
-                          key={saga.id}
-                          onClick={() => {
-                            setBgMode(saga.id);
-                            setShowBgPicker(false);
-                            showToast(`Header background locked to ${saga.title}!`);
-                          }}
-                          className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition ${
-                            bgMode === saga.id ? 'bg-slate-800 text-amber-300' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                          }`}
-                        >
-                          <span className="truncate">{idx + 1}. {saga.title}</span>
-                          {bgMode === saga.id && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -1327,13 +1172,14 @@ export default function App() {
               </button>
             )}
 
+            {/* Settings Gear Button (Yellow) */}
             <button
-              onClick={shareVoyageLink}
-              title="Share Current Voyage URL"
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 border border-slate-800 transition flex items-center gap-1.5 text-xs font-semibold"
+              onClick={() => setShowSettingsModal(true)}
+              title="Voyage Settings"
+              className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 text-xs font-bold"
             >
-              <Share2 className="w-4 h-4" />
-              <span className="hidden sm:inline">Share</span>
+              <Settings className="w-4 h-4 text-amber-400 animate-spin-slow" />
+              <span className="hidden sm:inline">Settings</span>
             </button>
 
             <button
@@ -1958,6 +1804,166 @@ export default function App() {
           <Compass className="w-4 h-4 animate-spin-slow" />
           <span>{upNextData.isEpBased ? `Ep ${upNextData.currentEp} • ` : ''}Jump to Arc</span>
         </button>
+      )}
+
+      {/* VOYAGE SETTINGS MODAL */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <Settings className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-100">Voyage Settings</h3>
+                  <p className="text-xs text-slate-400">Customize your Straw Hat theme and artwork</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-1">
+              {/* SECTION 1: Straw Hat Character Theme */}
+              <div>
+                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <Palette className="w-4 h-4 text-amber-400" /> Straw Hat Character Theme
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {Object.values(THEMES).map(t => {
+                    const isUnlocked =
+                      t.id === 'classic' ||
+                      t.id === 'luffy' ||
+                      unlockedCrew.some(
+                        c => c.toLowerCase() === t.id.toLowerCase() || (t.id === 'robin' && c === 'Nico Robin')
+                      );
+                    const isNika = t.id === 'nika';
+                    const nikaUnlocked = watchedIds.has('arc-47');
+                    const isThemeLocked = spoilerShield && !isUnlocked && (!isNika || !nikaUnlocked);
+
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => {
+                          setActiveThemeId(t.id);
+                          showToast(`Switched theme to ${t.character}!`);
+                        }}
+                        className={`flex items-center gap-3 p-2.5 rounded-2xl border text-left transition ${
+                          activeThemeId === t.id
+                            ? 'bg-slate-800 border-amber-500/50 shadow-md'
+                            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <span className="text-xl">{isThemeLocked ? '🔒' : t.avatar}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className={`text-xs font-bold truncate ${isThemeLocked ? 'filter blur-[3px] select-none text-slate-400' : 'text-slate-200'}`}>
+                            {isThemeLocked ? 'Locked Member' : t.name}
+                          </div>
+                          <div className="text-[10px] text-slate-500 truncate">{t.character}</div>
+                        </div>
+                        <span className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0" style={{ backgroundColor: t.primary }} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* SECTION 2: Header Background Artwork */}
+              <div>
+                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-cyan-400" /> Header Background Artwork
+                </div>
+
+                {/* Auto Mode Button */}
+                <button
+                  onClick={() => {
+                    setBgMode('auto');
+                    showToast('Header art set to Auto-Sync with your active arc!');
+                  }}
+                  className={`w-full flex items-center justify-between p-3 rounded-2xl border mb-3 transition ${
+                    bgMode === 'auto'
+                      ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-md'
+                      : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-lg">🔄</span>
+                    <div className="text-left">
+                      <div className="text-xs font-bold">Auto-Sync With Active Arc</div>
+                      <div className="text-[10px] text-slate-500">Artwork updates as you advance through the story</div>
+                    </div>
+                  </div>
+                  {bgMode === 'auto' && <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />}
+                </button>
+
+                {/* Special Showcases (Sunny, Straw Hat, Merry) */}
+                <div className="text-[11px] font-bold text-amber-400/90 uppercase tracking-wider mb-2">
+                  Special Showcases
+                </div>
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {['sunny', 'strawhat', 'merry'].map(customKey => {
+                    const item = BACKGROUND_ARTWORKS[customKey];
+                    return (
+                      <button
+                        key={customKey}
+                        onClick={() => {
+                          setBgMode(customKey);
+                          showToast(`Header background locked to ${item.name}!`);
+                        }}
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border text-center transition ${
+                          bgMode === customKey
+                            ? 'bg-slate-800 border-amber-500/50 text-amber-300 shadow-md'
+                            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
+                        }`}
+                      >
+                        <span className="text-2xl">{item.icon}</span>
+                        <span className="text-xs font-bold leading-tight">{item.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Lock to Saga */}
+                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  Lock to Saga Artwork
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {SAGAS_DATA.map((saga, idx) => (
+                    <button
+                      key={saga.id}
+                      onClick={() => {
+                        setBgMode(saga.id);
+                        showToast(`Header background locked to ${saga.title}!`);
+                      }}
+                      className={`flex items-center justify-between p-2 rounded-xl border text-xs font-medium transition ${
+                        bgMode === saga.id
+                          ? 'bg-slate-800 border-amber-500/50 text-amber-300'
+                          : 'bg-slate-950/40 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      <span className="truncate">{idx + 1}. {saga.title}</span>
+                      {bgMode === saga.id && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-800 flex justify-end">
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Reset Modal */}
