@@ -1972,29 +1972,31 @@ export default function App() {
                   })}
                 </div>
 
-                {/* Lock to Saga */}
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  Lock to Saga Artwork
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {SAGAS_DATA.map((saga, idx) => (
-                    <button
-                      key={saga.id}
-                      onClick={() => {
-                        setBgMode(saga.id);
-                        showToast(`Header background locked to ${saga.title}!`);
-                      }}
-                      className={`flex items-center justify-between p-2 rounded-xl border text-xs font-medium transition ${
-                        bgMode === saga.id
-                          ? 'bg-slate-800 border-amber-500/50 text-amber-300'
-                          : 'bg-slate-950/40 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <span className="truncate">{idx + 1}. {saga.title}</span>
-                      {bgMode === saga.id && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                    </button>
-                  ))}
-                </div>
+				{/* Lock to Saga Artwork */}
+				<div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+				  Lock to Saga Artwork
+				</div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+				  {Object.entries(BACKGROUND_ARTWORKS)
+					.filter(([_, data]) => data.type === 'saga')
+					.map(([key, data], idx) => (
+					  <button
+						key={key}
+						onClick={() => {
+						  setBgMode(key);
+						  showToast(`Header background locked to ${data.name}!`);
+						}}
+						className={`flex items-center justify-between p-2 rounded-xl border text-xs font-medium transition ${
+						  bgMode === key
+							? 'bg-slate-800 border-amber-500/50 text-amber-300'
+							: 'bg-slate-950/40 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
+						}`}
+					  >
+						<span className="truncate">{idx + 1}. {data.name}</span>
+						{bgMode === key && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+					  </button>
+					))}
+				</div>
               </div>
             </div>
 
