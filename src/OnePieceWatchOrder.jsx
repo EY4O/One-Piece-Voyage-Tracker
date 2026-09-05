@@ -1228,17 +1228,6 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            {skippedIds.size > 0 && (
-              <button
-                onClick={resetSkippedItems}
-                title="Restore skipped items"
-                className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 border border-slate-800 transition flex items-center gap-1.5 text-xs font-semibold"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span className="hidden md:inline">Reset Skips ({skippedIds.size})</span>
-              </button>
-            )}
-
             {/* Settings Gear Button */}
             <button
               onClick={() => setShowSettingsModal(true)}
@@ -1294,14 +1283,6 @@ export default function App() {
               <Upload className="w-4 h-4" />
               <input type="file" accept=".json" onChange={importProgressJSON} className="hidden" />
             </label>
-
-            <button
-              onClick={() => setShowResetModal(true)}
-              title="Reset progress"
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-red-400 border border-slate-800 transition"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
           </div>
         </div>
 
@@ -2281,6 +2262,60 @@ export default function App() {
                       }`}
                     />
                   </button>
+                </div>
+              </div>
+
+              {/* SECTION 4: Data & Voyage Resets */}
+              <div>
+                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-400" /> Data & Voyage Resets
+                </div>
+
+                <div className="space-y-2.5">
+                  {/* Reset Skips Row */}
+                  <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-bold text-slate-200 flex items-center gap-2">
+                        <span>Restore Skipped Queue</span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">
+                          {skippedIds.size} Skipped
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Restores any episodes or arcs you previously skipped back into your active roadmap queue.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={resetSkippedItems}
+                      disabled={skippedIds.size === 0}
+                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 text-amber-300 border border-slate-700 text-xs font-bold transition shrink-0 flex items-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Skips</span>
+                    </button>
+                  </div>
+
+                  {/* Reset All Progress Row */}
+                  <div className="p-3 rounded-2xl bg-rose-950/20 border border-rose-900/40 flex items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs font-bold text-rose-300">Reset All Voyage Data</span>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Clears all watched episodes, active steppers, and unlocked pirate achievements back to day one.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setShowSettingsModal(false);
+                        setShowResetModal(true);
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition shadow-md shadow-rose-600/20 shrink-0 flex items-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Reset Progress</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
