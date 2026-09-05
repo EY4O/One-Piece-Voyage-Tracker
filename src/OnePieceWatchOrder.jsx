@@ -1774,7 +1774,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             <span>Eternal Pose</span>
             <span>&bull;</span>
-            <span>Made for Straw Hat Pirates across the Grand Line[cite: 3]</span>
+            <span>Made for Pirates sailing the Grand Line.</span>
           </div>
 
           <div className="flex items-center gap-2.5">
