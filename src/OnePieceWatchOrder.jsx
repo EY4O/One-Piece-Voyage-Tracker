@@ -58,7 +58,9 @@ import {
   Award,
   Image as ImageIcon,
   Settings,
-  X
+  X,
+  Coffee,
+  Heart
 } from 'lucide-react';
 
 // Background Map: Sagas + Custom Ship & Iconography Backgrounds
@@ -121,7 +123,7 @@ const THEMES = {
     bgBadge: 'bg-emerald-500/10',
     textBadge: 'text-emerald-400',
     gradient: 'from-emerald-500 via-teal-600 to-green-700',
-    accentGlow: 'rgba(16, 185, 129, 0.15)'
+    accentGlow: 'rgba(168, 85, 247, 0.15)'
   },
   nami: {
     id: 'nami',
@@ -1769,6 +1771,18 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Ko-fi Donation Link in Footer */}
+            <a
+              href="https://ko-fi.com/looneth"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 hover:text-amber-300 border border-amber-500/30 transition duration-200 group font-semibold text-xs"
+              title="Support the voyage on Ko-fi"
+            >
+              <Coffee className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+              <span>Support on Ko-fi</span>
+            </a>
+
             <a
               href="https://github.com/EY4O/One-Piece-Voyage-Tracker"
               target="_blank"
@@ -1829,6 +1843,30 @@ export default function App() {
             </div>
 
             <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-1">
+              {/* Support Project Banner in Settings */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+                    <Coffee className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                      Fuel the Voyage <Heart className="w-3 h-3 text-red-500 fill-current" />
+                    </h4>
+                    <p className="text-[11px] text-slate-400">Support the ongoing development of this tracker</p>
+                  </div>
+                </div>
+                <a
+                  href="https://ko-fi.com/looneth"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-md shadow-amber-500/20 shrink-0 flex items-center gap-1.5"
+                >
+                  <Coffee className="w-3.5 h-3.5" />
+                  <span>Support on Ko-fi</span>
+                </a>
+              </div>
+
               {/* SECTION 1: Straw Hat Character Theme */}
               <div>
                 <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
