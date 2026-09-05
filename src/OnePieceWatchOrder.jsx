@@ -1181,7 +1181,7 @@ export default function App() {
               className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 text-xs font-bold"
             >
               <Settings className="w-4 h-4 text-amber-400 animate-spin-slow" />
-              <span className="hidden sm:inline">Settings</span>
+              <span className="hidden sm:inline"></span>
             </button>
 
             <button
@@ -1197,7 +1197,7 @@ export default function App() {
               }`}
             >
               {spoilerShield ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              <span className="hidden md:inline">Spoiler Shield</span>
+              <span className="hidden md:inline"></span>
             </button>
 
             <button
