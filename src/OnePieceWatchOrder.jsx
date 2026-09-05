@@ -13,6 +13,7 @@ import bgDressrosa from './assets/sagas/8dressrosa-saga.jpg';
 import bgWholeCake from './assets/sagas/9whole-cake.jpg';
 import bgWano from './assets/sagas/10wano.jpg';
 import bgFinalSaga from './assets/sagas/11final-saga.jpg';
+import bgElbaph from './assets/sagas/12elbaph.jpg';
 
 // 3 Custom Showcase Backgrounds (src/assets/sagas/)
 import bgSunny from './assets/sagas/sunny.jpg';
@@ -77,6 +78,7 @@ const BACKGROUND_ARTWORKS = {
   'whole-cake': { name: 'Whole Cake Island', img: bgWholeCake, type: 'saga' },
   'wano': { name: 'Wano Country', img: bgWano, type: 'saga' },
   'final-saga': { name: 'Final Saga (Egghead)', img: bgFinalSaga, type: 'saga' },
+  'elbaph': { name: 'Elbaph', img: bgElbaph, type: 'saga' },
 
   // Custom Showcases
   'sunny': { name: 'Thousand Sunny', img: bgSunny, type: 'custom', icon: '🦁' },
@@ -417,8 +419,11 @@ const SAGAS_DATA = [
     mangaChapters: 'Chapters 1058 – Present',
     crewJoined: [],
     items: [
-      { id: 'arc-48', title: 'Egghead Island Arc', type: 'canon', episodes: '1086 – Present', startEp: 1086, endEp: 1125, epCount: 40, chapters: 'Ch 1058 – 1125', onePace: 'In Production', bountyReward: 500000000, description: 'Future island of Dr. Vegapunk. Global broadcast.', highlights: 'Kuma backstory, Vegapunk broadcast. 3.5B Bounty!', tier: 'Core' },
-      { id: 'sp-fanletter', title: 'Special: ONE PIECE FAN LETTER (2024)', type: 'special', episodes: 'Special (25 min)', epCount: 2, bountyReward: 10000000, description: 'Masterpiece 25th anniversary episode by Megumi Ishitani.', watchTip: '⭐ MASTERPIECE OF ANIMATION.', tier: 'Must Watch' }
+      { id: 'arc-48', title: 'Egghead Island Arc', type: 'canon', episodes: '1086 – 1155', startEp: 1086, endEp: 1155, epCount: 69, chapters: 'Ch 1058 – 1125', onePace: 'In Production', bountyReward: 500000000, description: 'Future island of Dr. Vegapunk. Global broadcast.', highlights: 'Kuma backstory, Vegapunk broadcast. 3.5B Bounty!', tier: 'Core' },
+      { id: 'sp-fanletter', title: 'Special: ONE PIECE FAN LETTER (2024)', type: 'special', episodes: 'Special (25 min)', epCount: 2, bountyReward: 10000000, description: 'Masterpiece 25th anniversary episode by Megumi Ishitani.', watchTip: '⭐ MASTERPIECE OF ANIMATION.', tier: 'Must Watch' },
+      { id: 'arc-49', title: 'Elbaph Arc (Warland)', type: 'canon', episodes: '1156 – Present', startEp: 1156, endEp: 1177, epCount: 21, chapters: 'Ch 1126 – Present', onePace: 'TBA', bountyReward: 1000000000, description: 'Arrival at the legendary realm of warrior giants, ancient lore of the Sun God, and the mythical tree Yggdrasil.', highlights: 'Dorry & Brogy reunion, mystery of the Sun God, giants of Elbaph.', tier: 'Core' },
+      { id: 'mov-16', title: 'Movie 16: One Piece Film: God Valley', type: 'movie', episodes: 'Theatrical (Summer 2027)', epCount: 5, bountyReward: 60000000, description: 'ONE PIECE FILM GOD VALLEY (Wan Pīsu Firumu Goddo Barē). The legendary incident that shook the world.', watchTip: 'Upcoming theatrical release (Summer 2027). Watch after the Egghead & Elbaph revelations.', tier: 'Must Watch' },
+      { id: 'mov-17', title: 'Movie 17: One Piece Film: Baad', type: 'movie', episodes: 'Theatrical (2029)', epCount: 5, bountyReward: 75000000, description: 'ONE PIECE FILM BAAD. The high-stakes theatrical spectacle set in the climax era of the Final Saga.', watchTip: 'Upcoming theatrical release (2029). Anticipated for the late Final Saga.', tier: 'Must Watch' }
     ]
   }
 ];
@@ -448,7 +453,8 @@ const ACHIEVEMENTS = [
   { id: 'ach-21', title: 'Drums of Liberation', icon: '☀️', tier: 'Platinum', description: 'Witnessed the Gear 5th Sun God Nika awakening in Wano.', check: (watched) => watched.has('arc-47') },
   { id: 'ach-22', title: 'Millennium Voyager', icon: '⭐', tier: 'Platinum', description: 'Watched 1,000+ total episodes of One Piece.', check: (watched, sub, eps) => eps >= 1000 },
   { id: 'ach-23', title: 'Future Island Scholar', icon: '🤖', tier: 'Gold', description: 'Arrived at Dr. Vegapunk future island of Egghead.', check: (watched, sub, eps) => eps >= 1086 },
-  { id: 'ach-24', title: 'King of the Pirates', icon: '🏆', tier: 'Platinum', description: 'Caught up with the entire Grand Line broadcast voyage!', check: (watched, sub, eps, total) => eps >= total && total > 0 }
+  { id: 'ach-24', title: 'King of the Pirates', icon: '🏆', tier: 'Platinum', description: 'Caught up with the entire Grand Line broadcast voyage!', check: (watched, sub, eps, total) => eps >= total && total > 0 },
+  { id: 'ach-25', title: 'Warland of Giants', icon: '🏰', tier: 'Platinum', description: 'Reached Elbaph and stepped into the legendary realm of warrior giants.', check: (watched) => watched.has('arc-49') }
 ];
 
 // Helper to look up or generate episode title
@@ -1633,7 +1639,9 @@ export default function App() {
                 { title: 'Baron Omatsuri & Secret Island (2005)', movieNum: 'Movie 6', placement: 'Watch after Episode 224 (before Water 7)', why: 'Directed by Mamoru Hosoda. Dark, psychological thriller exploring crew bonds.', tier: 'S-Tier' },
                 { title: 'One Piece Film: Red (2022)', movieNum: 'Movie 15', placement: 'Watch after Episode 1030 (Wano Act 3)', why: 'Global phenomenon with vocals by Ado as Uta and Red-Haired Shanks.', tier: 'S-Tier' },
                 { title: 'One Piece: Stampede (2019)', movieNum: 'Movie 14', placement: 'Watch after Episode 896 (between WCI and Wano)', why: '20th Anniversary festival war uniting Worst Generation, Marines, and Warlords.', tier: 'Must Watch' },
-                { title: 'One Piece Film: Gold (2016)', movieNum: 'Movie 13', placement: 'Watch after Episode 750 (Post-Dressrosa)', why: 'High-octane casino heist thriller aboard the 10km golden ship Gran Tesoro.', tier: 'Must Watch' }
+                { title: 'One Piece Film: Gold (2016)', movieNum: 'Movie 13', placement: 'Watch after Episode 750 (Post-Dressrosa)', why: 'High-octane casino heist thriller aboard the 10km golden ship Gran Tesoro.', tier: 'Must Watch' },
+                { title: 'One Piece Film: God Valley (Summer 2027)', movieNum: 'Movie 16', placement: 'Watch after Egghead / Elbaph Arc', why: 'ONE PIECE FILM GOD VALLEY (ワンピース フィルム ゴッドバレー). Delves into the historic incident involving Roger, Garp, and the Rocks Pirates.', tier: 'Upcoming' },
+                { title: 'One Piece Film: Baad (2029)', movieNum: 'Movie 17', placement: 'Watch in the late Final Saga era', why: 'ONE PIECE FILM BAAD. The major theatrical follow-up releasing deep into the anime\'s final stretch.', tier: 'Upcoming' }
               ].map(m => (
                 <div key={m.title} className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
                   <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">

@@ -1175,4 +1175,6 @@ export const EPISODE_TITLES = {
 	1173: "A Nightmarish Game - The Dark Plot of the Knights of God",
 	1174: "Save the Children! The Elbaph Warriors Rise Up",
 	1175: "Elbaph in Flames! Jinbe's Shoulder Throw Explodes!",
+	1176: "The Threat of the Aro Aro no Mi - Gunko vs. the Straw Hat Pirates",
+	1177: "A Despicable Hostage Game - Sommers's Brazen Demands",
 };
