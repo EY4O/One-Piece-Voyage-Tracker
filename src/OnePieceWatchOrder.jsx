@@ -21,6 +21,8 @@ import bgStrawHat from './assets/sagas/strawhat.jpg';
 import bgMerry from './assets/sagas/merry.jpg';
 
 import {
+  LayoutList,
+  LayoutGrid,
   Compass,
   Film,
   CheckCircle2,
@@ -260,7 +262,7 @@ const SAGAS_DATA = [
       { id: 'arc-2', title: 'Orange Town Arc', type: 'canon', episodes: '4 – 8', startEp: 4, endEp: 8, epCount: 5, chapters: 'Ch 8 – 21', onePace: '3 eps (1 hr 15m)', bountyReward: 2000000, description: 'Encounter with Buggy the Clown. Introduces Nami.', highlights: 'Chouchou the loyal dog, Luffy vs. Buggy.', tier: 'Core' },
       { id: 'ova-1', title: 'Defeat Him! The Pirate Ganzack! (OVA)', type: 'special', episodes: 'OVA (1998)', epCount: 1, bountyReward: 500000, description: 'First animated adaptation ever produced by Production I.G.', watchTip: 'Optional vintage novelty. Watch right after Orange Town.', tier: 'Optional' },
       { id: 'arc-3', title: 'Syrup Village Arc', type: 'canon', episodes: '9 – 18', startEp: 9, endEp: 18, epCount: 10, chapters: 'Ch 22 – 41', onePace: '4 eps (1 hr 45m)', bountyReward: 5000000, description: 'Straw Hats defend Kaya from Captain Kuro. Usopp joins with Going Merry.', highlights: 'Usopp joins the crew, Going Merry gifted.', tier: 'Core' },
-      { id: 'mov-1', title: 'Movie 1: One Piece: The Movie (2000)', type: 'movie', episodes: 'Movie (50 min)', epCount: 2, bountyReward: 1000000, description: 'The original film. Hunts for pirate Woonan treasure.', watchTip: 'Watch right after Episode 18 before meeting Sanji. Optional standalone film. Skippable unless you want extra early Straw Hat nostalgia.', tier: 'Vintage Novelty' },
+      { id: 'mov-1', title: 'Movie 1: One Piece: The Movie (2000)', type: 'movie', episodes: 'Movie (50 min)', epCount: 2, bountyReward: 1000000, description: 'The original film. Hunts for pirate Woonan treasure.', watchTip: 'Optional standalone film. Skippable unless you want extra early Straw Hat nostalgia.', tier: 'Vintage Novelty' },
       { id: 'arc-4', title: 'Baratie Arc', type: 'canon', episodes: '19 – 30', startEp: 19, endEp: 30, epCount: 12, chapters: 'Ch 42 – 68', onePace: '6 eps (2 hr 40m)', bountyReward: 15000000, description: 'Ocean restaurant attacked by Don Krieg. Zoro duels Mihawk.', highlights: 'Sanji joins, Mihawk vs Zoro, Baratie defense.', tier: 'Core' },
       { id: 'arc-5', title: 'Arlong Park Arc', type: 'canon', episodes: '31 – 44', startEp: 31, endEp: 44, epCount: 14, chapters: 'Ch 69 – 95', onePace: '7 eps (3 hr 10m)', bountyReward: 30000000, description: 'Confronting Arlong to liberate Nami and Cocoyasi Village.', highlights: 'Walk to Arlong Park, Nami officially joins with 30M Bounty!', tier: 'Core' },
       { id: 'arc-6', title: 'Loguetown Arc', type: 'canon', episodes: '45, 48 – 53', startEp: 45, endEp: 53, epCount: 7, chapters: 'Ch 96 – 100', onePace: '3 eps (1 hr 15m)', bountyReward: 5000000, description: 'Where Gol D. Roger was executed. Smoker and Tashigi debut.', highlights: 'Luffy execution platform smile, Dragon in storm.', tier: 'Core' },
@@ -470,6 +472,11 @@ export default function App() {
   const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [compactView, setCompactView] = useState(() => localStorage.getItem('op_compact_view') === 'true');
+
+  useEffect(() => {
+    localStorage.setItem('op_compact_view', compactView.toString());
+  }, [compactView]);
 
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
@@ -591,7 +598,7 @@ export default function App() {
   }, [watchedIds]);
 
   const evaluatedAchievements = useMemo(() => {
-    return ACHIEVEMENTS.map(ach => {
+    return ACHIECHEMENTS_LIST.map(ach => {
       const isUnlocked = ach.check(watchedIds, subProgress, watchedEpisodesCount, totalEpisodesCount);
       return { ...ach, isUnlocked };
     });
@@ -826,6 +833,8 @@ export default function App() {
       completionDateStr: completionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     };
   }, [totalEpisodesCount, watchedEpisodesCount, dailyPace]);
+
+  const ACHIECHEMENTS_LIST = ACHIEVEMENTS;
 
   return (
     <div
@@ -1192,6 +1201,22 @@ export default function App() {
 
             <button
               onClick={() => {
+                setCompactView(!compactView);
+                showToast(`Switched to ${!compactView ? 'Compact' : 'Detailed'} view!`);
+              }}
+              title="Toggle Compact / Detailed View"
+              className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
+                compactView
+                  ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
+                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {compactView ? <LayoutList className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
+              <span className="hidden md:inline">{compactView ? 'Compact' : 'Detailed'}</span>
+            </button>
+
+            <button
+              onClick={() => {
                 setSpoilerShield(!spoilerShield);
                 showToast(`Spoiler Shield ${!spoilerShield ? 'Activated' : 'Deactivated'}!`);
               }}
@@ -1339,7 +1364,7 @@ export default function App() {
                       </div>
 
                       {isExpanded && (
-                        <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className={compactView ? "p-3 space-y-1.5" : "p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4"}>
                           {saga.items.map(item => {
                             const isWatched = watchedIds.has(item.id);
                             const isSkipped = skippedIds.has(item.id);
@@ -1349,6 +1374,73 @@ export default function App() {
                             const hasStepper = Boolean(item.startEp && item.endEp);
                             const currentEpTitle = currentEp !== null ? getEpisodeTitle(currentEp, item.title) : null;
 
+                            // COMPACT ROW VIEW
+                            if (compactView) {
+                              return (
+                                <div
+                                  key={item.id}
+                                  id={`arc-card-${item.id}`}
+                                  className={`px-3 py-2 rounded-xl border transition-all flex items-center justify-between gap-3 ${
+                                    isWatched
+                                      ? 'bg-slate-950/50 border-emerald-500/20 text-slate-400'
+                                      : isSkipped
+                                      ? 'bg-slate-950/20 border-slate-900 opacity-50'
+                                      : 'bg-slate-900/60 border-slate-800/80 text-slate-200 hover:border-slate-700'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                    <button
+                                      onClick={() => toggleItem(item)}
+                                      className="shrink-0 p-0.5 text-slate-400 hover:text-amber-400 transition"
+                                    >
+                                      {isWatched ? (
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 fill-emerald-500/20" />
+                                      ) : (
+                                        <Circle className="w-4 h-4" />
+                                      )}
+                                    </button>
+
+                                    <span className={`text-xs font-bold truncate ${isWatched ? 'line-through text-slate-500' : 'text-slate-200'}`}>
+                                      {item.title}
+                                    </span>
+
+                                    <span className="text-[10px] text-amber-400/80 font-mono shrink-0 hidden sm:inline">
+                                      {item.episodes}
+                                    </span>
+
+                                    {item.type === 'filler' && (
+                                      <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 shrink-0">
+                                        Filler
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Stepper Quick-Actions for Compact View */}
+                                  {hasStepper && !isWatched && (
+                                    <div className="flex items-center gap-1.5 shrink-0 text-xs">
+                                      <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
+                                        Ep {currentEp || item.startEp}/{item.endEp}
+                                      </span>
+                                      <button
+                                        onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp) - 1)}
+                                        disabled={currentEp === null || currentEp <= item.startEp}
+                                        className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-20 flex items-center justify-center text-slate-300"
+                                      >
+                                        <Minus className="w-3 h-3" />
+                                      </button>
+                                      <button
+                                        onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp - 1) + 1)}
+                                        className="w-6 h-6 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center justify-center font-bold"
+                                      >
+                                        <Plus className="w-3 h-3" />
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
+
+                            // FULL DETAILED CARD (Original Layout)
                             return (
                               <div
                                 key={item.id}
