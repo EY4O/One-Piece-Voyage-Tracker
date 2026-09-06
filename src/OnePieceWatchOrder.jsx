@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
+import InstallPromptBanner from './InstallPromptBanner';
 
 // 12 Saga Background Artworks (src/assets/sagas/)
 import bgEastBlue from './assets/sagas/1east-blue.jpg';
@@ -1237,6 +1238,7 @@ export default function App() {
               <Settings className="w-4 h-4 text-amber-400 animate-spin-slow" />
             </button>
 
+            {/* Compact / Detailed View Toggle */}
             <button
               onClick={() => {
                 setCompactView(!compactView);
@@ -1253,6 +1255,7 @@ export default function App() {
               <span className="hidden md:inline">{compactView ? 'Compact' : 'Detailed'}</span>
             </button>
 
+            {/* Spoiler Shield Toggle */}
             <button
               onClick={() => {
                 setSpoilerShield(!spoilerShield);
@@ -1268,6 +1271,7 @@ export default function App() {
               {spoilerShield ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
 
+            {/* Export Progress JSON */}
             <button
               onClick={exportProgressJSON}
               title="Export progress JSON"
@@ -1276,6 +1280,7 @@ export default function App() {
               <Download className="w-4 h-4" />
             </button>
 
+            {/* Import Progress JSON */}
             <label
               title="Import progress JSON"
               className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer"
@@ -2412,6 +2417,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ONE-TIME PWA INSTALL PROMPT FOR MOBILE */}
+      <InstallPromptBanner />
     </div>
   );
 }
