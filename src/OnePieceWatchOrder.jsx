@@ -960,7 +960,7 @@ export default function App() {
                             aria-expanded={isExpanded}
                             aria-controls={`saga-items-${saga.id}`}
                             onClick={() => toggleSagaExpand(saga.id)}
-                            className="mt-1 p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition"
+                            className="saga-toggle mt-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition"
                           >
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>

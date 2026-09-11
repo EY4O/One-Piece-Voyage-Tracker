@@ -112,6 +112,7 @@ button, input, select { font: inherit; }
 .saga-heading > div:first-child { min-width: 0; }
 .saga-heading > div:last-child { flex-shrink: 0; }
 .saga-heading button { min-height: 42px; min-width: 42px; }
+.saga-toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 42px; padding: 0; }
 .saga-title { display: flex; gap: 13px; font-size: 23px; font-weight: 650; line-height: 1.3; letter-spacing: -.025em; margin-top: 8px; }
 .saga-title > span { color: #8293aa; font-size: 17px; font-weight: 400; padding-top: 4px; }
 .saga-current { display: inline-block; color: var(--accent); font-size: 11px; margin-top: 6px; }
