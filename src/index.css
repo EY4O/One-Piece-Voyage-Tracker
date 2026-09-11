@@ -55,6 +55,7 @@ button, input, select { font: inherit; }
 .next-episode strong { color: var(--accent); font-size: 14px; font-weight: 750; }
 .next-episode span { color: #9eafc1; font-size: 12px; }
 .next-context { color: #aab8ca; font-size: 12px; line-height: 1.7; margin-top: 10px; }
+.next-episode-title { color: #edf1f6; font-size: 18px; font-weight: 650; line-height: 1.45; margin-top: 14px; overflow-wrap: anywhere; }
 .continue-actions { display: flex; gap: 9px; margin-top: 20px; }
 .continue-actions .primary { flex: 1; }
 .voyage-progress { border-top: 1px solid #2d3949; padding-top: 16px; margin-top: 22px; }
@@ -232,8 +233,6 @@ button, input, select { font: inherit; }
   .up-next-copy strong { font-size: 12px; }
   .up-next-actions { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr .7fr 1.3fr; gap: 5px; }
   .up-next-actions .ui-button { min-height: 44px; }
-  .brand-row > button { padding: 10px; }
-  .brand-row > button span { display: none; }
   .hero-content { padding-top: 18px; }
   .hero-grid { grid-template-columns: 1fr; gap: 22px; padding: 26px 0 24px; }
   .hero-intro h1 { font-size: 38px; margin: 10px 0; }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, CheckCircle2, ChevronDown, Circle, Clock, FastForward, Info, Minus, Plus, RotateCcw, SkipForward } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronDown, Circle, Tv, FastForward, Info, Minus, Plus, RotateCcw, SkipForward } from 'lucide-react';
 import { ProgressBar, SpoilerContent } from './VoyageUI';
 
 const TYPES = { canon: 'Canon', mixed: 'Mixed canon', movie: 'Movie', special: 'Special / OVA', recommended_filler: 'Recommended filler', filler: 'Filler' };
@@ -34,7 +34,7 @@ export default function ArcCard({ item, watched, skipped, active, currentEp, com
     <div className="arc-body">
       <div className="arc-topline"><div className="arc-badges"><span className={`type-badge type-${item.type}`}>{TYPES[item.type]}</span>{active && <span className="status-badge current">Up next</span>}{watched && <span className="status-badge completed"><CheckCircle2 size={12} />Completed</span>}{skipped && <span className="status-badge"><SkipForward size={12} />Skipped</span>}{!compact && <span className="arc-tier">{item.type === 'canon' ? 'Essential' : item.tier}</span>}</div><button className="arc-check" aria-label={`${watched ? 'Mark unwatched' : 'Mark watched'}: ${item.title}`} aria-pressed={watched} onClick={() => onToggle(item)}>{watched ? <CheckCircle2 size={22} /> : <Circle size={22} />}</button></div>
       <h3>{item.title}</h3>
-      <div className="arc-meta"><span><Clock size={13} />{item.episodes}</span>{!compact && item.chapters && <span><BookOpen size={13} />{item.chapters}</span>}</div>
+      <div className="arc-meta"><span><Tv size={13} />{item.episodes}</span>{!compact && item.chapters && <span><BookOpen size={13} />{item.chapters}</span>}</div>
       {compact && <button className="arc-details-toggle" aria-expanded={details} onClick={() => setDetails(!details)}>{details ? 'Hide details' : 'Arc details'}<ChevronDown size={13} /></button>}
       {(!compact || details) && <div className="arc-details">
         <SpoilerContent hidden={shield && !watched} label="plot summary"><p>{item.description}</p>{item.highlights && <p className="arc-highlights">Key moments: {item.highlights}</p>}</SpoilerContent>

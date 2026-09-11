@@ -867,11 +867,11 @@ export default function App() {
         bounty={formatBounty(calculatedBounty)} unlockedCount={unlockedCount} achievementCount={ACHIEVEMENTS.length}
         crew={unlockedCrew} shield={spoilerShield} themeId={activeThemeId} onTheme={setActiveThemeId}
         onAchievements={() => { setActiveTab('achievements'); document.getElementById('main-content')?.scrollIntoView(); }}
-        onSettings={() => setShowSettingsModal(true)} onJump={scrollToActiveArc} onAdvance={advanceUpNext} />
+        onJump={scrollToActiveArc} onAdvance={advanceUpNext} />
 
       {/* Main Container */}
       <main id="main-content" tabIndex={-1} className="page-width main-content">
-        <Navigation active={activeTab} onTab={setActiveTab} compact={compactView}
+        <Navigation active={activeTab} onTab={setActiveTab} compact={compactView} onSettings={() => setShowSettingsModal(true)}
           onCompact={() => setCompactView(!compactView)} shield={spoilerShield}
           onShield={() => setSpoilerShield(!spoilerShield)} onExport={exportProgressJSON} onImport={importProgressJSON} />
 
