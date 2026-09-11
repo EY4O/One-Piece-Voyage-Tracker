@@ -61,7 +61,9 @@ export default function InstallPromptBanner() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 right-4 z-50 max-w-md mx-auto p-4 rounded-2xl bg-slate-900/95 border border-amber-500/40 shadow-2xl backdrop-blur-md text-slate-100 animate-in fade-in slide-in-from-bottom duration-300"
+      role="region"
+      aria-label="Install Eternal Pose"
+      className="install-banner fixed bottom-4 left-4 right-4 z-50 max-w-md mx-auto p-4 rounded-2xl bg-slate-900/95 border border-amber-500/40 shadow-2xl backdrop-blur-md text-slate-100"
       style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <div className="flex items-start justify-between gap-3">

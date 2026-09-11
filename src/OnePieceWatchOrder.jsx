@@ -1,6 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
 import InstallPromptBanner from './InstallPromptBanner';
+import ArcCard from './components/ArcCard';
+import { Modal, Navigation, ProgressBar, SpoilerContent, UpNextBar, VoyageHeader } from './components/VoyageUI';
 
 // 12 Saga Background Artworks (src/assets/sagas/)
 import bgEastBlue from './assets/sagas/1east-blue.jpg';
@@ -22,44 +24,23 @@ import bgStrawHat from './assets/sagas/strawhat.jpg';
 import bgMerry from './assets/sagas/merry.jpg';
 
 import {
-  LayoutList,
-  LayoutGrid,
   Compass,
   Film,
   CheckCircle2,
-  Circle,
-  Sparkles,
   Flame,
-  Star,
   Search,
   Filter,
   CheckCheck,
   RotateCcw,
-  BookOpen,
   Info,
   ChevronDown,
   ChevronUp,
-  Clock,
   Trophy,
-  Users,
-  Anchor,
   ShieldCheck,
   AlertTriangle,
   Palette,
-  Eye,
-  EyeOff,
   Calculator,
-  Download,
-  Upload,
-  Plus,
-  Minus,
-  FastForward,
-  BookmarkCheck,
-  PlayCircle,
-  ArrowRight,
-  SkipForward,
   Lock,
-  Award,
   Image as ImageIcon,
   Settings,
   X,
@@ -473,8 +454,6 @@ export default function App() {
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [compactView, setCompactView] = useState(() => localStorage.getItem('op_compact_view') === 'true');
   const [canonPuristMode, setCanonPuristMode] = useState(() => localStorage.getItem('op_canon_purist_mode') === 'true');
-  const [expandedSkipReasons, setExpandedSkipReasons] = useState(() => new Set());
-  const [expandedArcSummaries, setExpandedArcSummaries] = useState(() => new Set());
 
   useEffect(() => {
     localStorage.setItem('op_compact_view', compactView.toString());
@@ -520,6 +499,10 @@ export default function App() {
 
   const [showResetModal, setShowResetModal] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const toastTimer = useRef(null);
+  const previousMilestones = useRef(null);
+
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
 
   const theme = THEMES[activeThemeId] || THEMES.classic;
 
@@ -531,26 +514,9 @@ export default function App() {
   useEffect(() => { localStorage.setItem('op_spoiler_shield', spoilerShield.toString()); }, [spoilerShield]);
 
   const showToast = (msg) => {
+    clearTimeout(toastTimer.current);
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
-  const toggleCompactSkipReason = (id) => {
-    setExpandedSkipReasons(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const toggleCompactArcSummary = (id) => {
-    setExpandedArcSummaries(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    toastTimer.current = setTimeout(() => setToastMessage(null), 4500);
   };
 
   const allItems = useMemo(() => SAGAS_DATA.flatMap(s => s.items), []);
@@ -631,6 +597,20 @@ export default function App() {
   const unlockedCount = useMemo(() => {
     return evaluatedAchievements.filter(a => a.isUnlocked).length;
   }, [evaluatedAchievements]);
+
+  useEffect(() => {
+    const unlocked = evaluatedAchievements.filter(a => a.isUnlocked);
+    const previous = previousMilestones.current;
+    if (previous) {
+      const newCrew = unlockedCrew.filter(name => !previous.crew.includes(name));
+      const newAwards = unlocked.filter(award => !previous.awards.includes(award.id));
+      const messages = [];
+      if (newCrew.length) messages.push(`${newCrew.join(', ')} joined your crew!`);
+      if (newAwards.length) messages.push(`${newAwards.length} milestone${newAwards.length === 1 ? '' : 's'} unlocked.`);
+      if (messages.length) showToast(messages.join(' '));
+    }
+    previousMilestones.current = { crew: unlockedCrew, awards: unlocked.map(award => award.id) };
+  }, [unlockedCrew, evaluatedAchievements]);
 
   const upNextData = useMemo(() => {
     for (let i = 0; i < allItems.length; i++) {
@@ -732,12 +712,14 @@ export default function App() {
   const scrollToActiveArc = () => {
     if (!upNextData) return;
     setActiveTab('roadmap');
+    setSearchQuery('');
+    setFilterType('all');
     if (upNextData.saga) {
       setExpandedSagas(prev => new Set(prev).add(upNextData.saga.id));
     }
     setTimeout(() => {
       const el = document.getElementById(`arc-card-${upNextData.item.id}`);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (el) { el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' }); el.focus({ preventScroll: true }); }
     }, 100);
   };
 
@@ -871,434 +853,45 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:text-slate-950 transition-colors duration-300"
+      className="voyage-app min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:text-slate-950 transition-colors duration-300"
       style={{
         '--theme-primary': theme.primary,
         '--theme-hover': theme.primaryHover
       }}
     >
-      {/* THEMED ACTIVE ARC PULSE & GLOW STYLES */}
-      <style>{`
-        @keyframes activeArcGlow {
-          0%, 100% {
-            border-color: var(--theme-primary);
-            box-shadow: 0 0 0 1px var(--theme-primary), 0 0 20px -2px var(--theme-primary);
-          }
-          50% {
-            border-color: var(--theme-hover);
-            box-shadow: 0 0 0 1px var(--theme-hover), 0 0 9px -3px var(--theme-hover);
-          }
-        }
-        .active-arc-glow {
-          animation: activeArcGlow 2.4s ease-in-out infinite;
-        }
-      `}</style>
-
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-amber-500/50 text-amber-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
-          <Sparkles className="w-4 h-4 text-amber-400" />
-          <span className="text-xs font-bold">{toastMessage}</span>
-        </div>
-      )}
-
-      {/* STICKY "UP NEXT" BAR WITH iOS SAFE-AREA SUPPORT */}
-      {upNextData && (
-        <div 
-          className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/30 px-3 sm:px-4 pb-2 sm:pb-2.5 shadow-xl transition"
-          style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
-        >
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
-            
-            {/* Row 1 on Mobile: Episode Metadata */}
-            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 w-full sm:flex-1 overflow-hidden">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                {upNextData.item.type === 'movie' ? (
-                  <Film className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 animate-pulse" />
-                ) : (
-                  <PlayCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 animate-pulse" />
-                )}
-              </div>
-
-              <div 
-                className="min-w-0 flex-1 overflow-hidden select-none"
-                title={upNextData.episodeTitle}
-              >
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
-                    {upNextData.isEpBased
-                      ? `Up Next • Ep ${upNextData.currentEp}`
-                      : `Up Next • ${upNextData.item.type.toUpperCase()}`}
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-bold text-slate-400 truncate">
-                    {upNextData.item.title}
-                  </span>
-                </div>
-
-                <div className="relative overflow-hidden w-full mt-0.5">
-                  <h4 className="text-xs sm:text-sm font-black text-slate-100 truncate">
-                    {upNextData.isEpBased && (
-                      <span className="text-amber-300 mr-1 shrink-0">Ep {upNextData.currentEp}:</span>
-                    )}
-                    <span className="italic text-slate-200">"{upNextData.episodeTitle}"</span>
-                  </h4>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 2 on Mobile: Action Buttons */}
-            <div className="grid grid-cols-3 sm:flex sm:items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
-              <button
-                onClick={scrollToActiveArc}
-                className="px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] sm:text-xs font-semibold border border-slate-700 transition flex items-center justify-center gap-1 whitespace-nowrap"
-              >
-                <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Jump</span>
-              </button>
-
-              <button
-                onClick={skipUpNext}
-                title="Skip this item without marking as watched"
-                className="px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-amber-300 text-[11px] sm:text-xs font-semibold border border-slate-700/80 transition flex items-center justify-center gap-1 whitespace-nowrap"
-              >
-                <SkipForward className="w-3.5 h-3.5 shrink-0" />
-                <span>Skip</span>
-              </button>
-
-              <button
-                onClick={advanceUpNext}
-                className="px-2.5 sm:px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-[11px] sm:text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-1 whitespace-nowrap col-span-1"
-              >
-                {upNextData.isEpBased ? (
-                  <>
-                    <span>{upNextData.currentEp === upNextData.endEp ? 'Finish' : 'Next (+1)'}</span>
-                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                  </>
-                ) : (
-                  <>
-                    <span>Continue</span>
-                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                  </>
-                )}
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* Header Banner */}
-      <header 
-        className="relative bg-slate-950 border-b border-slate-800 px-4 pb-8 md:py-12 overflow-hidden"
-        style={{ paddingTop: 'max(2rem, calc(env(safe-area-inset-top) + 1.5rem))' }}
-      >
-        {/* 1. Dynamic Background Artwork Layer */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          <img
-            key={activeBgKey}
-            src={activeHeaderArtwork}
-            alt="One Piece Background Artwork"
-            className="w-full h-full object-cover object-center opacity-30 filter contrast-125 brightness-95 transition-opacity duration-1000"
-          />
-        </div>
-
-        {/* 2. Dynamic Straw Hat Theme Tint Overlay */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none transition-all duration-700 mix-blend-color"
-          style={{
-            background: `linear-gradient(135deg, ${theme.primary}66 0%, transparent 80%)`
-          }}
-        />
-
-        {/* 3. Dark Vignette Overlay for Text Readability */}
-        <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-slate-950/70 via-slate-950/85 to-slate-950" />
-
-        {/* 4. Straw Hat Radial Ambient Glow */}
-        <div
-          className="absolute -top-24 -right-24 w-96 h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700 z-0"
-          style={{ background: theme.accentGlow }}
-        />
-
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-3">
-                <div
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm"
-                  style={{
-                    backgroundColor: `${theme.primary}15`,
-                    borderColor: `${theme.primary}50`,
-                    color: theme.primary
-                  }}
-                >
-                  <Compass className="w-3.5 h-3.5 animate-spin-slow" />
-                  Grand Line Definitive Order
-                </div>
-              </div>
-
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
-                <span>The One Piece Voyage</span>
-                <span className="text-2xl md:text-3xl">{theme.avatar}</span>
-              </h1>
-              <p className="mt-2 text-slate-400 text-xs md:text-sm max-w-2xl">
-                Track all 1,120+ episodes, movies, and canonical arcs. Log your progress and unlock Grand Line achievements.
-              </p>
-            </div>
-
-            {/* Live Marine Bounty & Achievements Quick Card */}
-            <div
-              onClick={() => setActiveTab('achievements')}
-              className="cursor-pointer group bg-slate-900/90 border border-slate-800 hover:border-amber-500/60 p-4 rounded-3xl shadow-xl transition flex items-center gap-4 relative overflow-hidden shrink-0 backdrop-blur-sm"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl group-hover:scale-105 transition shrink-0">
-                💰
-              </div>
-              <div className="min-w-0">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1">
-                  <Trophy className="w-3 h-3 text-amber-400" /> Active Marine Bounty
-                </div>
-                
-                <div className="text-2xl md:text-3xl font-black text-amber-400 tracking-tight font-mono truncate mt-0.5">
-                  ฿ {formatBounty(calculatedBounty)}
-                </div>
-
-                <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
-                  <Award className="w-3 h-3 text-amber-500/80 shrink-0" />
-                  <span>Achievements:</span>
-                  <span className="text-slate-200 font-bold font-mono">
-                    {unlockedCount} / {ACHIEVEMENTS.length}
-                  </span>
-                  <span className="text-emerald-400 font-semibold font-mono text-[10px]">
-                    ({Math.round((unlockedCount / ACHIEVEMENTS.length) * 100)}%)
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Watch Time Metrics */}
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Watched Units</div>
-              <div className="text-lg font-black text-amber-400 font-mono mt-0.5">{watchedEpisodesCount}</div>
-            </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Screen Time</div>
-              <div className="text-lg font-black text-cyan-400 font-mono mt-0.5">{watchTimeStats.hoursWatched} hrs</div>
-            </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Continuous Days</div>
-              <div className="text-lg font-black text-emerald-400 font-mono mt-0.5">{watchTimeStats.daysEquivalent} days</div>
-            </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 text-center backdrop-blur-sm">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filler Time Saved</div>
-              <div className="text-lg font-black text-orange-400 font-mono mt-0.5">+{watchTimeStats.fillerHoursSaved} hrs</div>
-            </div>
-          </div>
-
-          {/* Global Progress Bar */}
-          <div className="mt-6 bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80 shadow-lg backdrop-blur-sm">
-            <div className="flex justify-between items-center text-xs font-semibold mb-2">
-              <span className="flex items-center gap-1.5" style={{ color: theme.primary }}>
-                <Anchor className="w-4 h-4" /> Voyage Progress
-              </span>
-              <span className="text-slate-400">
-                {watchedEpisodesCount} of ~{totalEpisodesCount} Episodes ({progressPercent}%)
-              </span>
-            </div>
-
-            <div className="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-800">
-              <div
-                className={`h-full bg-gradient-to-r ${theme.gradient} rounded-full transition-all duration-500 shadow-sm`}
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-
-            {/* Crew Status Bar */}
-            <div className="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
-              <div className="text-xs font-medium text-slate-400 flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5" style={{ color: theme.primary }} /> Straw Hats Recruited:
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { name: 'Luffy', icon: '🍖', id: 'luffy' },
-                  { name: 'Zoro', icon: '⚔️', id: 'zoro' },
-                  { name: 'Usopp', icon: '🎯', id: 'usopp' },
-                  { name: 'Sanji', icon: '🍳', id: 'sanji' },
-                  { name: 'Nami', icon: '🍊', id: 'nami' },
-                  { name: 'Chopper', icon: '🌸', id: 'chopper' },
-                  { name: 'Robin', icon: '📖', id: 'robin' },
-                  { name: 'Franky', icon: '⭐', id: 'franky' },
-                  { name: 'Brook', icon: '🎻', id: 'brook' },
-                  { name: 'Jinbe', icon: '🌊', id: 'jinbe' }
-                ].map(member => {
-                  const isRecruited = unlockedCrew.includes(member.name === 'Robin' ? 'Nico Robin' : member.name);
-                  const isMasked = spoilerShield && !isRecruited;
-
-                  return (
-                    <button
-                      key={member.name}
-                      onClick={() => {
-                        setActiveThemeId(member.id);
-                        showToast(`Active Straw Hat: ${member.name}!`);
-                      }}
-                      title={isMasked ? 'Locked Member' : `Activate ${member.name} theme`}
-                      className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${
-                        isRecruited
-                          ? 'bg-slate-800 text-slate-200 border border-slate-700 hover:border-amber-500/50'
-                          : 'bg-slate-950/40 text-slate-600 border border-slate-900 opacity-70 group'
-                      }`}
-                    >
-                      {isMasked ? (
-                        <>
-                          <Lock className="w-3 h-3 text-slate-500 group-hover:hidden" />
-                          <span className="hidden group-hover:inline">{member.icon}</span>
-                          <span className="filter blur-[3.5px] group-hover:filter-none select-none transition">
-                            {member.name}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span>{member.icon}</span>
-                          <span>{member.name}</span>
-                        </>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <a className="skip-link" href="#main-content">Skip to voyage content</a>
+      <div className="voyage-toast" role="status" aria-live="polite">{toastMessage && <span><CheckCircle2 size={16} />{toastMessage}</span>}</div>
+      <UpNextBar next={upNextData} onJump={scrollToActiveArc} onSkip={skipUpNext} onAdvance={advanceUpNext} />
+      <VoyageHeader artwork={activeHeaderArtwork} next={upNextData} progress={progressPercent}
+        watched={watchedEpisodesCount} total={totalEpisodesCount} stats={watchTimeStats}
+        bounty={formatBounty(calculatedBounty)} unlockedCount={unlockedCount} achievementCount={ACHIEVEMENTS.length}
+        crew={unlockedCrew} shield={spoilerShield} themeId={activeThemeId} onTheme={setActiveThemeId}
+        onAchievements={() => { setActiveTab('achievements'); document.getElementById('main-content')?.scrollIntoView(); }}
+        onSettings={() => setShowSettingsModal(true)} onJump={scrollToActiveArc} onAdvance={advanceUpNext} />
 
       {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 mt-8">
-        {/* Navigation Tabs Bar */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6 gap-4 overflow-x-auto">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActiveTab('roadmap')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition ${
-                activeTab === 'roadmap'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Compass className="w-4 h-4" /> Watch Roadmap
-            </button>
-            <button
-              onClick={() => setActiveTab('achievements')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition ${
-                activeTab === 'achievements'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Trophy className="w-4 h-4" /> Achievements ({unlockedCount}/{ACHIEVEMENTS.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('tierlist')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition ${
-                activeTab === 'tierlist'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Film className="w-4 h-4" /> Movies & Placement
-            </button>
-            <button
-              onClick={() => setActiveTab('pacing')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition ${
-                activeTab === 'pacing'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Calculator className="w-4 h-4" /> Pacing Calculator
-            </button>
-            <button
-              onClick={() => setActiveTab('quicktips')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition ${
-                activeTab === 'quicktips'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <BookOpen className="w-4 h-4" /> Guide & Fillers
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Settings Gear Button */}
-            <button
-              onClick={() => setShowSettingsModal(true)}
-              title="Voyage Settings"
-              className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition flex items-center gap-1.5 text-xs font-bold"
-            >
-              <Settings className="w-4 h-4 text-amber-400 animate-spin-slow" />
-            </button>
-
-            {/* Compact / Detailed View Toggle */}
-            <button
-              onClick={() => {
-                setCompactView(!compactView);
-                showToast(`Switched to ${!compactView ? 'Compact' : 'Detailed'} view!`);
-              }}
-              title="Toggle Compact / Detailed View"
-              className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
-                compactView
-                  ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {compactView ? <LayoutList className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
-              <span className="hidden md:inline">{compactView ? 'Compact' : 'Detailed'}</span>
-            </button>
-
-            {/* Spoiler Shield Toggle */}
-            <button
-              onClick={() => {
-                setSpoilerShield(!spoilerShield);
-                showToast(`Spoiler Shield ${!spoilerShield ? 'Activated' : 'Deactivated'}!`);
-              }}
-              title="Toggle Spoiler Shield"
-              className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
-                spoilerShield
-                  ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400'
-                  : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {spoilerShield ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-
-            {/* Export Progress JSON */}
-            <button
-              onClick={exportProgressJSON}
-              title="Export progress JSON"
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-
-            {/* Import Progress JSON */}
-            <label
-              title="Import progress JSON"
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              <input type="file" accept=".json" onChange={importProgressJSON} className="hidden" />
-            </label>
-          </div>
-        </div>
+      <main id="main-content" tabIndex={-1} className="page-width main-content">
+        <Navigation active={activeTab} onTab={setActiveTab} compact={compactView}
+          onCompact={() => setCompactView(!compactView)} shield={spoilerShield}
+          onShield={() => setSpoilerShield(!spoilerShield)} onExport={exportProgressJSON} onImport={importProgressJSON} />
 
         {/* TAB 1: WATCH ROADMAP */}
         {activeTab === 'roadmap' && (
           <div>
-            <div className="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between backdrop-blur-sm">
+            <div className="roadmap-heading"><div><p className="eyebrow">CHART YOUR COURSE</p><h2>Your watch roadmap</h2><p>Follow the story. Choose your detours.</p></div>
+              <label className="saga-picker"><span>Navigate to saga</span><select aria-label="Navigate to saga" value="" onChange={e => {
+                const id = e.target.value;
+                setSearchQuery(''); setFilterType('all'); setExpandedSagas(prev => new Set(prev).add(id));
+                setTimeout(() => { const target = document.getElementById(`saga-${id}`); target?.scrollIntoView({ block: 'start' }); target?.focus({ preventScroll: true }); }, 100);
+              }}><option value="" disabled>Choose a saga…</option>{SAGAS_DATA.map((saga, i) => <option key={saga.id} value={saga.id}>{String(i+1).padStart(2,'0')} · {saga.title}</option>)}</select></label>
+            </div>
+            {canonPuristMode && <div className="mode-notice"><ShieldCheck size={16} />Canon Purist is on: canon and mixed arcs only.<button className="ui-button quiet" onClick={() => setCanonPuristMode(false)}>Show all content</button></div>}
+            <div className="filter-bar">
               <div className="relative w-full md:w-80">
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
-                  type="text"
+                  type="search"
+                  aria-label="Search arcs, movies, or episodes"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search arc, movie, or episode..."
@@ -1320,6 +913,7 @@ export default function App() {
                 ].map(filter => (
                   <button
                     key={filter.id}
+                    aria-pressed={filterType === filter.id}
                     onClick={() => setFilterType(filter.id)}
                     className={`text-xs px-3 py-1.5 rounded-lg font-medium transition ${
                       filterType === filter.id
@@ -1333,6 +927,7 @@ export default function App() {
               </div>
             </div>
 
+            <div className="roadmap-tools"><span role="status">{filteredSagas.reduce((sum, saga) => sum + saga.items.length, 0)} stops · {filteredSagas.length} sagas{searchQuery && ` matching “${searchQuery}”`}</span><div>{(searchQuery || filterType !== 'all') && <button className="ui-button quiet" onClick={() => { setSearchQuery(''); setFilterType('all'); }}>Clear filters</button>}<button className="ui-button quiet" onClick={() => setExpandedSagas(new Set())}>Collapse all</button><button className="ui-button quiet" onClick={() => setExpandedSagas(new Set(SAGAS_DATA.map(s => s.id)))}>Expand all</button></div></div>
             <div className="space-y-8">
               {filteredSagas.length === 0 ? (
                 <div className="text-center py-16 bg-slate-900/40 rounded-3xl border border-slate-800">
@@ -1343,8 +938,9 @@ export default function App() {
               ) : (
                 filteredSagas.map(saga => {
                   const isExpanded = expandedSagas.has(saga.id);
-                  const sagaWatchedCount = saga.items.filter(i => watchedIds.has(i.id)).length;
-                  const sagaTotalCount = saga.items.length;
+                  const fullSaga = SAGAS_DATA.find(s => s.id === saga.id);
+                  const sagaWatchedCount = fullSaga.items.filter(i => watchedIds.has(i.id)).length;
+                  const sagaTotalCount = fullSaga.items.length;
                   const isSagaComplete = sagaTotalCount > 0 && sagaWatchedCount === sagaTotalCount;
 
                   const canonCount = saga.items.filter(i => i.type === 'canon' || i.type === 'mixed').length;
@@ -1354,11 +950,15 @@ export default function App() {
                   return (
                     <div
                       key={saga.id}
-                      className="bg-slate-900/60 border border-slate-800/80 rounded-3xl overflow-hidden shadow-xl hover:border-slate-700/80 transition"
+                      id={`saga-${saga.id}`} tabIndex={-1}
+                      className="saga-section"
                     >
-                      <div className="p-5 md:p-6 bg-gradient-to-r from-slate-900 to-slate-900/40 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="saga-heading">
                         <div className="flex items-start gap-4">
                           <button
+                            aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${saga.title}`}
+                            aria-expanded={isExpanded}
+                            aria-controls={`saga-items-${saga.id}`}
                             onClick={() => toggleSagaExpand(saga.id)}
                             className="mt-1 p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition"
                           >
@@ -1393,14 +993,15 @@ export default function App() {
                                 </span>
                               )}
                             </div>
-                            <h2 className="text-xl md:text-2xl font-black text-slate-100">{saga.title}</h2>
-                            <p className="text-xs md:text-sm text-slate-400 mt-0.5">{saga.tagline}</p>
+                            <h2 className="saga-title"><span>{String(SAGAS_DATA.findIndex(s => s.id === saga.id) + 1).padStart(2, '0')}</span>{saga.title}</h2>
+                            {upNextData?.saga?.id === saga.id && <span className="saga-current">Current saga</span>}
+                            <SpoilerContent hidden={spoilerShield && !isSagaComplete} label="saga overview"><p className="text-sm text-slate-400 mt-2">{saga.tagline}</p></SpoilerContent>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2 self-end md:self-center">
                           <span className="text-xs font-medium text-slate-400 mr-2">
-                            {sagaWatchedCount}/{sagaTotalCount} Done
+                            {sagaWatchedCount}/{sagaTotalCount} stops complete
                           </span>
                           <button
                             onClick={() => markSaga(saga.id, !isSagaComplete)}
@@ -1416,303 +1017,15 @@ export default function App() {
                         </div>
                       </div>
 
+                      <ProgressBar value={sagaWatchedCount / sagaTotalCount * 100} label={`${saga.title} completion`} />
                       {isExpanded && (
-                        <div className={compactView ? "p-3 space-y-1.5" : "p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4"}>
-                          {saga.items.map(item => {
-                            const isWatched = watchedIds.has(item.id);
-                            const isSkipped = skippedIds.has(item.id);
-                            const isFiller = item.type === 'filler';
-                            const currentEp = getItemCurrentEpisode(item);
-                            const hasStepper = Boolean(item.startEp && item.endEp);
-                            const currentEpTitle = currentEp !== null ? getEpisodeTitle(currentEp, item.title) : null;
-                            const isSkipReasonExpanded = expandedSkipReasons.has(item.id);
-                            const isSummaryExpanded = expandedArcSummaries.has(item.id);
-
-                            // Active Arc Glow detection based on Up Next target
-                            const isActiveArc = upNextData?.item?.id === item.id;
-
-                            // COMPACT ROW VIEW
-                            if (compactView) {
-                              return (
-                                <div key={item.id} id={`arc-card-${item.id}`} className="space-y-1">
-                                  <div
-                                    className={`px-3 py-2 rounded-xl border transition-all flex items-center justify-between gap-3 ${
-                                      isActiveArc
-                                        ? 'active-arc-glow bg-slate-900/90 text-slate-100'
-                                        : isWatched
-                                        ? 'bg-slate-950/50 border-emerald-500/20 text-slate-400'
-                                        : isSkipped
-                                        ? 'bg-slate-950/20 border-slate-900 opacity-50'
-                                        : 'bg-slate-900/60 border-slate-800/80 text-slate-200 hover:border-slate-700'
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                      <button
-                                        onClick={() => toggleItem(item)}
-                                        className="shrink-0 p-0.5 text-slate-400 hover:text-amber-400 transition"
-                                      >
-                                        {isWatched ? (
-                                          <CheckCircle2 className="w-4 h-4 text-emerald-400 fill-emerald-500/20" />
-                                        ) : (
-                                          <Circle className="w-4 h-4" />
-                                        )}
-                                      </button>
-
-                                      <button
-                                        onClick={() => toggleCompactArcSummary(item.id)}
-                                        className="flex items-center gap-1.5 min-w-0 text-left hover:text-amber-300 transition group"
-                                        title="Click to view arc recap"
-                                      >
-                                        <span className={`text-xs font-bold truncate ${isWatched ? 'line-through text-slate-500' : 'text-slate-200'}`}>
-                                          {item.title}
-                                        </span>
-                                        <span className="text-[10px] text-slate-500 group-hover:text-amber-400 transition shrink-0">
-                                          {isSummaryExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                                        </span>
-                                      </button>
-
-                                      <span className="text-[10px] text-amber-400/80 font-mono shrink-0 hidden sm:inline">
-                                        {item.episodes}
-                                      </span>
-
-                                      {item.type === 'filler' && (
-                                        <button
-                                          onClick={() => toggleCompactSkipReason(item.id)}
-                                          className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded border shrink-0 transition flex items-center gap-1 ${
-                                            isSkipReasonExpanded
-                                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                                              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
-                                          }`}
-                                          title="Click to view why this arc is skipped"
-                                        >
-                                          <span>Filler ?</span>
-                                          {isSkipReasonExpanded ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
-                                        </button>
-                                      )}
-                                    </div>
-
-                                    {hasStepper && !isWatched && (
-                                      <div className="flex items-center gap-1.5 shrink-0 text-xs">
-                                        <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
-                                          Ep {currentEp || item.startEp}/{item.endEp}
-                                        </span>
-                                        <button
-                                          onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp) - 1)}
-                                          disabled={currentEp === null || currentEp <= item.startEp}
-                                          className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-20 flex items-center justify-center text-slate-300"
-                                        >
-                                          <Minus className="w-3 h-3" />
-                                        </button>
-                                        <button
-                                          onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp - 1) + 1)}
-                                          className="w-6 h-6 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center justify-center font-bold"
-                                        >
-                                          <Plus className="w-3 h-3" />
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  {isSummaryExpanded && (
-                                    <div className="px-3.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-300 leading-relaxed ml-6 space-y-1">
-                                      <div className="relative">
-                                        <p className={`${spoilerShield && !isWatched ? 'filter blur-[3.5px] hover:filter-none select-none hover:select-text transition' : ''}`}>
-                                          {item.description}
-                                        </p>
-                                        {spoilerShield && !isWatched && (
-                                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-slate-300 bg-slate-950/60 rounded pointer-events-none">
-                                            🔒 Hover to view recap (Spoiler Shield Active)
-                                          </span>
-                                        )}
-                                      </div>
-                                      {item.highlights && (!spoilerShield || isWatched) && (
-                                        <div className="text-[10px] text-amber-400/90 font-medium pt-0.5 border-t border-slate-800/60">
-                                          Key moments: {item.highlights}
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-
-                                  {isSkipReasonExpanded && item.skipReason && (
-                                    <div className="px-3 py-1.5 rounded-xl bg-slate-950/80 border border-amber-500/30 text-[11px] text-slate-400 flex items-start gap-2 ml-6">
-                                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                                      <span>
-                                        <strong className="text-slate-300">Why skip:</strong> {item.skipReason}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            }
-
-                            // FULL DETAILED CARD
-                            return (
-                              <div
-                                key={item.id}
-                                id={`arc-card-${item.id}`}
-                                className={`relative p-4 rounded-2xl border transition-all flex flex-col justify-between ${
-                                  isActiveArc
-                                    ? 'active-arc-glow bg-slate-900/95 text-slate-100'
-                                    : isWatched
-                                    ? 'bg-slate-950/60 border-emerald-500/30 text-slate-300'
-                                    : isSkipped
-                                    ? 'bg-slate-950/30 border-amber-500/20 text-slate-400 opacity-60'
-                                    : item.type === 'canon'
-                                    ? 'bg-slate-900/90 border-amber-500/40 shadow-md shadow-amber-500/5'
-                                    : isFiller
-                                    ? 'bg-slate-950/40 border-slate-800/60 opacity-80'
-                                    : 'bg-slate-900/80 border-slate-800'
-                                }`}
-                              >
-                                <div>
-                                  <div className="flex items-start justify-between gap-3 mb-2">
-                                    <div className="flex flex-wrap items-center gap-1.5">
-                                      {item.type === 'canon' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">Canon</span>}
-                                      {item.type === 'mixed' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Mixed</span>}
-                                      {item.type === 'movie' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1"><Film className="w-3 h-3" /> Movie</span>}
-                                      {item.type === 'special' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">Special</span>}
-                                      {item.type === 'recommended_filler' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Top Filler</span>}
-                                      {item.type === 'filler' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Filler (Skip)</span>}
-                                      
-                                      {item.type === 'canon' && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-500 text-slate-950 flex items-center gap-0.5 font-bold"><Star className="w-2.5 h-2.5 fill-current" /> Essential</span>}
-                                      
-                                      {item.type !== 'canon' && item.tier === 'Must Watch' && (
-                                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-0.5 font-bold">
-                                          <Star className="w-2.5 h-2.5 fill-current" /> Fan Favorite
-                                        </span>
-                                      )}
-
-                                      {item.tier === 'Vintage Side Story' && (
-                                        <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-amber-400/80 border border-slate-700">
-                                          Vintage Side Story
-                                        </span>
-                                      )}
-
-                                      {isSkipped && <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-amber-400/80 border border-amber-500/20">Skipped</span>}
-                                    </div>
-
-                                    <button
-                                      onClick={() => toggleItem(item)}
-                                      title={isWatched ? 'Mark unwatched' : 'Mark watched'}
-                                      className="shrink-0 p-1 text-slate-400 hover:text-amber-400 transition"
-                                    >
-                                      {isWatched ? <CheckCircle2 className="w-5 h-5 text-emerald-400 fill-emerald-500/20" /> : <Circle className="w-5 h-5" />}
-                                    </button>
-                                  </div>
-
-                                  <div className="mb-2">
-                                    <h3 className={`text-base font-bold transition ${isWatched ? 'text-slate-300 line-through' : 'text-slate-100'}`}>
-                                      {item.title}
-                                    </h3>
-                                    <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-amber-400/90 mt-1">
-                                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {item.episodes}</span>
-                                      {item.chapters && <span className="text-slate-400 flex items-center gap-1"><BookOpen className="w-3 h-3" /> {item.chapters}</span>}
-                                      {item.onePace && item.onePace !== 'Skipped' && <span className="text-cyan-400 text-[11px] font-normal">⚡ One Pace: {item.onePace}</span>}
-                                    </div>
-                                  </div>
-
-                                  <div className="relative mb-3">
-                                    <p className={`text-xs text-slate-400 leading-relaxed transition duration-300 ${spoilerShield && !isWatched ? 'filter blur-[3.5px] hover:filter-none select-none hover:select-text' : ''}`}>
-                                      {item.description}
-                                    </p>
-                                    {spoilerShield && !isWatched && (
-                                      <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-slate-300 bg-slate-950/60 rounded-lg pointer-events-none">
-                                        🔒 Hover to view plot (Spoiler Shield Active)
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  {item.type === 'filler' && item.skipReason && (
-                                    <div className="mt-2 text-[11px] bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 text-slate-400 flex items-start gap-2">
-                                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                                      <span>
-                                        <strong className="text-slate-300">Why skip:</strong> {item.skipReason}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-
-                                {hasStepper && (
-                                  <div className="mt-3 pt-3 border-t border-slate-800/80 bg-slate-950/40 -mx-4 -mb-4 p-3.5 rounded-b-2xl">
-                                    <div className="flex items-center justify-between text-xs mb-1.5">
-                                      <div className="flex items-center gap-1.5 truncate mr-2">
-                                        <BookmarkCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                                        <span className="font-semibold text-slate-300 truncate">
-                                          {isWatched ? (
-                                            <span className="text-emerald-400">Completed through Ep {item.endEp}</span>
-                                          ) : currentEp !== null ? (
-                                            <span>Watching: <strong className="text-amber-300 font-mono text-sm">Episode {currentEp}</strong> of {item.endEp}</span>
-                                          ) : (
-                                            <span className="text-slate-500">Not started (Starts at Ep {item.startEp})</span>
-                                          )}
-                                        </span>
-                                      </div>
-                                      {currentEp !== null && !isWatched && (
-                                        <span className="text-[11px] font-mono text-slate-400 shrink-0">
-                                          ({currentEp - item.startEp + 1}/{item.epCount})
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {currentEp !== null && !isWatched && currentEpTitle && (
-                                      <div className="text-[11px] italic text-slate-400 truncate mb-2.5 pl-5 border-l border-amber-500/30">
-                                        "{currentEpTitle}"
-                                      </div>
-                                    )}
-
-                                    <div className="flex items-center justify-between gap-2">
-                                      <div className="flex items-center gap-1">
-                                        <button
-                                          onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp) - 1)}
-                                          disabled={currentEp === null || currentEp < item.startEp}
-                                          className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-slate-200 text-xs font-bold transition flex items-center gap-1"
-                                        >
-                                          <Minus className="w-3 h-3" /> 1
-                                        </button>
-                                        <button
-                                          onClick={() => handleSetCurrentEpisode(item, (currentEp !== null ? currentEp : item.startEp - 1) + 1)}
-                                          className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold transition flex items-center gap-1"
-                                        >
-                                          <Plus className="w-3 h-3" /> 1
-                                        </button>
-                                        {item.epCount > 5 && (
-                                          <button
-                                            onClick={() => handleSetCurrentEpisode(item, Math.min(item.endEp, (currentEp !== null ? currentEp : item.startEp - 1) + 5))}
-                                            className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition flex items-center gap-0.5"
-                                          >
-                                            <FastForward className="w-3 h-3 text-cyan-400" /> +5
-                                          </button>
-                                        )}
-                                      </div>
-
-                                      <div className="flex items-center gap-1 text-xs">
-                                        <span className="text-[11px] text-slate-500 font-medium">Jump Ep:</span>
-                                        <input
-                                          type="number"
-                                          min={item.startEp}
-                                          max={item.endEp}
-                                          value={currentEp || ''}
-                                          placeholder={item.startEp.toString()}
-                                          onChange={(e) => {
-                                            const val = parseInt(e.target.value, 10);
-                                            if (!isNaN(val)) handleSetCurrentEpisode(item, val);
-                                          }}
-                                          className="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-0.5 text-center text-xs text-amber-300 font-mono focus:outline-none focus:border-amber-500"
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {!hasStepper && item.watchTip && (
-                                  <div className="text-[11px] bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-amber-300/90 font-medium flex items-start gap-2 mt-2">
-                                    <Info className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
-                                    <span>{item.watchTip}</span>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
+                        <div id={`saga-items-${saga.id}`} className={compactView ? "arc-list compact-list" : "arc-list"}>
+                          {saga.items.map(item => <ArcCard key={item.id} item={item}
+                            watched={watchedIds.has(item.id)} skipped={skippedIds.has(item.id)}
+                            active={upNextData?.item?.id === item.id} currentEp={getItemCurrentEpisode(item)}
+                            currentEpTitle={getItemCurrentEpisode(item) !== null ? getEpisodeTitle(getItemCurrentEpisode(item), item.title) : null}
+                            compact={compactView} shield={spoilerShield} onToggle={toggleItem} onEpisode={handleSetCurrentEpisode}
+                            onRestore={id => { setSkippedIds(prev => { const next = new Set(prev); next.delete(id); return next; }); showToast('Restored to your watch queue.'); }} />)}
                         </div>
                       )}
                     </div>
@@ -1767,74 +1080,15 @@ export default function App() {
                 return (
                   <div
                     key={ach.id}
-                    className={`p-4 rounded-2xl border transition-all flex items-start gap-4 ${
+                    className={`achievement-card p-4 rounded-2xl border transition-all flex items-start gap-4 ${
                       ach.isUnlocked
                         ? 'bg-slate-900/90 border-slate-700 shadow-md'
-                        : 'bg-slate-950/40 border-slate-900 opacity-75 group'
+                        : 'bg-slate-950/40 border-slate-900 group'
                     }`}
                   >
-                    <div
-                      className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 border ${
-                        ach.isUnlocked ? tierStyles : 'bg-slate-900 border-slate-800 grayscale'
-                      }`}
-                    >
-                      {ach.isUnlocked ? (
-                        ach.icon
-                      ) : isMasked ? (
-                        <>
-                          <Lock className="w-5 h-5 text-slate-500 group-hover:hidden" />
-                          <span className="hidden group-hover:inline">{ach.icon}</span>
-                        </>
-                      ) : (
-                        ach.icon
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-0.5">
-                        <h4 className="text-sm font-bold truncate">
-                          {isMasked ? (
-                            <span className="filter blur-[3.5px] group-hover:filter-none select-none transition text-slate-400">
-                              {ach.title}
-                            </span>
-                          ) : (
-                            <span className={ach.isUnlocked ? 'text-slate-100' : 'text-slate-400'}>
-                              {ach.title}
-                            </span>
-                          )}
-                        </h4>
-                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded border shrink-0 ${tierStyles}`}>
-                          {ach.tier}
-                        </span>
-                      </div>
-
-                      <div className="relative mt-1">
-                        <p className={`text-xs leading-relaxed transition-all duration-300 ${
-                          isMasked 
-                            ? 'filter blur-[3.5px] group-hover:filter-none select-none text-slate-500 group-hover:text-slate-400' 
-                            : ach.isUnlocked 
-                            ? 'text-slate-400' 
-                            : 'text-slate-600'
-                        }`}>
-                          {ach.description}
-                        </p>
-                      </div>
-
-                      <div className="mt-2 flex items-center justify-between text-[10px] font-bold">
-                        {ach.isUnlocked ? (
-                          <span className="text-emerald-400 flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3" /> Unlocked
-                          </span>
-                        ) : isMasked ? (
-                          <span className="text-slate-500 flex items-center gap-1 group-hover:text-amber-400/80 transition">
-                            <Lock className="w-3 h-3" /> Hidden (Hover to view)
-                          </span>
-                        ) : (
-                          <span className="text-slate-500 flex items-center gap-1">
-                            <Lock className="w-3 h-3" /> Locked
-                          </span>
-                        )}
-                      </div>
+                    <div className={`achievement-icon ${ach.isUnlocked ? '' : 'locked'}`}>{isMasked ? <Lock size={22} /> : ach.icon}</div>
+                    <div className="flex-1 min-w-0"><div className="achievement-state"><span className={`text-xs font-bold ${ach.isUnlocked ? 'text-emerald-400' : 'text-slate-400'}`}>{ach.isUnlocked ? 'Unlocked' : 'Locked milestone'}</span><span className={`text-[11px] px-2 py-0.5 rounded border ${tierStyles}`}>{ach.tier}</span></div>
+                      <SpoilerContent hidden={isMasked} label="milestone"><h3 className="text-base font-bold mt-2">{ach.title}</h3><p className="text-sm text-slate-400 mt-1">{ach.description}</p></SpoilerContent>
                     </div>
                   </div>
                 );
@@ -1896,6 +1150,7 @@ export default function App() {
                 </div>
                 <input
                   type="range"
+                  aria-label="Daily watch pace"
                   min="1"
                   max="15"
                   value={dailyPace}
@@ -2047,22 +1302,11 @@ export default function App() {
         </div>
       </footer>
 
-      {/* FLOATING ACTION BUTTON WITH iOS SAFE-AREA BOTTOM SUPPORT */}
-      {upNextData && (
-        <button
-          onClick={scrollToActiveArc}
-          title={`Jump to ${upNextData.item.title}`}
-          style={{ bottom: 'max(1.5rem, calc(env(safe-area-inset-bottom) + 1rem))' }}
-          className="fixed left-6 z-40 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-4 py-3 rounded-2xl shadow-2xl font-black text-xs flex items-center gap-2 border border-amber-300/40 hover:scale-105 active:scale-95 transition"
-        >
-          <Compass className="w-4 h-4 animate-spin-slow" />
-          <span>{upNextData.isEpBased ? `Ep ${upNextData.currentEp} • ` : ''}Jump to Arc</span>
-        </button>
-      )}
+      <a href="#main-content" className="back-to-roadmap" aria-label="Back to voyage navigation"><ChevronUp size={18} /><span>Navigation</span></a>
 
       {/* VOYAGE SETTINGS MODAL */}
       {showSettingsModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <Modal label="Voyage Settings" message={toastMessage} onClose={() => setShowSettingsModal(false)}>
           <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative my-8">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
               <div className="flex items-center gap-2.5">
@@ -2075,6 +1319,7 @@ export default function App() {
                 </div>
               </div>
               <button
+                aria-label="Close settings"
                 onClick={() => setShowSettingsModal(false)}
                 className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition"
               >
@@ -2127,7 +1372,9 @@ export default function App() {
                     return (
                       <button
                         key={t.id}
+                        aria-pressed={activeThemeId === t.id}
                         onClick={() => {
+                          if (isThemeLocked) { showToast('Turn off Spoiler Shield to explore unrecruited character themes.'); return; }
                           setActiveThemeId(t.id);
                           showToast(`Switched theme to ${t.character}!`);
                         }}
@@ -2139,10 +1386,10 @@ export default function App() {
                       >
                         <span className="text-xl">{isThemeLocked ? '🔒' : t.avatar}</span>
                         <div className="flex-1 min-w-0">
-                          <div className={`text-xs font-bold truncate ${isThemeLocked ? 'filter blur-[3px] select-none text-slate-400' : 'text-slate-200'}`}>
+                          <div className={`text-xs font-bold truncate ${isThemeLocked ? 'text-slate-400' : 'text-slate-200'}`}>
                             {isThemeLocked ? 'Locked Member' : t.name}
                           </div>
-                          <div className="text-[10px] text-slate-500 truncate">{t.character}</div>
+                          <div className="text-[10px] text-slate-500 truncate">{isThemeLocked ? 'Hidden by Spoiler Shield' : t.character}</div>
                         </div>
                         <span className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0" style={{ backgroundColor: t.primary }} />
                       </button>
@@ -2159,6 +1406,7 @@ export default function App() {
 
                 {/* Auto Mode Button */}
                 <button
+                  aria-pressed={bgMode === 'auto'}
                   onClick={() => {
                     setBgMode('auto');
                     showToast('Header art set to Auto-Sync with your active arc!');
@@ -2189,6 +1437,7 @@ export default function App() {
                     return (
                       <button
                         key={customKey}
+                        aria-pressed={bgMode === customKey}
                         onClick={() => {
                           setBgMode(customKey);
                           showToast(`Header background locked to ${item.name}!`);
@@ -2216,6 +1465,7 @@ export default function App() {
                     .map(([key, data], idx) => (
                       <button
                         key={key}
+                        aria-pressed={bgMode === key}
                         onClick={() => {
                           setBgMode(key);
                           showToast(`Header background locked to ${data.name}!`);
@@ -2253,6 +1503,7 @@ export default function App() {
                   </div>
 
                   <button
+                    role="switch" aria-label="Canon Purist Mode" aria-checked={canonPuristMode}
                     onClick={() => {
                       setCanonPuristMode(!canonPuristMode);
                       showToast(`Canon Purist Mode ${!canonPuristMode ? 'Enabled' : 'Disabled'}!`);
@@ -2334,12 +1585,12 @@ export default function App() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
       {/* Reset Modal */}
       {showResetModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <Modal label="Reset Voyage Progress?" onClose={() => setShowResetModal(false)}>
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl text-center">
             <AlertTriangle className="w-12 h-12 mx-auto text-rose-500 mb-3" />
             <h3 className="text-lg font-bold text-slate-100">Reset Voyage Progress?</h3>
@@ -2367,12 +1618,12 @@ export default function App() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
       
       {/* LEGAL & CREDITS MODAL */}
       {showDisclaimerModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <Modal label="About & Disclaimer" onClose={() => setShowDisclaimerModal(false)}>
           <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
               <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
@@ -2380,6 +1631,7 @@ export default function App() {
                 <span className="text-slate-100 font-black text-base">About & Disclaimer</span>
               </div>
               <button
+                aria-label="Close about dialog"
                 onClick={() => setShowDisclaimerModal(false)}
                 className="p-1 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition"
               >
@@ -2415,7 +1667,7 @@ export default function App() {
               </button>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
       {/* ONE-TIME PWA INSTALL PROMPT FOR MOBILE */}

@@ -1,0 +1,10 @@
+{
+  "version": "3.0",
+  "theme": "classic",
+  "bgMode": "auto",
+  "watchedIds": [],
+  "skippedIds": [],
+  "subProgress": {},
+  "dailyPace": 3,
+  "canonPuristMode": false
+}
