@@ -185,6 +185,9 @@ body { margin: 0; background: var(--paper); font-family: var(--font-ui); }
 button, input, select, summary, a { -webkit-tap-highlight-color: transparent; }
 button, summary { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
+html { scroll-behavior: smooth; }
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
 button, input, select { font: inherit; }
 :focus-visible { outline: 2px solid var(--accent, rgb(var(--s-300))); outline-offset: 3px; border-radius: 2px; }
 ::selection { background: var(--accent-solid, rgb(var(--s-300))); color: rgb(var(--ink-fixed)); }
@@ -237,6 +240,8 @@ button, input, select { font: inherit; }
 .ui-button.accent { background: rgb(var(--a-500) / .14); border-color: rgb(var(--a-500) / .38); color: var(--accent); }
 .ui-button.accent:hover { background: rgb(var(--a-500) / .24); }
 .ui-button:disabled { opacity: .38; }
+.ui-button:not(:disabled):active, .nav-button:active, .mode-toggle button:active { transform: translateY(1px) scale(.985); }
+.ui-button { transition-property: background-color, border-color, color, transform; }
 
 /* --- colour-mode toggle (lives in Settings) --- */
 .mode-toggle {
