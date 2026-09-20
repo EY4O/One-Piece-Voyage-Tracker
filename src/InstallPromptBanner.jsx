@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Share, X, PlusSquare } from 'lucide-react';
+import { Compass, Download, Share, X, PlusSquare } from 'lucide-react';
 
 export default function InstallPromptBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -68,8 +68,8 @@ export default function InstallPromptBanner() {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xl shrink-0">
-            🧭
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+            <Compass size={20} strokeWidth={1.5} />
           </div>
           <div>
             <h4 className="text-xs font-black text-slate-100">Install Eternal Pose</h4>

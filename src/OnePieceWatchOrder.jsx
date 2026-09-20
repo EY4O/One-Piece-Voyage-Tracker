@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
 import InstallPromptBanner from './InstallPromptBanner';
 import ArcCard from './components/ArcCard';
-import { Modal, Navigation, ProgressBar, SpoilerContent, UpNextBar, VoyageHeader } from './components/VoyageUI';
+import { Modal, ModeToggle, Navigation, ProgressBar, SpoilerContent, UpNextBar, VoyageHeader } from './components/VoyageUI';
 
 // 12 Saga Background Artworks (src/assets/sagas/)
 import bgEastBlue from './assets/sagas/1east-blue.jpg';
@@ -45,7 +45,29 @@ import {
   Settings,
   X,
   Coffee,
-  Heart
+  Heart,
+  Sailboat,
+  Ship,
+  Anchor,
+  Waves,
+  Flower2,
+  Skull,
+  Bell,
+  HeartCrack,
+  Droplet,
+  Hand,
+  KeyRound,
+  Crown,
+  Hourglass,
+  Map,
+  Zap,
+  Flag,
+  Swords,
+  Bird,
+  Sun,
+  Star,
+  Cpu,
+  Castle
 } from 'lucide-react';
 
 // Background Map: Sagas + Custom Ship & Iconography Backgrounds
@@ -63,9 +85,9 @@ const BACKGROUND_ARTWORKS = {
   'final-saga': { name: 'Final Saga (Egghead)', img: bgFinalSaga, type: 'saga' },
   'elbaph': { name: 'Elbaph', img: bgElbaph, type: 'saga' },
 
-  'sunny': { name: 'Thousand Sunny', img: bgSunny, type: 'custom', icon: '🦁' },
-  'strawhat': { name: 'Straw Hat', img: bgStrawHat, type: 'custom', icon: '👒' },
-  'merry': { name: 'Going Merry', img: bgMerry, type: 'custom', icon: '🐑' }
+  'sunny': { name: 'Thousand Sunny', img: bgSunny, type: 'custom', icon: Sun },
+  'strawhat': { name: 'Straw Hat', img: bgStrawHat, type: 'custom', icon: Crown },
+  'merry': { name: 'Going Merry', img: bgMerry, type: 'custom', icon: Sailboat }
 };
 
 // Straw Hat Themes
@@ -74,7 +96,6 @@ const THEMES = {
     id: 'classic',
     name: 'Romance Dawn (Gold)',
     character: 'Classic One Piece',
-    avatar: '👑',
     primary: '#f59e0b',
     primaryHover: '#d97706',
     border: 'border-amber-500/40',
@@ -87,7 +108,6 @@ const THEMES = {
     id: 'luffy',
     name: 'Luffy (Red Hawk)',
     character: 'Monkey D. Luffy',
-    avatar: '🍖',
     primary: '#ef4444',
     primaryHover: '#dc2626',
     border: 'border-red-500/40',
@@ -100,7 +120,6 @@ const THEMES = {
     id: 'zoro',
     name: 'Zoro (Santoryu)',
     character: 'Roronoa Zoro',
-    avatar: '⚔️',
     primary: '#10b981',
     primaryHover: '#059669',
     border: 'border-emerald-500/40',
@@ -113,7 +132,6 @@ const THEMES = {
     id: 'nami',
     name: 'Nami (Cat Burglar)',
     character: 'Nami',
-    avatar: '🍊',
     primary: '#f97316',
     primaryHover: '#ea580c',
     border: 'border-orange-500/40',
@@ -126,7 +144,6 @@ const THEMES = {
     id: 'usopp',
     name: 'God Usopp (Sogeking)',
     character: 'Usopp',
-    avatar: '🎯',
     primary: '#eab308',
     primaryHover: '#ca8a04',
     border: 'border-yellow-500/40',
@@ -139,7 +156,6 @@ const THEMES = {
     id: 'sanji',
     name: 'Sanji (All Blue)',
     character: 'Sanji',
-    avatar: '🍳',
     primary: '#3b82f6',
     primaryHover: '#2563eb',
     border: 'border-blue-500/40',
@@ -152,7 +168,6 @@ const THEMES = {
     id: 'chopper',
     name: 'Chopper (Sakura)',
     character: 'Tony Tony Chopper',
-    avatar: '🌸',
     primary: '#ec4899',
     primaryHover: '#db2777',
     border: 'border-pink-500/40',
@@ -165,7 +180,6 @@ const THEMES = {
     id: 'robin',
     name: 'Robin (Fleur)',
     character: 'Nico Robin',
-    avatar: '📖',
     primary: '#a855f7',
     primaryHover: '#9333ea',
     border: 'border-purple-500/40',
@@ -178,7 +192,6 @@ const THEMES = {
     id: 'franky',
     name: 'Franky (SUPER)',
     character: 'Franky',
-    avatar: '⭐',
     primary: '#06b6d4',
     primaryHover: '#0891b2',
     border: 'border-cyan-500/40',
@@ -191,7 +204,6 @@ const THEMES = {
     id: 'brook',
     name: 'Brook (Soul King)',
     character: 'Brook',
-    avatar: '🎻',
     primary: '#94a3b8',
     primaryHover: '#64748b',
     border: 'border-slate-400/40',
@@ -204,7 +216,6 @@ const THEMES = {
     id: 'jinbe',
     name: 'Jinbe (First Son)',
     character: 'Jinbe',
-    avatar: '🌊',
     primary: '#0d9488',
     primaryHover: '#0f766e',
     border: 'border-teal-500/40',
@@ -217,7 +228,6 @@ const THEMES = {
     id: 'nika',
     name: 'Sun God Nika (Gear 5)',
     character: 'Drums of Liberation',
-    avatar: '☀️',
     primary: '#fbbf24',
     primaryHover: '#f59e0b',
     border: 'border-yellow-400/60',
@@ -279,7 +289,7 @@ const SAGAS_DATA = [
       { id: 'mov-5', title: 'Movie 5: The Cursed Holy Sword (2004)', type: 'movie', episodes: 'Movie (95 min)', epCount: 4, bountyReward: 2000000, description: 'Zoro-centric film dealing with cursed sword.', watchTip: 'Skippable movie.', skipReason: 'Non-canon movie contradicting Zoro swordsmanship rules; skippable.', tier: 'Vintage Side Story' },
       { id: 'arc-14', title: 'Jaya Arc', type: 'canon', episodes: '144 – 152', startEp: 144, endEp: 152, epCount: 9, chapters: 'Ch 218 – 236', onePace: '5 eps (2 hr 10m)', bountyReward: 10000000, description: 'Mock Town pirate haven. Meeting Blackbeard.', highlights: 'Blackbeard dreams speech, Knock Up Stream.', tier: 'Core' },
       { id: 'arc-15', title: 'Skypiea Arc', type: 'canon', episodes: '153 – 195', startEp: 153, endEp: 195, epCount: 43, chapters: 'Ch 237 – 302', onePace: '24 eps (10 hr 30m)', bountyReward: 50000000, description: 'White clouds 10,000m high. Survival against God Enel.', highlights: 'Golden Bell rings, Mont Blanc Noland story.', tier: 'Core' },
-      { id: 'arc-16', title: 'G-8 Arc (Navarone Marine Base)', type: 'recommended_filler', episodes: '196 – 206', startEp: 196, endEp: 206, epCount: 11, chapters: 'Anime Original', onePace: 'Retained by Fans', bountyReward: 10000000, description: 'Falling into Vice Admiral Jonathan fortress.', watchTip: '🔥 MUST WATCH FILLER! Elite writing.', tier: 'Must Watch' }
+      { id: 'arc-16', title: 'G-8 Arc (Navarone Marine Base)', type: 'recommended_filler', episodes: '196 – 206', startEp: 196, endEp: 206, epCount: 11, chapters: 'Anime Original', onePace: 'Retained by Fans', bountyReward: 10000000, description: 'Falling into Vice Admiral Jonathan fortress.', watchTip: 'Essential filler. Elite writing.', tier: 'Must Watch' }
     ]
   },
   {
@@ -412,31 +422,31 @@ const SAGAS_DATA = [
 
 // PIRATE ACHIEVEMENTS SYSTEM
 const ACHIEVEMENTS = [
-  { id: 'ach-1', title: 'Setting Sail', icon: '⛵', tier: 'Bronze', description: 'Watched Episode 1 and began the journey across the Grand Line.', check: (watched, sub, eps) => eps >= 1 },
-  { id: 'ach-2', title: 'East Blue Conqueror', icon: '🌊', tier: 'Bronze', description: 'Defeated Arlong and liberated Cocoyasi Village.', check: (watched) => watched.has('arc-5') },
-  { id: 'ach-3', title: 'Entering the Grand Line', icon: '🧭', tier: 'Bronze', description: 'Scaled Reverse Mountain and passed through the Twin Capes.', check: (watched) => watched.has('arc-8') },
-  { id: 'ach-4', title: 'Cherry Blossoms in Winter', icon: '🌸', tier: 'Silver', description: 'Witnessed Dr. Hiriluk miracle and recruited Tony Tony Chopper.', check: (watched) => watched.has('arc-10') },
-  { id: 'ach-5', title: 'Warlord Down: Crocodile', icon: '🐊', tier: 'Silver', description: 'Saved Alabasta and brought rain to the desert.', check: (watched) => watched.has('arc-11') },
-  { id: 'ach-6', title: 'Ring the Golden Bell', icon: '🔔', tier: 'Silver', description: 'Proved the City of Gold exists 10,000 meters in the sky.', check: (watched) => watched.has('arc-15') },
-  { id: 'ach-7', title: 'Navarone Escapist', icon: '⚓', tier: 'Bronze', description: 'Completed G-8, the greatest filler arc in anime history.', check: (watched) => watched.has('arc-16') },
-  { id: 'ach-8', title: 'Say You Want to Live!', icon: '🔥', tier: 'Gold', description: 'Declared war on the World Government at Enies Lobby.', check: (watched) => watched.has('arc-20') },
-  { id: 'ach-9', title: 'Farewell, Merry', icon: '💔', tier: 'Silver', description: 'Said goodbye to the Going Merry on the snowy ocean.', check: (watched, sub, eps) => eps >= 312 },
-  { id: 'ach-10', title: 'Nothing Happened', icon: '🩸', tier: 'Gold', description: 'Survived Bartholomew Kuma trial on Thriller Bark.', check: (watched) => watched.has('arc-23') },
-  { id: 'ach-11', title: 'Celestial Punch', icon: '👊', tier: 'Silver', description: 'Punched Saint Charlos at the Sabaody Auction House.', check: (watched, sub, eps) => eps >= 396 },
-  { id: 'ach-12', title: 'Great Prison Infiltration', icon: '🗝️', tier: 'Silver', description: 'Broke all levels of Impel Down with the pirate alliance.', check: (watched) => watched.has('arc-28') },
-  { id: 'ach-13', title: 'The One Piece Is Real!', icon: '👑', tier: 'Gold', description: 'Witnessed the climax of the Paramount War at Marineford.', check: (watched) => watched.has('arc-29') },
-  { id: 'ach-14', title: '3D2Y Rebirth', icon: '⏳', tier: 'Silver', description: 'Completed the pre-timeskip era and began the 2-year training.', check: (watched) => watched.has('arc-30') },
-  { id: 'ach-15', title: 'Halfway Mark', icon: '🗺️', tier: 'Gold', description: 'Watched over 500 total episodes and specials.', check: (watched, sub, eps) => eps >= 500 },
-  { id: 'ach-16', title: 'Deep Ocean Emancipator', icon: '🧜‍♂️', tier: 'Silver', description: 'Protected Fish-Man Island and learned of Joy Boy.', check: (watched) => watched.has('arc-32') },
-  { id: 'ach-17', title: 'The Boundman Awakens', icon: '🦍', tier: 'Gold', description: 'Unlocked Fourth Gear and shattered Doflamingo Birdcage.', check: (watched) => watched.has('arc-36') },
-  { id: 'ach-18', title: 'Grand Fleet Founder', icon: '🚩', tier: 'Silver', description: 'Formed the 5,600-member Straw Hat Grand Fleet.', check: (watched, sub, eps) => eps >= 745 },
-  { id: 'ach-19', title: 'Raizo Is Safe!', icon: '🥷', tier: 'Silver', description: 'Discovered the Mink Tribe loyalty and the Road Poneglyphs.', check: (watched) => watched.has('arc-38') },
-  { id: 'ach-20', title: 'Fifth Emperor of the Sea', icon: '🦅', tier: 'Gold', description: 'Escaped Whole Cake Island with a 1.5 Billion Bounty.', check: (watched) => watched.has('arc-40') },
-  { id: 'ach-21', title: 'Drums of Liberation', icon: '☀️', tier: 'Platinum', description: 'Witnessed the Gear 5th Sun God Nika awakening in Wano.', check: (watched) => watched.has('arc-47') },
-  { id: 'ach-22', title: 'Millennium Voyager', icon: '⭐', tier: 'Platinum', description: 'Watched 1,000+ total episodes of One Piece.', check: (watched, sub, eps) => eps >= 1000 },
-  { id: 'ach-23', title: 'Future Island Scholar', icon: '🤖', tier: 'Gold', description: 'Arrived at Dr. Vegapunk future island of Egghead.', check: (watched, sub, eps) => eps >= 1086 },
-  { id: 'ach-24', title: 'King of the Pirates', icon: '🏆', tier: 'Platinum', description: 'Caught up with the entire Grand Line broadcast voyage!', check: (watched, sub, eps, total) => eps >= total && total > 0 },
-  { id: 'ach-25', title: 'Warland of Giants', icon: '🏰', tier: 'Platinum', description: 'Reached Elbaph and stepped into the legendary realm of warrior giants.', check: (watched) => watched.has('arc-49') }
+  { id: 'ach-1', title: 'Setting Sail', icon: Sailboat, tier: 'Bronze', description: 'Watched Episode 1 and began the journey across the Grand Line.', check: (watched, sub, eps) => eps >= 1 },
+  { id: 'ach-2', title: 'East Blue Conqueror', icon: Waves, tier: 'Bronze', description: 'Defeated Arlong and liberated Cocoyasi Village.', check: (watched) => watched.has('arc-5') },
+  { id: 'ach-3', title: 'Entering the Grand Line', icon: Compass, tier: 'Bronze', description: 'Scaled Reverse Mountain and passed through the Twin Capes.', check: (watched) => watched.has('arc-8') },
+  { id: 'ach-4', title: 'Cherry Blossoms in Winter', icon: Flower2, tier: 'Silver', description: 'Witnessed Dr. Hiriluk miracle and recruited Tony Tony Chopper.', check: (watched) => watched.has('arc-10') },
+  { id: 'ach-5', title: 'Warlord Down: Crocodile', icon: Skull, tier: 'Silver', description: 'Saved Alabasta and brought rain to the desert.', check: (watched) => watched.has('arc-11') },
+  { id: 'ach-6', title: 'Ring the Golden Bell', icon: Bell, tier: 'Silver', description: 'Proved the City of Gold exists 10,000 meters in the sky.', check: (watched) => watched.has('arc-15') },
+  { id: 'ach-7', title: 'Navarone Escapist', icon: Anchor, tier: 'Bronze', description: 'Completed G-8, the greatest filler arc in anime history.', check: (watched) => watched.has('arc-16') },
+  { id: 'ach-8', title: 'Say You Want to Live!', icon: Flame, tier: 'Gold', description: 'Declared war on the World Government at Enies Lobby.', check: (watched) => watched.has('arc-20') },
+  { id: 'ach-9', title: 'Farewell, Merry', icon: HeartCrack, tier: 'Silver', description: 'Said goodbye to the Going Merry on the snowy ocean.', check: (watched, sub, eps) => eps >= 312 },
+  { id: 'ach-10', title: 'Nothing Happened', icon: Droplet, tier: 'Gold', description: 'Survived Bartholomew Kuma trial on Thriller Bark.', check: (watched) => watched.has('arc-23') },
+  { id: 'ach-11', title: 'Celestial Punch', icon: Hand, tier: 'Silver', description: 'Punched Saint Charlos at the Sabaody Auction House.', check: (watched, sub, eps) => eps >= 396 },
+  { id: 'ach-12', title: 'Great Prison Infiltration', icon: KeyRound, tier: 'Silver', description: 'Broke all levels of Impel Down with the pirate alliance.', check: (watched) => watched.has('arc-28') },
+  { id: 'ach-13', title: 'The One Piece Is Real!', icon: Crown, tier: 'Gold', description: 'Witnessed the climax of the Paramount War at Marineford.', check: (watched) => watched.has('arc-29') },
+  { id: 'ach-14', title: '3D2Y Rebirth', icon: Hourglass, tier: 'Silver', description: 'Completed the pre-timeskip era and began the 2-year training.', check: (watched) => watched.has('arc-30') },
+  { id: 'ach-15', title: 'Halfway Mark', icon: Map, tier: 'Gold', description: 'Watched over 500 total episodes and specials.', check: (watched, sub, eps) => eps >= 500 },
+  { id: 'ach-16', title: 'Deep Ocean Emancipator', icon: Ship, tier: 'Silver', description: 'Protected Fish-Man Island and learned of Joy Boy.', check: (watched) => watched.has('arc-32') },
+  { id: 'ach-17', title: 'The Boundman Awakens', icon: Zap, tier: 'Gold', description: 'Unlocked Fourth Gear and shattered Doflamingo Birdcage.', check: (watched) => watched.has('arc-36') },
+  { id: 'ach-18', title: 'Grand Fleet Founder', icon: Flag, tier: 'Silver', description: 'Formed the 5,600-member Straw Hat Grand Fleet.', check: (watched, sub, eps) => eps >= 745 },
+  { id: 'ach-19', title: 'Raizo Is Safe!', icon: Swords, tier: 'Silver', description: 'Discovered the Mink Tribe loyalty and the Road Poneglyphs.', check: (watched) => watched.has('arc-38') },
+  { id: 'ach-20', title: 'Fifth Emperor of the Sea', icon: Bird, tier: 'Gold', description: 'Escaped Whole Cake Island with a 1.5 Billion Bounty.', check: (watched) => watched.has('arc-40') },
+  { id: 'ach-21', title: 'Drums of Liberation', icon: Sun, tier: 'Platinum', description: 'Witnessed the Gear 5th Sun God Nika awakening in Wano.', check: (watched) => watched.has('arc-47') },
+  { id: 'ach-22', title: 'Millennium Voyager', icon: Star, tier: 'Platinum', description: 'Watched 1,000+ total episodes of One Piece.', check: (watched, sub, eps) => eps >= 1000 },
+  { id: 'ach-23', title: 'Future Island Scholar', icon: Cpu, tier: 'Gold', description: 'Arrived at Dr. Vegapunk future island of Egghead.', check: (watched, sub, eps) => eps >= 1086 },
+  { id: 'ach-24', title: 'King of the Pirates', icon: Trophy, tier: 'Platinum', description: 'Caught up with the entire Grand Line broadcast voyage!', check: (watched, sub, eps, total) => eps >= total && total > 0 },
+  { id: 'ach-25', title: 'Warland of Giants', icon: Castle, tier: 'Platinum', description: 'Reached Elbaph and stepped into the legendary realm of warrior giants.', check: (watched) => watched.has('arc-49') }
 ];
 
 // Helper to look up or generate episode title
@@ -445,6 +455,31 @@ function getEpisodeTitle(epNumber, arcTitle) {
     return EPISODE_TITLES[epNumber];
   }
   return `${arcTitle || 'Grand Line'} — Episode ${epNumber}`;
+}
+
+// The selected character palette drives the accent ramp in both colour modes.
+// Dark mode lifts the hue toward white so it reads on navy; light mode pulls it
+// toward ink so the same accent stays legible on parchment. Both ramps are
+// published as channel triplets so Tailwind's /alpha modifiers keep working.
+const INK_RGB = [21, 32, 46];
+const WHITE_RGB = [255, 255, 255];
+
+function accentRamp(hex) {
+  const value = parseInt(hex.replace('#', ''), 16);
+  const base = [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+  const mix = (target, amount) => base.map((c, i) => Math.round(c + (target[i] - c) * amount)).join(' ');
+  const pure = base.join(' ');
+  return {
+    '--a100-dark': mix(WHITE_RGB, 0.64), '--a200-dark': mix(WHITE_RGB, 0.5),
+    '--a300-dark': mix(WHITE_RGB, 0.36), '--a400-dark': mix(WHITE_RGB, 0.2),
+    '--a500-dark': pure,
+    '--a600-dark': mix(INK_RGB, 0.2), '--a700-dark': mix(INK_RGB, 0.38),
+
+    '--a100-light': mix(INK_RGB, 0.72), '--a200-light': mix(INK_RGB, 0.64),
+    '--a300-light': mix(INK_RGB, 0.56), '--a400-light': mix(INK_RGB, 0.48),
+    '--a500-light': pure,
+    '--a600-light': mix(INK_RGB, 0.3), '--a700-light': mix(INK_RGB, 0.52)
+  };
 }
 
 export default function App() {
@@ -462,6 +497,35 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('op_canon_purist_mode', canonPuristMode.toString());
   }, [canonPuristMode]);
+
+  // 'system' follows prefers-color-scheme; an explicit choice is remembered.
+  const [colorMode, setColorMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('op_color_mode');
+      return saved === 'light' || saved === 'dark' ? saved : 'system';
+    } catch {
+      return 'system';
+    }
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (colorMode === 'system') root.removeAttribute('data-mode');
+    else root.setAttribute('data-mode', colorMode);
+    try { localStorage.setItem('op_color_mode', colorMode); } catch { /* storage unavailable */ }
+  }, [colorMode]);
+
+  // Keep the PWA status bar in step with whichever mode is actually showing.
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    const sync = () => {
+      const dark = colorMode === 'dark' || (colorMode === 'system' && query.matches);
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0B121C' : '#F2EADB');
+    };
+    sync();
+    query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, [colorMode]);
 
   const [watchedIds, setWatchedIds] = useState(() => {
     try {
@@ -853,10 +917,11 @@ export default function App() {
 
   return (
     <div
-      className="voyage-app min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:text-slate-950 transition-colors duration-300"
+      className="voyage-app min-h-screen bg-slate-950 text-slate-100 font-sans pb-24"
       style={{
         '--theme-primary': theme.primary,
-        '--theme-hover': theme.primaryHover
+        '--theme-hover': theme.primaryHover,
+        ...accentRamp(theme.primary)
       }}
     >
       <a className="skip-link" href="#main-content">Skip to voyage content</a>
@@ -878,7 +943,7 @@ export default function App() {
         {/* TAB 1: WATCH ROADMAP */}
         {activeTab === 'roadmap' && (
           <div>
-            <div className="roadmap-heading"><div><p className="eyebrow">CHART YOUR COURSE</p><h2>Your watch roadmap</h2><p>Follow the story. Choose your detours.</p></div>
+            <div className="roadmap-heading"><div><h2>Your watch roadmap</h2><p>Follow the story. Choose your detours.</p></div>
               <label className="saga-picker"><span>Navigate to saga</span><select aria-label="Navigate to saga" value="" onChange={e => {
                 const id = e.target.value;
                 setSearchQuery(''); setFilterType('all'); setExpandedSagas(prev => new Set(prev).add(id));
@@ -964,6 +1029,7 @@ export default function App() {
                           >
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
+                          <span className="saga-ordinal" aria-hidden="true">{String(SAGAS_DATA.findIndex(s => s.id === saga.id) + 1).padStart(2, '0')}</span>
                           <div>
                             <div className="flex flex-wrap items-center gap-2 mb-1">
                               <span className="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">
@@ -1086,7 +1152,7 @@ export default function App() {
                         : 'bg-slate-950/40 border-slate-900 group'
                     }`}
                   >
-                    <div className={`achievement-icon ${ach.isUnlocked ? '' : 'locked'}`}>{isMasked ? <Lock size={22} /> : ach.icon}</div>
+                    <div className={`achievement-icon ${ach.isUnlocked ? '' : 'locked'}`}>{isMasked ? <Lock size={22} /> : <ach.icon size={22} strokeWidth={1.5} />}</div>
                     <div className="flex-1 min-w-0"><div className="achievement-state"><span className={`text-xs font-bold ${ach.isUnlocked ? 'text-emerald-400' : 'text-slate-400'}`}>{ach.isUnlocked ? 'Unlocked' : 'Locked milestone'}</span><span className={`text-[11px] px-2 py-0.5 rounded border ${tierStyles}`}>{ach.tier}</span></div>
                       <SpoilerContent hidden={isMasked} label="milestone"><h3 className="text-base font-bold mt-2">{ach.title}</h3><p className="text-sm text-slate-400 mt-1">{ach.description}</p></SpoilerContent>
                     </div>
@@ -1345,11 +1411,19 @@ export default function App() {
                   href="https://ko-fi.com/looneth"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-md shadow-amber-500/20 shrink-0 flex items-center gap-1.5"
+                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-ink font-black text-xs transition shadow-md shadow-amber-500/20 shrink-0 flex items-center gap-1.5"
                 >
                   <Coffee className="w-3.5 h-3.5" />
                   <span>Support on Ko-fi</span>
                 </a>
+              </div>
+
+              {/* Colour mode */}
+              <div>
+                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <Sun className="w-4 h-4 text-amber-400" /> Appearance
+                </div>
+                <ModeToggle mode={colorMode} onMode={setColorMode} />
               </div>
 
               {/* SECTION 1: Straw Hat Character Theme */}
@@ -1384,7 +1458,7 @@ export default function App() {
                             : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
                         }`}
                       >
-                        <span className="text-xl">{isThemeLocked ? '🔒' : t.avatar}</span>
+                        <span className="crew-initial" aria-hidden="true">{isThemeLocked ? <Lock size={12} /> : t.name.trim()[0]}</span>
                         <div className="flex-1 min-w-0">
                           <div className={`text-xs font-bold truncate ${isThemeLocked ? 'text-slate-400' : 'text-slate-200'}`}>
                             {isThemeLocked ? 'Locked Member' : t.name}
@@ -1418,7 +1492,7 @@ export default function App() {
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="text-lg">🔄</span>
+                    <RotateCcw size={17} strokeWidth={1.5} className="shrink-0" />
                     <div className="text-left">
                       <div className="text-xs font-bold">Auto-Sync With Active Arc</div>
                       <div className="text-[10px] text-slate-500">Artwork updates as you advance through the story</div>
@@ -1448,7 +1522,7 @@ export default function App() {
                             : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
                         }`}
                       >
-                        <span className="text-2xl">{item.icon}</span>
+                        <item.icon size={22} strokeWidth={1.5} />
                         <span className="text-xs font-bold leading-tight">{item.name}</span>
                       </button>
                     );
@@ -1579,7 +1653,7 @@ export default function App() {
             <div className="mt-6 pt-4 border-t border-slate-800 flex justify-end">
               <button
                 onClick={() => setShowSettingsModal(false)}
-                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition"
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-ink font-bold text-xs shadow-md shadow-amber-500/20 transition"
               >
                 Done
               </button>
