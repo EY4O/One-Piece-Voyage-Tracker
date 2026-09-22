@@ -1177,4 +1177,6 @@ export const EPISODE_TITLES = {
 	1175: "Elbaph in Flames! Jinbe's Shoulder Throw Explodes!",
 	1176: "The Threat of the Aro Aro no Mi - Gunko vs. the Straw Hat Pirates",
 	1177: "A Despicable Hostage Game - Sommers's Brazen Demands",
+	1178: "Protect History and the Future - Robin and Gaban Go on the Attack",
+	1179: "One Do-or-Die Second - Gaban vs. the Knights of God",
 };
