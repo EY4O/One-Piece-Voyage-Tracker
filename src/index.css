@@ -632,10 +632,18 @@ button, input, select { font: inherit; }
    Dialogs, toasts, utility chrome
    ============================================================ */
 .voyage-dialog {
+  /* Pin the box between the safe areas instead of centring it in the whole
+     viewport, and size it off the fixed containing block (%) rather than dvh.
+     iOS standalone reports dvh unreliably and puts the status bar over the top. */
+  --dialog-gap: 20px;
+  --dialog-top: max(var(--dialog-gap), calc(env(safe-area-inset-top) + 8px));
+  --dialog-bottom: max(var(--dialog-gap), calc(env(safe-area-inset-bottom) + 8px));
+  position: fixed; inset: var(--dialog-top) 0 var(--dialog-bottom);
   border: 1px solid var(--line); border-radius: 16px;
   background: var(--surface); color: var(--ink); padding: 0;
-  width: min(580px, calc(100% - 28px)); max-height: calc(100dvh - 40px);
-  margin: auto; overflow-y: auto; box-shadow: var(--shadow-card);
+  width: min(580px, calc(100% - 28px)); height: fit-content;
+  max-height: calc(100% - var(--dialog-top) - var(--dialog-bottom));
+  margin: auto; overflow-y: auto; overscroll-behavior: contain; box-shadow: var(--shadow-card);
 }
 .voyage-dialog::backdrop { background: rgb(4 8 14 / .68); backdrop-filter: blur(5px); }
 .voyage-dialog > div { margin: 0; max-width: none; background: transparent; border: 0; border-radius: 0; }
@@ -752,7 +760,7 @@ button, input, select { font: inherit; }
   .back-to-roadmap { width: 42px; height: 42px; padding: 0; left: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
   .back-to-roadmap span { display: none; }
   .voyage-toast { left: 64px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); max-width: none; }
-  .voyage-dialog { max-height: calc(100dvh - 24px - env(safe-area-inset-bottom)); }
+  .voyage-dialog { --dialog-gap: 12px; }
   .voyage-dialog > div { padding: 20px 16px; }
   .voyage-app footer { margin-top: 36px; }
 }
