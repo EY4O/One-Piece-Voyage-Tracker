@@ -1,104 +1,47 @@
-<div align="center">
+# Eternal Pose
 
-# 🏴‍☠️ The One Piece Voyage Tracker
+A watch-order tracker for One Piece. Live at **[eternalpose.io](https://eternalpose.io)**.
 
-A watch-order companion for your *One Piece* journey, with episode tracking, movies, specials, OVAs, and optional spoiler protection. Follow the roadmap, find your next watch, and build your crew as you progress.
+One Piece is 1,100+ episodes, plus fifteen-odd movies, a handful of specials, and a lot of filler that may or may not be worth your time. I kept losing track of where I was and which bits I'd meant to skip, so I made this. It lays the whole thing out in the order I'd actually watch it and remembers where you stopped.
 
-[![Live App](https://img.shields.io/badge/Live_Site-Set_Sail-E53935?style=for-the-badge&logo=googlechrome&logoColor=white)](https://eternalpose.io)
+There's no account and no server. Your progress lives in your browser.
 
-[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react&logoColor=black)](#tech-stack)
-[![Vite](https://img.shields.io/badge/Vite-Ready-646CFF?style=flat-square&logo=vite&logoColor=white)](#tech-stack)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styled-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](#tech-stack)
-[![Node](https://img.shields.io/badge/Node.js-v18+-339933?style=flat-square&logo=node.js&logoColor=white)](#prerequisites)
+## What's in it
 
-</div>
+**The roadmap.** 68 stops across 11 sagas, East Blue through Egghead and Elbaph. Canon arcs, filler, movies, specials and the old OVA are all slotted in where they fit. Each arc has its episode range, manga chapters, a One Pace runtime, and a short note. Filler arcs say why they're skippable, and the few worth watching anyway (G-8, mostly) are marked as such.
 
----
+**Up Next.** The top of the page always shows the next thing to watch, down to the episode number and title. Hit +1 as you go, skip something, or jump straight to that arc in the list. Longer arcs have +1 / -1 / +5 buttons, or you can type the episode number in.
 
-## ✨ Features
+**Search and filters.** Search by arc name, description or episode range. Filter to canon only, films and specials, must-watches or filler. Canon Purist mode (in Settings) hides everything that isn't canon or mixed from both the queue and the roadmap.
 
-### 🧭 Continue Your Voyage
+**Skipping is undoable.** Skipped arcs stay skipped, not watched, and you can put any of them back in the queue later. Settings has a button to restore all of them at once.
 
-* **Next-Watch Dashboard**: A cinematic header puts your current saga, arc, episode, and voyage progress together. The episode title uses larger, brighter, semibold text for quick recognition.
-* **Sticky Up Next Bar**: Shows the episode number **and episode title**, with **Jump to Arc**, **Skip**, and **Next (+1)** actions. Movies and specials show their titles and a **Mark watched** action.
-* **Unified Toolbar**: Compact/Detailed View, Spoiler Shield, **Settings**, JSON download, and JSON import sit together below the section navigation. Settings is positioned between Spoiler Shield and JSON download.
+**Spoiler Shield.** On by default. It hides plot summaries for stuff you haven't watched yet, plus locked achievements and crew members you haven't met. Hidden text isn't just blurred, it isn't rendered at all until you reveal it. Arc names and artwork still show, so it's not bulletproof, but it covers the obvious stuff.
 
-### 🎨 Dynamic Theme & Background Engine
+**The fun bits.** A bounty that goes up as you watch, 25 achievements, and a crew roster that fills in as the Straw Hats join. It also keeps a running total of how much time you've sunk into this (in hours, and in whole days if you watched nonstop) and how many hours of filler you haven't watched.
 
-* **12 Character Palettes**: Character themes supply consistent accents for progress, selected controls, badges, and important actions across a shared navy design system.
-* **15 Header Artwork Choices**: Choose from 12 saga artworks and three showcases—Thousand Sunny, Straw Hat, and Going Merry—or let Auto-Sync follow the saga of your next queued item.
-* **Restrained Visuals**: Readable cards, consistent borders and buttons, and subtle transitions replace pulsing glows and bouncing notifications.
+**Pacing.** Tell it how many episodes a day you watch (1 to 15) and it'll estimate when you'll catch up.
 
-### 🧭 Navigation & Watch Queue
+**Movies & placement.** Where each film fits, which ones are worth it, and which tie-in filler to watch right before them.
 
-* **Saga Navigation**: Use numbered saga sections, the saga selector, and Expand All / Collapse All to navigate the roadmap. A floating Navigation link returns to the section controls.
-* **Reliable Jump to Arc**: Opens the current saga, clears conflicting search/type filters, and scrolls to and focuses the active card.
-* **Search & Filters**: Find arcs, movies, or episode-range text; filter canon arcs, films/specials, must-watch content, or filler.
-* **Canon Purist Mode**: Settings can restrict both the queue and roadmap to canon and mixed arcs. A visible notice lets you return to all content.
-* **Shared Arc Controls**: Compact and detailed views share episode steppers (`+1`, `-1`, and `+5` for longer arcs). Exact episode entry saves on **Enter or leaving the field**, so intermediate digits do not change progress.
-* **Clear Card Status**: Up Next, Completed, and Skipped states remain readable. Episode ranges use a **television icon**, and episode-based cards show a progress bar and percentage.
-* **Reversible Skips**: Restore an individual skipped card to the queue, or restore all skipped content in Settings. Skipping does not mark an item watched.
-* **Watch Details**: Expand compact-card details for summaries, One Pace information, watch advisories, and explanations of optional content.
+**Looks.** Light mode (parchment) and dark mode (navy), or follow your system. Twelve colour themes, one per Straw Hat plus Nika and a classic one. The header art follows whatever saga you're on, or you can pin one of 15 images.
 
-### 💰 Pirate Milestones & Analytics
+**Installable.** It's a PWA, so you can add it to your home screen and it works offline.
 
-* **Live Marine Bounty**: Reflects completed items and partial episode progress using the existing rewards.
-* **25 Grand Line Achievements**: Unlock milestones through arc completion and watch-unit thresholds.
-* **Crew Recruitment**: Track your ten-member roster, select character themes, and receive brief feedback for newly recruited crew and unlocked milestones.
-* **Watch-Time Analytics**: View logged watch units, estimated screen time, continuous watch days, and unwatched/skipped filler hours.
+## Backing up your progress
 
-Voyage totals use **watch units**, including movie/special equivalents; they are not an exact count of numbered anime episodes. Filler hours include unwatched filler, so they do not necessarily represent time you deliberately saved.
+Everything saves to `localStorage` on whatever device you're using. If you want to move to another browser or phone, use the download button in the toolbar to export a JSON file, then import it on the other end. There's no cloud sync.
 
-### 🛡️ Spoiler Shield
+Importing overwrites your current progress, so be a little careful.
 
-* **Deliberate Reveal Controls**: Reveal or hide unwatched plot summaries, saga overviews, locked milestones, and unrecruited crew identities with buttons that work on touchscreens and keyboards.
-* **Accessible Concealment**: Concealed content is not rendered until revealed, instead of being visually blurred while remaining available to screen readers.
-* **Protected Theme Names**: Locked character names are concealed in Settings. Turn Shield off to explore all character themes.
+A couple of quirks worth knowing:
 
-Arc names, current episode titles, guide/placement text, and manually selected artwork retain their existing visibility. Spoiler Shield does not guarantee that every title or image is spoiler-free.
+- "Watch units" count movies and specials as roughly equivalent episodes, so your total won't match the anime's episode count exactly.
+- Your daily pace gets saved in the backup file but resets to 3 when you reload the page.
 
-### ⏳ Planning & Pacing Tools
+## Running it locally
 
-* **Catch-Up Estimator**: Set a daily pace of **1–15 episodes/day** to estimate time remaining and a completion date from your watch-unit progress.
-* **Movie Placement Guide**: Consult the existing placement notes and recommendations for theatrical content and specials.
-* **Curated Watch Advisories**: Distinguish recommended anime-original arcs, such as *G-8*, from optional filler.
-
-### 💾 Local Progress & JSON Backups
-
-* **Device-Local Persistence**: Watched/skipped items, episode sub-progress, theme, artwork mode, Compact View, Canon Purist, and Spoiler Shield are saved in `localStorage`.
-* **Compatible Backups**: Export and import version **3.0 JSON** to transfer progress manually between browsers or devices. There is no automatic cloud sync.
-* **Saved-Progress Compatibility**: The redesign preserves storage keys, stored formats, watch-order data, calculations, and unlock requirements. Existing users need no migration.
-
-Daily pace is included in JSON backups but still resets to 3 on reload. Shareable URLs were described in an earlier README but are **not implemented in this checkout**.
-
-### 📱 Responsive Design, Accessibility & Installation
-
-* Responsive layouts reviewed at **375, 430, 768, 1024, and 1440px**, with wrapping controls, readable long card titles, and safe-area spacing.
-* Labeled controls, visible keyboard focus, a skip-to-content link, progress indicators, and live milestone feedback.
-* Native settings, reset, and about dialogs support keyboard focus management and Escape. Resetting progress retains its confirmation step.
-* Reduced-motion preferences suppress animation and smooth Jump scrolling.
-* Existing PWA service-worker registration, browser install prompt, iOS Add to Home Screen guidance, and dismissal preference are retained.
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-| :--- | :--- |
-| **Framework** | React 18+ |
-| **Build Tool** | Vite |
-| **Styling** | Tailwind CSS |
-| **Component Icons** | Lucide React |
-| **State Storage** | Web Storage API (`localStorage`) |
-| **PWA** | Vite PWA plugin + Workbox |
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Ensure you have **Node.js** (*v18 or newer*) and **npm** installed:
+You'll need Node 18 or newer.
 
 ```bash
 git clone https://github.com/EY4O/One-Piece-Voyage-Tracker.git
@@ -107,34 +50,33 @@ npm install
 npm run dev
 ```
 
-Create a production build and preview it locally:
+To build and preview the production version:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-The modernization build was verified with Node.js **22.23.2**. Use the local URL printed by Vite to open the application.
+Pushing to `main` builds and deploys to GitHub Pages through `.github/workflows/deploy.yml`.
 
-## 🧩 Project Structure
+Built with React, Vite and Tailwind. Icons are from Lucide, fonts are Instrument Serif and Outfit, and the PWA side is `vite-plugin-pwa`.
 
-| File | Responsibility |
-| :--- | :--- |
-| `src/OnePieceWatchOrder.jsx` | Master watch-order data, themes, achievements, application state, persistence, calculations, and state-changing handlers. |
-| `src/components/VoyageUI.jsx` | Header, sticky Up Next, section navigation/toolbar, progress bars, spoiler disclosures, and modal shell. |
-| `src/components/ArcCard.jsx` | Compact/detailed arc cards and shared episode stepper. |
-| `src/index.css` | Shared visual system, character accents, responsive layouts, and accessibility styles. |
-| `src/InstallPromptBanner.jsx` | Install prompt, iOS instructions, and dismissal behavior. |
-| `src/data/episodeTitles.js` | Episode-title lookup. |
-| `src/assets/sagas/` | Existing header artwork. |
-| `src/main.jsx` / `vite.config.js` | App entry point and PWA registration/build configuration. |
+## Where things are
 
-Generated `dist/`, `node_modules/`, and `.sites-runtime/` directories are ignored for new files. Previously tracked dependency files remain tracked.
+- `src/OnePieceWatchOrder.jsx` is the big one. The whole watch order, the themes, achievements, state and save logic all live here. If you want to fix an episode range or add an arc, this is the file.
+- `src/components/VoyageUI.jsx` has the header, the Up Next bar, the toolbar, progress bars and dialogs.
+- `src/components/ArcCard.jsx` is the arc card, in both compact and detailed layouts.
+- `src/data/episodeTitles.js` maps episode numbers to titles.
+- `src/index.css` holds the design system: colour modes, character accents, layout.
+- `src/InstallPromptBanner.jsx` is the "add to home screen" banner.
+- `src/assets/sagas/` is the header artwork.
 
-## ✅ Validation & Review
+There aren't any tests yet. `docs/qa/` has two sample backup files (a fresh start and a returning viewer) that are handy for testing imports. Use a throwaway browser profile for that since importing replaces your progress. `docs/UI-UX-REVIEW.md` has notes from an older round of UI work.
 
-The UI changes passed `npm run build`, including PWA generation. Local browser smoke checks covered progress controls, saved reloads, imports, skipping/restoring, filters, saga navigation, all 12 theme selections, dialogs, and the five viewport widths above. The latest refinements also verified the television icon, episode titles in Up Next, the relocated Settings button, and stronger episode-title styling.
+## Contributing
 
-JSON serialization and export-handler behavior were checked separately; completed file delivery through the in-app browser was not verified. Native PWA installation/offline behavior and OS-level reduced-motion emulation still need device testing. The project currently has no dedicated test or lint script.
+Spotted a wrong episode range, a missing special, or an arc that's in the wrong spot? Open an issue or a PR. Watch-order stuff is the most useful help by far.
 
-See the [UI/UX review](docs/UI-UX-REVIEW.md) for the architecture audit, compatibility details, validation results, and remaining opportunities. The [empty-voyage](docs/qa/new-voyage.json) and [returning-viewer](docs/qa/returning-voyage.json) JSON fixtures support manual import checks; import them only in a disposable test browser/profile because importing replaces progress fields.
+## Disclaimer
+
+This is a free, non-commercial fan project. One Piece and everything related to it belongs to Eiichiro Oda, Shueisha and Toei Animation. I don't own any of it.
