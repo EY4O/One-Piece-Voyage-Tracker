@@ -176,6 +176,9 @@ input[type="range"] { accent-color: var(--ink); }
   font-size: clamp(26px, 5.2vw, 50px); line-height: 1.08; letter-spacing: -.01em; max-width: 22ch;
   -webkit-text-stroke: 5px #0b0a08; paint-order: stroke fill;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  /* The clamp clips at the box edge; give descenders and the ink stroke room
+     below the last line without moving anything after it. */
+  padding-bottom: .22em; margin-bottom: -.22em;
 }
 .ep-context { margin: 6px 0 0; font-size: 15px; color: #e9e6de; max-width: 60ch; }
 .ep-context b { color: #fff; }
