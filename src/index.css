@@ -436,9 +436,14 @@ input[type="range"] { accent-color: var(--ink); }
    Footer
    ============================================================ */
 .footer { margin-top: 56px; border-top: var(--frame) solid var(--rule); padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
-.footer .shell { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; padding-block: 20px; font-size: 14px; color: var(--ink-2); }
-.footer nav { display: flex; flex-wrap: wrap; gap: 6px 18px; }
-.footer a, .footer .link-btn { color: var(--ink); font-weight: 600; font-size: 14px; }
+.footer .shell { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; padding-block: 20px; font-size: 14px; color: var(--ink-2); }
+.footer nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; }
+/* The About button and the two links share one link style so they sit on one line. */
+.footer a, .footer .link-btn {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 0;
+  color: var(--ink); font-weight: 600; font-size: 14px; line-height: 1.2;
+  text-decoration: underline; text-underline-offset: .22em; text-decoration-thickness: 1px;
+}
 
 /* ============================================================
    Now playing strip, toast, eyecatch
