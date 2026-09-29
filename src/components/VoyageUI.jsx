@@ -1,23 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Anchor, ArrowRight, Check, CheckCircle2, Compass, Download, Eye, EyeOff, Film, LayoutList, Lock, Monitor, Moon, Settings, SkipForward, Sun, Trophy, Upload, Users, Calculator, BookOpen } from 'lucide-react';
-
-export function ProgressBar({ value, label }) {
-  const percent = Math.max(0, Math.min(100, value));
-  return <div className="progress-track" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(percent)}><span style={{ width: `${percent}%` }} /></div>;
-}
+import { ArrowUpRight, Check, Eye, EyeOff, Lock, Settings, SkipForward, X } from 'lucide-react';
 
 // Hidden content is absent from the accessibility tree until deliberately revealed.
 export function SpoilerContent({ hidden, children, label = 'plot summary' }) {
   const [revealed, setRevealed] = useState(false);
   useEffect(() => setRevealed(false), [hidden]);
   if (!hidden) return <>{children}</>;
-  return <div className="spoiler-content">
-    <button className="spoiler-toggle" aria-expanded={revealed} onClick={() => setRevealed(!revealed)}><Lock size={13} />{revealed ? `Hide ${label}` : `Reveal ${label}`}<span>Spoiler Shield</span></button>
-    {revealed && <div className="spoiler-revealed">{children}</div>}
+  return <div className="spoiler">
+    <button className="spoiler-btn" aria-expanded={revealed} onClick={() => setRevealed(!revealed)}>
+      <Lock size={14} aria-hidden="true" />{revealed ? `Hide ${label}` : `Show ${label}`}
+    </button>
+    {revealed && <div className="spoiler-open">{children}</div>}
   </div>;
 }
 
-export function Modal({ label, onClose, children, message }) {
+export function Modal({ title, onClose, children, footer, className = '' }) {
   const ref = useRef(null);
   useEffect(() => {
     const dialog = ref.current;
@@ -31,85 +28,192 @@ export function Modal({ label, onClose, children, message }) {
       if (previousFocus?.isConnected) previousFocus.focus();
     };
   }, []);
-  return <dialog ref={ref} className="voyage-dialog" aria-label={label} onCancel={e => { e.preventDefault(); onClose(); }} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>{children}{message && <div className="modal-toast" role="status">{message}</div>}</dialog>;
-}
-
-const MODES = [['light', 'Light', Sun], ['system', 'Follow system', Monitor], ['dark', 'Dark', Moon]];
-
-export function ModeToggle({ mode, onMode }) {
-  return <div className="mode-toggle" role="group" aria-label="Colour mode">
-    {MODES.map(([id, label, Icon]) =>
-      <button key={id} aria-pressed={mode === id} title={label} onClick={() => onMode(id)}><Icon size={15} /><span>{label}</span></button>
-    )}
-  </div>;
-}
-
-export function UpNextBar({ next, onJump, onSkip, onAdvance }) {
-  if (!next) return <aside className="up-next-bar"><div className="page-width"><CheckCircle2 size={20} /><strong>Your watch queue is clear.</strong><span>Explore the roadmap or restore skipped content in Settings.</span></div></aside>;
-  return <aside className="up-next-bar" aria-label="Up next">
-    <div className="page-width up-next-inner">
-      <div className="up-next-label"><Compass size={19} /><span>Up next</span></div>
-      <div className="up-next-copy"><strong title={next.episodeTitle}>{next.isEpBased ? `Episode ${next.currentEp}` : next.item.type === 'movie' ? 'Movie night' : 'Special / OVA'}<span> · {next.episodeTitle}</span></strong><small>{next.saga.title}</small></div>
-      <div className="up-next-actions">
-        <button className="ui-button secondary" onClick={onJump}><Compass size={15} /><span>Jump to arc</span></button>
-        <button className="ui-button quiet" onClick={onSkip} title="Skip this item without marking it watched"><SkipForward size={15} /><span>Skip</span></button>
-        <button className="ui-button primary" onClick={onAdvance}>{next.isEpBased ? next.currentEp === next.endEp ? 'Finish arc' : 'Next (+1)' : 'Mark watched'}<ArrowRight size={16} /></button>
-      </div>
+  return <dialog ref={ref} className={`dialog ${className}`} aria-labelledby="dialog-title"
+    onCancel={e => { e.preventDefault(); onClose(); }}
+    onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="dialog-head">
+      <h2 id="dialog-title">{title}</h2>
+      <button className="btn btn-icon btn-sm" onClick={onClose} aria-label="Close"><X size={18} /></button>
     </div>
-  </aside>;
+    <div className="dialog-body">{children}</div>
+    {footer && <div className="dialog-foot">{footer}</div>}
+  </dialog>;
 }
 
-// Initials rather than emoji: the typographic register stays intact.
-const CREW = [ ['Luffy','L','luffy'], ['Zoro','Z','zoro'], ['Usopp','U','usopp'], ['Sanji','S','sanji'], ['Nami','N','nami'], ['Chopper','C','chopper'], ['Robin','R','robin'], ['Franky','F','franky'], ['Brook','B','brook'], ['Jinbe','J','jinbe'] ];
-
-export function VoyageHeader({ artwork, next, progress, watched, total, stats, bounty, unlockedCount, achievementCount, crew, shield, themeId, onTheme, onAchievements, onJump, onAdvance }) {
-  return <header className="voyage-hero">
-    <img className="hero-art" src={artwork} alt="" />
-    <div className="hero-shade" />
-    <div className="page-width hero-content">
-      <div className="brand-row">
-        <a href="#main-content" className="brand">
-          <span><b>Eternal Pose</b><small>One Piece voyage tracker</small></span>
-        </a>
-      </div>
-      <div className="hero-grid">
-        <div className="hero-intro">
-          <h1>Your voyage</h1>
-          <button className="bounty-link" onClick={onAchievements}>
-            <small>Bounty</small>
-            <strong className="num">฿ {bounty}</strong>
-            <span className="bounty-milestones">{unlockedCount} / {achievementCount} milestones charted <ArrowRight size={14} /></span>
-          </button>
-        </div>
-        <section className="continue-card" aria-label="Continue your voyage">
-          <div className="section-caption"><span className="eyebrow">{next ? 'Current position' : 'Voyage status'}</span><Anchor size={17} /></div>
-          {next ? <><p className="next-saga">{next.saga.title}</p><h2>{next.item.title}</h2><div className="next-episode"><strong>{next.isEpBased ? `Ep ${next.currentEp}` : next.item.type}</strong><span>{next.isEpBased ? `of ${next.endEp} in this arc` : next.item.episodes}</span></div><p className={next.isEpBased ? 'next-episode-title' : 'next-context'}>{next.isEpBased ? next.episodeTitle : next.item.watchTip || 'An optional stop along your voyage.'}</p><div className="continue-actions"><button className="ui-button primary" onClick={onAdvance}>{next.isEpBased ? next.currentEp === next.endEp ? 'Finish arc' : 'Next episode (+1)' : 'Mark watched'}<ArrowRight size={17} /></button><button className="ui-button secondary" onClick={onJump}>View arc</button></div></> : <><h2>You’ve reached the end of your queue.</h2><p className="next-context">Your progress is saved. Revisit an arc or restore skipped stops in Settings.</p></>}
-          <div className="voyage-progress"><div><span>Voyage progress</span><strong className="num">{progress}%</strong></div><ProgressBar value={progress} label="Overall voyage progress" /><small>{watched.toLocaleString()} / {total.toLocaleString()} watch units · episodes plus film and special equivalents</small></div>
-        </section>
-      </div>
-      <div className="voyage-stats">
-        <div><strong className="num">{watched.toLocaleString()}</strong><span>Watch units logged</span></div>
-        <div><strong className="num">{stats.hoursWatched}<small>hrs</small></strong><span>Screen time</span></div>
-        <div><strong className="num">{stats.daysEquivalent}<small>days</small></strong><span>Continuous</span></div>
-        <div><strong className="num">{stats.fillerHoursSaved}<small>hrs</small></strong><span>Filler skipped</span></div>
-      </div>
-      <div className="crew-strip">
-        <div className="crew-label"><Users size={16} /><span>Your crew <strong>{crew.length}/10</strong></span></div>
-        <div className="crew-members">{CREW.map(([name, initial, id]) => {
-          const recruited = crew.includes(name === 'Robin' ? 'Nico Robin' : name);
-          const masked = shield && !recruited;
-          return <SpoilerContent key={id} hidden={masked} label="crew member">
-            <button className={`crew-member ${recruited ? 'is-recruited' : ''}`} aria-pressed={themeId === id} onClick={() => onTheme(id)} title={`Activate ${name} theme`}>
-              <span className="crew-initial" aria-hidden="true">{initial}</span>{name}{recruited && <Check size={12} />}
-            </button>
-          </SpoilerContent>;
-        })}</div>
+export function Masthead({ shield, onShield, onSettings }) {
+  return <header className="masthead">
+    <div className="shell">
+      <a className="brand" href="#main-content"><b>Eternal Pose</b><span>One Piece voyage tracker</span></a>
+      <div className="masthead-actions">
+        <button className="btn btn-sm shield-switch" role="switch" aria-checked={shield} aria-label="Spoiler Shield" onClick={onShield}>
+          {shield ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+          <span className="label-wide">{shield ? 'Spoilers hidden' : 'Spoilers shown'}</span><span className="label-narrow">{shield ? 'Shield on' : 'Shield off'}</span>
+        </button>
+        <button className="btn btn-sm" onClick={onSettings} aria-label="Settings"><Settings size={16} aria-hidden="true" /><span className="label-wide">Settings</span></button>
       </div>
     </div>
   </header>;
 }
 
-const TABS = [['roadmap','Watch roadmap',Compass],['achievements','Achievements',Trophy],['tierlist','Movies & placement',Film],['pacing','Watch pace',Calculator],['quicktips','Watch guide',BookOpen]];
-export function Navigation({ active, onTab, compact, onCompact, shield, onShield, onSettings, onExport, onImport }) {
-  return <div className="navigation-block"><nav className="voyage-nav" aria-label="Voyage sections">{TABS.map(([id,label,Icon]) => <button key={id} className="nav-button" aria-current={active === id ? 'page' : undefined} onClick={() => onTab(id)}><Icon size={16} />{label}</button>)}</nav><div className="view-toolbar"><span className="local-save"><CheckCircle2 size={14} />Progress saved on this device</span><div className="toolbar-actions"><button className="ui-button quiet" aria-pressed={compact} onClick={onCompact}><LayoutList size={15} />{compact ? 'Compact view' : 'Detailed view'}</button><button className="ui-button quiet shield-button" aria-pressed={shield} onClick={onShield}>{shield ? <EyeOff size={15} /> : <Eye size={15} />}Shield {shield ? 'on' : 'off'}</button><button className="ui-button quiet" onClick={onSettings} title="Settings" aria-label="Settings"><Settings size={16} /></button><button className="ui-button quiet" onClick={onExport} title="Export progress JSON" aria-label="Export progress JSON"><Download size={16} /></button><label className="ui-button quiet import-control" title="Import progress JSON"><Upload size={16} /><span className="sr-only">Import progress JSON</span><input aria-label="Import progress JSON" type="file" accept=".json" onChange={onImport} /></label></div></div></div>;
+const KIND_WORD = { movie: 'Film', special: 'OVA' };
+
+function Art({ art, eager }) {
+  if (!art) return null;
+  return <img src={art.w960} srcSet={`${art.w960} 960w, ${art.w1920} 1920w`} sizes="(min-width: 1180px) 1180px, 100vw"
+    alt="" loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding="async" />;
+}
+export { Art };
+
+export function TitleCard({ next, art, afterSkip, skippedCount, onAdvance, onSkip, onJump, onRestoreSkipped, onRoadmap, cardRef }) {
+  // The cut only plays once the episode has changed from the one the card opened on.
+  // After that the class stays put, and the key change on the numeral replays it.
+  const cutKey = next ? (next.isEpBased ? next.currentEp : next.item.id) : null;
+  const openedOn = useRef(cutKey);
+  const cut = cutKey !== openedOn.current ? 'cut' : '';
+  if (!next) {
+    return <section className="title-card caught-up" ref={cardRef} aria-labelledby="card-title">
+      <div className="keyframe"><Art art={art} eager /></div>
+      <span className="card-tab">The end, for now</span>
+      <div className="placard">
+        <h1 id="card-title" className="ep-title" style={{ WebkitLineClamp: 'unset' }}>You're caught up.</h1>
+        <p className="ep-context">Nothing left in your queue. {skippedCount > 0 ? `You skipped ${skippedCount} stop${skippedCount === 1 ? '' : 's'} along the way, and they're still there if you want them.` : 'New episodes get added as they air.'}</p>
+      </div>
+      <div className="card-actions">
+        {skippedCount > 0
+          ? <button className="btn btn-field btn-primary" onClick={onRestoreSkipped}>Put skipped stops back</button>
+          : <button className="btn btn-field btn-primary" onClick={onRoadmap}>Look back over the roadmap</button>}
+      </div>
+    </section>;
+  }
+
+  const { item, saga, isEpBased, currentEp, endEp, episodeTitle, isDetour } = next;
+  const lastOfArc = isEpBased && currentEp === endEp;
+  const primary = isEpBased ? `Watched ep ${currentEp}${lastOfArc ? ' · arc done' : ''}` : 'Watched it';
+  const tab = isDetour ? 'Detour' : isEpBased ? 'Next episode' : KIND_WORD[item.type] || 'Up next';
+
+  return <section className="title-card" ref={cardRef} aria-labelledby="card-title">
+    <div className="keyframe"><Art art={art} eager /></div>
+    <span className="card-tab">{tab}</span>
+    <div className="placard">
+      <div className="ep-number" aria-hidden="true" style={{ '--digits': isEpBased ? String(currentEp).length : 3 }}>
+        {isEpBased ? <><small>EP</small><strong key={currentEp} className={cut}>{currentEp}</strong></> : <strong key={item.id} className={`is-word ${cut}`}>{KIND_WORD[item.type] || 'Extra'}</strong>}
+      </div>
+      <h1 id="card-title" className="ep-title">
+        <span className="sr-only">{isEpBased ? `Up next, episode ${currentEp}: ` : 'Up next: '}</span>
+        {isEpBased ? episodeTitle : item.title}
+      </h1>
+      <p className="ep-context">
+        {isEpBased ? <><b>{item.title}</b> · {saga.title} · <span className="nowrap">episodes {item.episodes}</span></> : <><b>{item.episodes}</b> · {saga.title}{item.watchTip ? ` · ${item.watchTip.replace(/^⭐\s*/, '')}` : ''}</>}
+      </p>
+    </div>
+    <div className="card-actions">
+      <button className="btn btn-field btn-primary" onClick={onAdvance}><Check size={20} strokeWidth={3} aria-hidden="true" />{primary}</button>
+      {isDetour && <div className="secondary">
+        <button className="btn" onClick={onSkip}><SkipForward size={18} aria-hidden="true" />Skip detour</button>
+      </div>}
+      <div className="card-more">
+        {isDetour && afterSkip && <span>Skipping goes straight to {afterSkip}.</span>}
+        <button className="link-btn" onClick={onJump}>Find it in the roadmap</button>
+        {!isDetour && <button className="link-btn" onClick={onSkip}>Skip this {isEpBased ? 'arc' : 'one'}</button>}
+      </div>
+    </div>
+  </section>;
+}
+
+export function BountyStrip({ bounty, onLogbook }) {
+  return <div className="bounty-strip">
+    <span className="label">Bounty</span>
+    <strong className="num">฿ {bounty}</strong>
+    <button className="btn btn-sm" onClick={onLogbook}>Logbook<ArrowUpRight size={16} aria-hidden="true" /></button>
+  </div>;
+}
+
+export function VoyageAxis({ segments, positionEp, lastEp, percent, currentSagaId, onSaga, onTune }) {
+  const [draft, setDraft] = useState('');
+  const at = Math.min(100, Math.max(0, ((positionEp - .5) / lastEp) * 100));
+  const submit = e => {
+    e.preventDefault();
+    const n = Number(draft);
+    if (Number.isInteger(n) && n >= 1) onTune(Math.min(n, lastEp));
+  };
+  return <section className="axis-panel" aria-labelledby="axis-title">
+    <div className="axis-head">
+      <h2 id="axis-title">Your voyage</h2>
+      <p><span className="num">Ep {positionEp.toLocaleString()}</span> of <span className="num">{lastEp.toLocaleString()}</span> · <span className="num">{percent}%</span> of everything, films included</p>
+    </div>
+    <div className="axis">
+      {segments.map(s => <button key={s.id} className={`axis-seg ${s.id === currentSagaId ? 'is-here' : ''}`}
+        style={{ '--span': s.span, '--done': `${Math.round(s.done * 100)}%` }}
+        aria-label={`${s.title}, episodes ${s.start} to ${s.end}, ${Math.round(s.done * 100)}% watched. Go to this saga`}
+        title={s.title} onClick={() => onSaga(s.id)}>
+        <span className="fill" aria-hidden="true" />
+      </button>)}
+      <span className="axis-pin" style={{ '--at': `${at}%` }} aria-hidden="true"><b className="num">Ep {positionEp}</b><i /></span>
+    </div>
+    <div className="axis-ends" aria-hidden="true"><span>Ep 1</span><span>Ep {lastEp}</span></div>
+    <form className="tune" onSubmit={submit}>
+      <label>Jump to an episode
+        <input type="number" inputMode="numeric" min={1} max={lastEp} value={draft} placeholder="e.g. 650" onChange={e => setDraft(e.target.value)} />
+      </label>
+      <button className="btn" type="submit" disabled={!draft}>Set my place</button>
+      <p>Coming back after a break? Type the episode you're on and I'll mark everything before it. You'll see what changes first.</p>
+    </form>
+  </section>;
+}
+
+export function NowStrip({ next, visible, onAdvance, onShow }) {
+  if (!next) return null;
+  const { item, isEpBased, currentEp, episodeTitle } = next;
+  return <div className={`now-strip ${visible ? 'is-on' : ''}`} aria-hidden={!visible} inert={!visible ? '' : undefined}>
+    <div className="now-inner">
+      <span className="now-ep num" aria-hidden="true">{isEpBased ? currentEp : KIND_WORD[item.type] || '•'}</span>
+      <button className="now-copy" onClick={onShow}>
+        <strong>{isEpBased ? episodeTitle : item.title}</strong>
+        <span>{isEpBased ? `Episode ${currentEp} · ${item.title}` : item.episodes}</span>
+      </button>
+      <button className="btn btn-field" onClick={onAdvance}><Check size={18} strokeWidth={3} aria-hidden="true" />Watched</button>
+    </div>
+  </div>;
+}
+
+export function ToastDock({ toast, onUndo, onDismiss }) {
+  return <div className="toast-dock" role="status" aria-live="polite">
+    {toast && <div className="toast" key={toast.id}>
+      <span>{toast.message}</span>
+      {toast.undo && <button className="btn btn-sm" onClick={onUndo}>Undo</button>}
+      {!toast.undo && <button className="btn btn-sm btn-plain" style={{ color: 'inherit' }} onClick={onDismiss} aria-label="Dismiss"><X size={16} /></button>}
+    </div>}
+  </div>;
+}
+
+export function Eyecatch({ event, onDone }) {
+  useEffect(() => {
+    if (!event) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const t = setTimeout(onDone, reduced ? 0 : 1300);
+    return () => clearTimeout(t);
+  }, [event, onDone]);
+  if (!event) return null;
+  return <div className="eyecatch" aria-hidden="true" key={event.id}>
+    <div className="tone-band" />
+    <div className="eyecatch-inner"><strong>{event.title}, done.</strong></div>
+  </div>;
+}
+
+const TABS = [['roadmap', 'Roadmap'], ['logbook', 'Logbook'], ['films', 'Films'], ['guide', 'Guide']];
+
+export function Tabs({ active, onTab }) {
+  const onKey = e => {
+    const i = TABS.findIndex(([id]) => id === active);
+    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    const nextId = TABS[(i + step + TABS.length) % TABS.length][0];
+    onTab(nextId);
+    requestAnimationFrame(() => document.getElementById(`tab-${nextId}`)?.focus());
+  };
+  return <div className="tabs" role="tablist" aria-label="Sections" onKeyDown={onKey}>
+    {TABS.map(([id, label]) => <button key={id} id={`tab-${id}`} role="tab" className="tab" aria-selected={active === id}
+      aria-controls={`panel-${id}`} tabIndex={active === id ? 0 : -1} onClick={() => onTab(id)}>{label}</button>)}
+  </div>;
 }

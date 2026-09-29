@@ -1,242 +1,70 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { EPISODE_TITLES } from './data/episodeTitles';
 import InstallPromptBanner from './InstallPromptBanner';
-import ArcCard from './components/ArcCard';
-import { Modal, ModeToggle, Navigation, ProgressBar, SpoilerContent, UpNextBar, VoyageHeader } from './components/VoyageUI';
-
-// 12 Saga Background Artworks (src/assets/sagas/)
-import bgEastBlue from './assets/sagas/1east-blue.jpg';
-import bgAlabasta from './assets/sagas/2alabasta.jpg';
-import bgSkypiea from './assets/sagas/3skypiea.jpg';
-import bgWater7 from './assets/sagas/4water-7.jpg';
-import bgThrillerBark from './assets/sagas/5thriller-bark.jpg';
-import bgSummitWar from './assets/sagas/6summit-war.jpg';
-import bgFishmanIsland from './assets/sagas/7fishman-island.jpg';
-import bgDressrosa from './assets/sagas/8dressrosa-saga.jpg';
-import bgWholeCake from './assets/sagas/9whole-cake.jpg';
-import bgWano from './assets/sagas/10wano.jpg';
-import bgFinalSaga from './assets/sagas/11final-saga.jpg';
-import bgElbaph from './assets/sagas/12elbaph.jpg';
-
-// 3 Custom Showcase Backgrounds (src/assets/sagas/)
-import bgSunny from './assets/sagas/sunny.jpg';
-import bgStrawHat from './assets/sagas/strawhat.jpg';
-import bgMerry from './assets/sagas/merry.jpg';
+import ArcCard, { isDetourType } from './components/ArcCard';
+import { Art, BountyStrip, Eyecatch, Masthead, NowStrip, SpoilerContent, Tabs, TitleCard, ToastDock, VoyageAxis } from './components/VoyageUI';
+import { Films, Guide, Logbook } from './components/Panels';
+import { AboutDialog, FinaleDialog, ImportDialog, ResetDialog, SettingsDialog, TuneDialog } from './components/Dialogs';
 
 import {
-  Compass,
-  Film,
-  CheckCircle2,
-  Flame,
-  Search,
-  Filter,
-  CheckCheck,
-  RotateCcw,
-  Info,
-  ChevronDown,
-  ChevronUp,
-  Trophy,
-  ShieldCheck,
-  AlertTriangle,
-  Palette,
-  Calculator,
-  Lock,
-  Image as ImageIcon,
-  Settings,
-  X,
-  Coffee,
-  Heart,
-  Sailboat,
-  Ship,
-  Anchor,
-  Waves,
-  Flower2,
-  Skull,
-  Bell,
-  HeartCrack,
-  Droplet,
-  Hand,
-  KeyRound,
-  Crown,
-  Hourglass,
-  Map,
-  Zap,
-  Flag,
-  Swords,
-  Bird,
-  Sun,
-  Star,
-  Cpu,
-  Castle
+  Anchor, Bell, Bird, Castle, ChevronDown, Compass, Cpu, Crown, Droplet, Flag, Flame, Flower2, Hand,
+  HeartCrack, Hourglass, KeyRound, Map, Sailboat, Search, Ship, Skull, Star, Sun, Swords, Trophy, Waves, Zap
 } from 'lucide-react';
+
+// Saga artwork. The originals live in src/assets/sagas; `npm run art` makes the
+// web-sized copies in src/assets/sagas/web that the app actually ships.
+const ART_FILES = import.meta.glob('./assets/sagas/web/*.webp', { eager: true, import: 'default' });
+const artFor = file => {
+  const find = w => ART_FILES[`./assets/sagas/web/${file}-${w}.webp`];
+  return { w960: find(960), w1920: find(1920) };
+};
 
 // Background Map: Sagas + Custom Ship & Iconography Backgrounds
 const BACKGROUND_ARTWORKS = {
-  'east-blue': { name: 'East Blue', img: bgEastBlue, type: 'saga' },
-  'alabasta': { name: 'Alabasta', img: bgAlabasta, type: 'saga' },
-  'skypiea': { name: 'Skypiea', img: bgSkypiea, type: 'saga' },
-  'water-7': { name: 'Water 7', img: bgWater7, type: 'saga' },
-  'thriller-bark': { name: 'Thriller Bark', img: bgThrillerBark, type: 'saga' },
-  'summit-war': { name: 'Summit War', img: bgSummitWar, type: 'saga' },
-  'fishman-island': { name: 'Fish-Man Island', img: bgFishmanIsland, type: 'saga' },
-  'dressrosa-saga': { name: 'Dressrosa', img: bgDressrosa, type: 'saga' },
-  'whole-cake': { name: 'Whole Cake Island', img: bgWholeCake, type: 'saga' },
-  'wano': { name: 'Wano Country', img: bgWano, type: 'saga' },
-  'final-saga': { name: 'Final Saga (Egghead)', img: bgFinalSaga, type: 'saga' },
-  'elbaph': { name: 'Elbaph', img: bgElbaph, type: 'saga' },
+  'east-blue': { name: 'East Blue', ...artFor('1east-blue'), type: 'saga' },
+  'alabasta': { name: 'Alabasta', ...artFor('2alabasta'), type: 'saga' },
+  'skypiea': { name: 'Skypiea', ...artFor('3skypiea'), type: 'saga' },
+  'water-7': { name: 'Water 7', ...artFor('4water-7'), type: 'saga' },
+  'thriller-bark': { name: 'Thriller Bark', ...artFor('5thriller-bark'), type: 'saga' },
+  'summit-war': { name: 'Summit War', ...artFor('6summit-war'), type: 'saga' },
+  'fishman-island': { name: 'Fish-Man Island', ...artFor('7fishman-island'), type: 'saga' },
+  'dressrosa-saga': { name: 'Dressrosa', ...artFor('8dressrosa-saga'), type: 'saga' },
+  'whole-cake': { name: 'Whole Cake Island', ...artFor('9whole-cake'), type: 'saga' },
+  'wano': { name: 'Wano Country', ...artFor('10wano'), type: 'saga' },
+  'final-saga': { name: 'Final Saga (Egghead)', ...artFor('11final-saga'), type: 'saga' },
+  'elbaph': { name: 'Elbaph', ...artFor('12elbaph'), type: 'saga' },
 
-  'sunny': { name: 'Thousand Sunny', img: bgSunny, type: 'custom', icon: Sun },
-  'strawhat': { name: 'Straw Hat', img: bgStrawHat, type: 'custom', icon: Crown },
-  'merry': { name: 'Going Merry', img: bgMerry, type: 'custom', icon: Sailboat }
+  'sunny': { name: 'Thousand Sunny', ...artFor('sunny'), type: 'custom' },
+  'strawhat': { name: 'Straw Hat', ...artFor('strawhat'), type: 'custom' },
+  'merry': { name: 'Going Merry', ...artFor('merry'), type: 'custom' }
 };
 
-// Straw Hat Themes
+// Straw Hat themes. Each one is an eyecatch colour: a flat field the title card,
+// bounty strip and primary buttons are painted in.
 const THEMES = {
-  classic: {
-    id: 'classic',
-    name: 'Romance Dawn (Gold)',
-    character: 'Classic One Piece',
-    primary: '#f59e0b',
-    primaryHover: '#d97706',
-    border: 'border-amber-500/40',
-    bgBadge: 'bg-amber-500/10',
-    textBadge: 'text-amber-400',
-    gradient: 'from-amber-500 via-orange-500 to-red-500',
-    accentGlow: 'rgba(245, 158, 11, 0.15)'
-  },
-  luffy: {
-    id: 'luffy',
-    name: 'Luffy (Red Hawk)',
-    character: 'Monkey D. Luffy',
-    primary: '#ef4444',
-    primaryHover: '#dc2626',
-    border: 'border-red-500/40',
-    bgBadge: 'bg-red-500/10',
-    textBadge: 'text-red-400',
-    gradient: 'from-red-500 via-rose-600 to-amber-600',
-    accentGlow: 'rgba(239, 68, 68, 0.15)'
-  },
-  zoro: {
-    id: 'zoro',
-    name: 'Zoro (Santoryu)',
-    character: 'Roronoa Zoro',
-    primary: '#10b981',
-    primaryHover: '#059669',
-    border: 'border-emerald-500/40',
-    bgBadge: 'bg-emerald-500/10',
-    textBadge: 'text-emerald-400',
-    gradient: 'from-emerald-500 via-teal-600 to-green-700',
-    accentGlow: 'rgba(16, 185, 129, 0.15)'
-  },
-  nami: {
-    id: 'nami',
-    name: 'Nami (Cat Burglar)',
-    character: 'Nami',
-    primary: '#f97316',
-    primaryHover: '#ea580c',
-    border: 'border-orange-500/40',
-    bgBadge: 'bg-orange-500/10',
-    textBadge: 'text-orange-400',
-    gradient: 'from-orange-500 via-amber-500 to-yellow-500',
-    accentGlow: 'rgba(249, 115, 22, 0.15)'
-  },
-  usopp: {
-    id: 'usopp',
-    name: 'God Usopp (Sogeking)',
-    character: 'Usopp',
-    primary: '#eab308',
-    primaryHover: '#ca8a04',
-    border: 'border-yellow-500/40',
-    bgBadge: 'bg-yellow-500/10',
-    textBadge: 'text-yellow-400',
-    gradient: 'from-yellow-500 via-amber-600 to-orange-600',
-    accentGlow: 'rgba(234, 179, 8, 0.15)'
-  },
-  sanji: {
-    id: 'sanji',
-    name: 'Sanji (All Blue)',
-    character: 'Sanji',
-    primary: '#3b82f6',
-    primaryHover: '#2563eb',
-    border: 'border-blue-500/40',
-    bgBadge: 'bg-blue-500/10',
-    textBadge: 'text-blue-400',
-    gradient: 'from-blue-500 via-indigo-600 to-sky-500',
-    accentGlow: 'rgba(59, 130, 246, 0.15)'
-  },
-  chopper: {
-    id: 'chopper',
-    name: 'Chopper (Sakura)',
-    character: 'Tony Tony Chopper',
-    primary: '#ec4899',
-    primaryHover: '#db2777',
-    border: 'border-pink-500/40',
-    bgBadge: 'bg-pink-500/10',
-    textBadge: 'text-pink-400',
-    gradient: 'from-pink-500 via-rose-400 to-fuchsia-500',
-    accentGlow: 'rgba(236, 72, 153, 0.15)'
-  },
-  robin: {
-    id: 'robin',
-    name: 'Robin (Fleur)',
-    character: 'Nico Robin',
-    primary: '#a855f7',
-    primaryHover: '#9333ea',
-    border: 'border-purple-500/40',
-    bgBadge: 'bg-purple-500/10',
-    textBadge: 'text-purple-400',
-    gradient: 'from-purple-500 via-violet-600 to-indigo-600',
-    accentGlow: 'rgba(168, 85, 247, 0.15)'
-  },
-  franky: {
-    id: 'franky',
-    name: 'Franky (SUPER)',
-    character: 'Franky',
-    primary: '#06b6d4',
-    primaryHover: '#0891b2',
-    border: 'border-cyan-500/40',
-    bgBadge: 'bg-cyan-500/10',
-    textBadge: 'text-cyan-400',
-    gradient: 'from-cyan-500 via-teal-500 to-blue-600',
-    accentGlow: 'rgba(6, 182, 212, 0.15)'
-  },
-  brook: {
-    id: 'brook',
-    name: 'Brook (Soul King)',
-    character: 'Brook',
-    primary: '#94a3b8',
-    primaryHover: '#64748b',
-    border: 'border-slate-400/40',
-    bgBadge: 'bg-slate-400/10',
-    textBadge: 'text-slate-300',
-    gradient: 'from-slate-400 via-zinc-500 to-stone-600',
-    accentGlow: 'rgba(148, 163, 184, 0.15)'
-  },
-  jinbe: {
-    id: 'jinbe',
-    name: 'Jinbe (First Son)',
-    character: 'Jinbe',
-    primary: '#0d9488',
-    primaryHover: '#0f766e',
-    border: 'border-teal-500/40',
-    bgBadge: 'bg-teal-500/10',
-    textBadge: 'text-teal-400',
-    gradient: 'from-teal-500 via-cyan-600 to-emerald-700',
-    accentGlow: 'rgba(13, 148, 136, 0.15)'
-  },
-  nika: {
-    id: 'nika',
-    name: 'Sun God Nika (Gear 5)',
-    character: 'Drums of Liberation',
-    primary: '#fbbf24',
-    primaryHover: '#f59e0b',
-    border: 'border-yellow-400/60',
-    bgBadge: 'bg-yellow-400/20',
-    textBadge: 'text-yellow-300',
-    gradient: 'from-yellow-300 via-amber-400 to-white',
-    accentGlow: 'rgba(251, 191, 36, 0.25)'
-  }
+  classic: { id: 'classic', name: 'Romance Dawn', character: 'Classic One Piece', primary: '#f2b705' },
+  luffy: { id: 'luffy', name: 'Luffy', character: 'Monkey D. Luffy', primary: '#d8322a' },
+  zoro: { id: 'zoro', name: 'Zoro', character: 'Roronoa Zoro', primary: '#2a7d45' },
+  nami: { id: 'nami', name: 'Nami', character: 'Nami', primary: '#f27d1f' },
+  usopp: { id: 'usopp', name: 'Usopp', character: 'Usopp', primary: '#c9a227' },
+  sanji: { id: 'sanji', name: 'Sanji', character: 'Sanji', primary: '#2a5fc4' },
+  chopper: { id: 'chopper', name: 'Chopper', character: 'Tony Tony Chopper', primary: '#ef7fae' },
+  robin: { id: 'robin', name: 'Robin', character: 'Nico Robin', primary: '#6c4bb6' },
+  franky: { id: 'franky', name: 'Franky', character: 'Franky', primary: '#19a7c9' },
+  brook: { id: 'brook', name: 'Brook', character: 'Brook', primary: '#a7adb8' },
+  jinbe: { id: 'jinbe', name: 'Jinbe', character: 'Jinbe', primary: '#0e7a72' },
+  nika: { id: 'nika', name: 'Nika', character: 'Drums of Liberation', primary: '#f6ecd0' }
 };
+
+// Ink or white, whichever reads better on a flat field of this colour.
+function onField(hex) {
+  const v = parseInt(hex.replace('#', ''), 16);
+  const lin = c => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
+  const L = 0.2126 * lin((v >> 16) & 255) + 0.7152 * lin((v >> 8) & 255) + 0.0722 * lin(v & 255);
+  const inkContrast = (L + 0.05) / (0.0082 + 0.05);
+  const whiteContrast = 1.05 / (L + 0.05);
+  return inkContrast >= whiteContrast ? '#17150f' : '#ffffff';
+}
 
 // Sagas Master Dataset
 const SAGAS_DATA = [
@@ -454,65 +282,106 @@ function getEpisodeTitle(epNumber, arcTitle) {
   if (EPISODE_TITLES && EPISODE_TITLES[epNumber]) {
     return EPISODE_TITLES[epNumber];
   }
-  return `${arcTitle || 'Grand Line'} — Episode ${epNumber}`;
+  return `${arcTitle || 'Grand Line'}, episode ${epNumber}`;
 }
 
-// The selected character palette drives the accent ramp in both colour modes.
-// Dark mode lifts the hue toward white so it reads on navy; light mode pulls it
-// toward ink so the same accent stays legible on parchment. Both ramps are
-// published as channel triplets so Tailwind's /alpha modifiers keep working.
-const INK_RGB = [21, 32, 46];
-const WHITE_RGB = [255, 255, 255];
+const ALL_ITEMS = SAGAS_DATA.flatMap(s => s.items.map(item => ({ item, saga: s })));
+const ITEM_INDEX = Object.fromEntries(ALL_ITEMS.map(({ item }, i) => [item.id, i]));
+const KNOWN_IDS = new Set(Object.keys(ITEM_INDEX));
+const LAST_EP = Math.max(...ALL_ITEMS.map(({ item }) => item.endEp || 0));
+const MINUTES_PER_UNIT = 23.5;
+const isEpBased = item => Boolean(item.startEp && item.endEp);
 
-function accentRamp(hex) {
-  const value = parseInt(hex.replace('#', ''), 16);
-  const base = [(value >> 16) & 255, (value >> 8) & 255, value & 255];
-  const mix = (target, amount) => base.map((c, i) => Math.round(c + (target[i] - c) * amount)).join(' ');
-  const pure = base.join(' ');
-  return {
-    '--a100-dark': mix(WHITE_RGB, 0.64), '--a200-dark': mix(WHITE_RGB, 0.5),
-    '--a300-dark': mix(WHITE_RGB, 0.36), '--a400-dark': mix(WHITE_RGB, 0.2),
-    '--a500-dark': pure,
-    '--a600-dark': mix(INK_RGB, 0.2), '--a700-dark': mix(INK_RGB, 0.38),
-
-    '--a100-light': mix(INK_RGB, 0.72), '--a200-light': mix(INK_RGB, 0.64),
-    '--a300-light': mix(INK_RGB, 0.56), '--a400-light': mix(INK_RGB, 0.48),
-    '--a500-light': pure,
-    '--a600-light': mix(INK_RGB, 0.3), '--a700-light': mix(INK_RGB, 0.52)
-  };
+// subProgress[id] is the episode you're on inside that arc: the next one to watch.
+// Everything from startEp up to (not including) it counts as watched.
+function unitsWatchedIn(item, watched, sub) {
+  if (watched.has(item.id)) return item.epCount || 0;
+  if (isEpBased(item) && sub[item.id] !== undefined) return Math.max(0, Math.min(item.epCount, sub[item.id] - item.startEp));
+  return 0;
 }
+
+function findNext(watched, skipped, sub, purist) {
+  for (let i = 0; i < ALL_ITEMS.length; i++) {
+    const { item, saga } = ALL_ITEMS[i];
+    if (purist && isDetourType(item.type)) continue;
+    if (watched.has(item.id) || skipped.has(item.id)) continue;
+    const epBased = isEpBased(item);
+    const currentEp = epBased ? Math.max(item.startEp, sub[item.id] ?? item.startEp) : null;
+    return {
+      index: i, item, saga, isEpBased: epBased, currentEp, startEp: item.startEp, endEp: item.endEp,
+      episodeTitle: epBased ? getEpisodeTitle(currentEp, item.title) : item.title,
+      isDetour: isDetourType(item.type)
+    };
+  }
+  return null;
+}
+
+const describeNext = next => !next ? 'caught up' : next.isEpBased ? `Ep ${next.currentEp}, ${next.item.title}` : next.item.title;
+
+// The episode the viewer is standing on, for the voyage line.
+function positionEpisode(next) {
+  if (!next) return LAST_EP;
+  if (next.isEpBased) return next.currentEp;
+  for (let i = next.index - 1; i >= 0; i--) {
+    const { item } = ALL_ITEMS[i];
+    if (isEpBased(item)) return Math.min(LAST_EP, item.endEp + 1);
+  }
+  return 1;
+}
+
+const readJSON = (key, fallback) => {
+  try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
+};
+const writeKey = (key, value) => { try { localStorage.setItem(key, value); } catch { /* storage unavailable */ } };
 
 export default function App() {
   const [activeThemeId, setActiveThemeId] = useState(() => localStorage.getItem('op_tracker_theme') || 'classic');
   const [bgMode, setBgMode] = useState(() => localStorage.getItem('op_header_bg_mode') || 'auto');
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
-  const [compactView, setCompactView] = useState(() => localStorage.getItem('op_compact_view') === 'true');
   const [canonPuristMode, setCanonPuristMode] = useState(() => localStorage.getItem('op_canon_purist_mode') === 'true');
-
-  useEffect(() => {
-    localStorage.setItem('op_compact_view', compactView.toString());
-  }, [compactView]);
-
-  useEffect(() => {
-    localStorage.setItem('op_canon_purist_mode', canonPuristMode.toString());
-  }, [canonPuristMode]);
-
-  // 'system' follows prefers-color-scheme; an explicit choice is remembered.
+  const [spoilerShield, setSpoilerShield] = useState(() => localStorage.getItem('op_spoiler_shield') !== 'false');
   const [colorMode, setColorMode] = useState(() => {
-    try {
-      const saved = localStorage.getItem('op_color_mode');
-      return saved === 'light' || saved === 'dark' ? saved : 'system';
-    } catch {
-      return 'system';
-    }
+    try { const saved = localStorage.getItem('op_color_mode'); return saved === 'light' || saved === 'dark' ? saved : 'system'; } catch { return 'system'; }
   });
 
+  // A fresh start is a fresh start: nothing pre-marked, Up Next is episode 1.
+  const [watchedIds, setWatchedIds] = useState(() => new Set(readJSON('op_tracker_watched', [])));
+  const [skippedIds, setSkippedIds] = useState(() => new Set(readJSON('op_tracker_skipped', [])));
+  const [subProgress, setSubProgress] = useState(() => readJSON('op_tracker_subprogress', {}));
+  const [dailyPace, setDailyPace] = useState(3);
+
+  const [activeTab, setActiveTab] = useState('roadmap');
+  const [filterType, setFilterType] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSagas, setExpandedSagas] = useState(() => new Set(SAGAS_DATA.map(s => s.id)));
+
+  const [dialog, setDialog] = useState(null); // settings | about | reset | import | tune | finale
+  const [importPlan, setImportPlan] = useState(null);
+  const [tuneTarget, setTuneTarget] = useState(null);
+  const [preImport, setPreImport] = useState(() => readJSON('op_tracker_pre_import', null));
+  const [toast, setToast] = useState(null);
+  const [eyecatch, setEyecatch] = useState(null);
+  const toastTimer = useRef(null);
+  const previousMilestones = useRef(null);
+  const quietNews = useRef(false);
+  const cardRef = useRef(null);
+  const [cardVisible, setCardVisible] = useState(true);
+
+  const theme = THEMES[activeThemeId] || THEMES.classic;
+
+  useEffect(() => { writeKey('op_tracker_theme', activeThemeId); }, [activeThemeId]);
+  useEffect(() => { writeKey('op_header_bg_mode', bgMode); }, [bgMode]);
+  useEffect(() => { writeKey('op_tracker_watched', JSON.stringify(Array.from(watchedIds))); }, [watchedIds]);
+  useEffect(() => { writeKey('op_tracker_skipped', JSON.stringify(Array.from(skippedIds))); }, [skippedIds]);
+  useEffect(() => { writeKey('op_tracker_subprogress', JSON.stringify(subProgress)); }, [subProgress]);
+  useEffect(() => { writeKey('op_spoiler_shield', String(spoilerShield)); }, [spoilerShield]);
+  useEffect(() => { writeKey('op_canon_purist_mode', String(canonPuristMode)); }, [canonPuristMode]);
+
+  // 'system' follows prefers-color-scheme; an explicit choice is remembered.
   useEffect(() => {
     const root = document.documentElement;
     if (colorMode === 'system') root.removeAttribute('data-mode');
     else root.setAttribute('data-mode', colorMode);
-    try { localStorage.setItem('op_color_mode', colorMode); } catch { /* storage unavailable */ }
+    writeKey('op_color_mode', colorMode);
   }, [colorMode]);
 
   // Keep the PWA status bar in step with whichever mode is actually showing.
@@ -520,122 +389,67 @@ export default function App() {
     const query = window.matchMedia('(prefers-color-scheme: dark)');
     const sync = () => {
       const dark = colorMode === 'dark' || (colorMode === 'system' && query.matches);
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0B121C' : '#F2EADB');
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#11100e' : '#f3f2ee');
     };
     sync();
     query.addEventListener('change', sync);
     return () => query.removeEventListener('change', sync);
   }, [colorMode]);
 
-  const [watchedIds, setWatchedIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem('op_tracker_watched');
-      return saved ? new Set(JSON.parse(saved)) : new Set(['arc-1', 'arc-2']);
-    } catch {
-      return new Set(['arc-1', 'arc-2']);
-    }
-  });
-
-  const [skippedIds, setSkippedIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem('op_tracker_skipped');
-      return saved ? new Set(JSON.parse(saved)) : new Set();
-    } catch {
-      return new Set();
-    }
-  });
-
-  const [subProgress, setSubProgress] = useState(() => {
-    try {
-      const saved = localStorage.getItem('op_tracker_subprogress');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const [filterType, setFilterType] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('roadmap');
-  const [expandedSagas, setExpandedSagas] = useState(() => new Set(SAGAS_DATA.map(s => s.id)));
-  const [spoilerShield, setSpoilerShield] = useState(() => localStorage.getItem('op_spoiler_shield') !== 'false');
-  const [dailyPace, setDailyPace] = useState(3);
-
-  const [showResetModal, setShowResetModal] = useState(false);
-  const [toastMessage, setToastMessage] = useState(null);
-  const toastTimer = useRef(null);
-  const previousMilestones = useRef(null);
+  // The field colour lives on the root so dialogs (top layer) and ::selection get it too.
+  useEffect(() => {
+    const root = document.documentElement.style;
+    root.setProperty('--field', theme.primary);
+    root.setProperty('--on-field', onField(theme.primary));
+  }, [theme.primary]);
 
   useEffect(() => () => clearTimeout(toastTimer.current), []);
 
-  const theme = THEMES[activeThemeId] || THEMES.classic;
+  // --- toasts with undo -------------------------------------------------------
+  const snapshot = () => ({ watched: new Set(watchedIds), skipped: new Set(skippedIds), sub: { ...subProgress } });
+  const restore = snap => { setWatchedIds(new Set(snap.watched)); setSkippedIds(new Set(snap.skipped)); setSubProgress({ ...snap.sub }); };
 
-  useEffect(() => { localStorage.setItem('op_tracker_theme', activeThemeId); }, [activeThemeId]);
-  useEffect(() => { localStorage.setItem('op_header_bg_mode', bgMode); }, [bgMode]);
-  useEffect(() => { localStorage.setItem('op_tracker_watched', JSON.stringify(Array.from(watchedIds))); }, [watchedIds]);
-  useEffect(() => { localStorage.setItem('op_tracker_skipped', JSON.stringify(Array.from(skippedIds))); }, [skippedIds]);
-  useEffect(() => { localStorage.setItem('op_tracker_subprogress', JSON.stringify(subProgress)); }, [subProgress]);
-  useEffect(() => { localStorage.setItem('op_spoiler_shield', spoilerShield.toString()); }, [spoilerShield]);
-
-  const showToast = (msg) => {
+  const notify = (message, undoSnap = null, ms = 6000) => {
     clearTimeout(toastTimer.current);
-    setToastMessage(msg);
-    toastTimer.current = setTimeout(() => setToastMessage(null), 4500);
+    setToast({ id: Date.now(), message, undo: undoSnap });
+    toastTimer.current = setTimeout(() => setToast(null), ms);
+  };
+  const undoToast = () => {
+    if (!toast?.undo) return;
+    const snap = toast.undo;
+    if (snap.settings) { setActiveThemeId(snap.settings.theme); setBgMode(snap.settings.bgMode); setCanonPuristMode(snap.settings.purist); }
+    quietNews.current = true;
+    restore(snap);
+    clearTimeout(toastTimer.current);
+    setToast({ id: Date.now(), message: 'Undone.', undo: null });
+    toastTimer.current = setTimeout(() => setToast(null), 2500);
   };
 
-  const allItems = useMemo(() => SAGAS_DATA.flatMap(s => s.items), []);
+  // --- derived state ----------------------------------------------------------
+  const totalUnits = useMemo(() => ALL_ITEMS.reduce((acc, { item }) => acc + (item.epCount || 0), 0), []);
+  const watchedUnits = useMemo(() => ALL_ITEMS.reduce((acc, { item }) => acc + unitsWatchedIn(item, watchedIds, subProgress), 0), [watchedIds, subProgress]);
+  const progressPercent = Math.min(100, Math.round((watchedUnits / Math.max(1, totalUnits)) * 100));
 
-  const totalEpisodesCount = useMemo(() => {
-    return allItems.reduce((acc, curr) => acc + (curr.epCount || 0), 0);
-  }, [allItems]);
+  const stats = useMemo(() => {
+    const minutes = watchedUnits * MINUTES_PER_UNIT;
+    const fillerSkipped = ALL_ITEMS
+      .filter(({ item }) => (item.type === 'filler' || item.type === 'recommended_filler') && skippedIds.has(item.id))
+      .reduce((sum, { item }) => sum + (item.epCount || 0), 0);
+    return {
+      units: watchedUnits,
+      hours: (minutes / 60).toFixed(1),
+      days: (minutes / (60 * 24)).toFixed(1),
+      fillerSkippedHours: (fillerSkipped * MINUTES_PER_UNIT / 60).toFixed(1)
+    };
+  }, [watchedUnits, skippedIds]);
 
-  const watchedEpisodesCount = useMemo(() => {
-    return allItems.reduce((acc, item) => {
-      if (watchedIds.has(item.id)) return acc + (item.epCount || 0);
-      if (item.startEp && item.endEp && subProgress[item.id]) {
-        const curEp = subProgress[item.id];
-        return acc + Math.max(0, Math.min(item.epCount, curEp - item.startEp + 1));
-      }
-      return acc;
-    }, 0);
-  }, [allItems, watchedIds, subProgress]);
-
-  const progressPercent = Math.min(100, Math.round((watchedEpisodesCount / Math.max(1, totalEpisodesCount)) * 100));
-
-  const watchTimeStats = useMemo(() => {
-    const minutesWatched = watchedEpisodesCount * 23.5;
-    const hoursWatched = (minutesWatched / 60).toFixed(1);
-    const daysEquivalent = (minutesWatched / (60 * 24)).toFixed(1);
-    const skippedFillerEps = allItems
-      .filter(item => (item.type === 'filler' || item.type === 'recommended_filler') && (!watchedIds.has(item.id) || skippedIds.has(item.id)))
-      .reduce((sum, item) => sum + (item.epCount || 0), 0);
-    const fillerHoursSaved = ((skippedFillerEps * 20) / 60).toFixed(1);
-
-    return { hoursWatched, daysEquivalent, fillerHoursSaved };
-  }, [watchedEpisodesCount, allItems, watchedIds, skippedIds]);
-
-  const calculatedBounty = useMemo(() => {
-    let bounty = 0;
-    allItems.forEach(item => {
-      const reward = item.bountyReward || 0;
-      if (watchedIds.has(item.id)) {
-        bounty += reward;
-      } else if (item.startEp && item.endEp && subProgress[item.id]) {
-        const curEp = subProgress[item.id];
-        const fraction = Math.max(0, Math.min(1, (curEp - item.startEp + 1) / item.epCount));
-        bounty += Math.round(reward * fraction);
-      }
-    });
-    return bounty;
-  }, [allItems, watchedIds, subProgress]);
-
-  const formatBounty = (num) => new Intl.NumberFormat('en-US').format(num);
-
-  const getItemCurrentEpisode = (item) => {
-    if (watchedIds.has(item.id)) return item.endEp || item.epCount;
-    if (item.startEp && item.endEp && subProgress[item.id] !== undefined) return subProgress[item.id];
-    return null;
-  };
+  const bounty = useMemo(() => ALL_ITEMS.reduce((sum, { item }) => {
+    const reward = item.bountyReward || 0;
+    if (watchedIds.has(item.id)) return sum + reward;
+    if (!item.epCount) return sum;
+    return sum + Math.round(reward * unitsWatchedIn(item, watchedIds, subProgress) / item.epCount);
+  }, 0), [watchedIds, subProgress]);
+  const formatBounty = num => new Intl.NumberFormat('en-US').format(num);
 
   const unlockedCrew = useMemo(() => {
     const list = ['Luffy'];
@@ -651,190 +465,218 @@ export default function App() {
     return Array.from(new Set(list));
   }, [watchedIds]);
 
-  const evaluatedAchievements = useMemo(() => {
-    return ACHIEVEMENTS.map(ach => {
-      const isUnlocked = ach.check(watchedIds, subProgress, watchedEpisodesCount, totalEpisodesCount);
-      return { ...ach, isUnlocked };
-    });
-  }, [watchedIds, subProgress, watchedEpisodesCount, totalEpisodesCount]);
+  const evaluatedAchievements = useMemo(() => ACHIEVEMENTS.map(ach => ({
+    ...ach, isUnlocked: ach.check(watchedIds, subProgress, watchedUnits, totalUnits)
+  })), [watchedIds, subProgress, watchedUnits, totalUnits]);
 
-  const unlockedCount = useMemo(() => {
-    return evaluatedAchievements.filter(a => a.isUnlocked).length;
-  }, [evaluatedAchievements]);
-
+  // Crew and milestone news rides along on whatever toast is already showing,
+  // so it never knocks an Undo off the screen.
   useEffect(() => {
-    const unlocked = evaluatedAchievements.filter(a => a.isUnlocked);
+    const unlocked = evaluatedAchievements.filter(a => a.isUnlocked).map(a => a.id);
     const previous = previousMilestones.current;
-    if (previous) {
+    if (previous && !quietNews.current) {
       const newCrew = unlockedCrew.filter(name => !previous.crew.includes(name));
-      const newAwards = unlocked.filter(award => !previous.awards.includes(award.id));
-      const messages = [];
-      if (newCrew.length) messages.push(`${newCrew.join(', ')} joined your crew!`);
-      if (newAwards.length) messages.push(`${newAwards.length} milestone${newAwards.length === 1 ? '' : 's'} unlocked.`);
-      if (messages.length) showToast(messages.join(' '));
+      const newAwards = unlocked.filter(id => !previous.awards.includes(id));
+      const parts = [];
+      if (newCrew.length) parts.push(`${newCrew.join(', ')} joined the crew.`);
+      if (newAwards.length) parts.push(`${newAwards.length} new milestone${newAwards.length === 1 ? '' : 's'} in the logbook.`);
+      if (parts.length) {
+        const extra = parts.join(' ');
+        setToast(t => t ? { ...t, message: `${t.message} ${extra}` } : { id: Date.now(), message: extra, undo: null });
+        clearTimeout(toastTimer.current);
+        toastTimer.current = setTimeout(() => setToast(null), 7000);
+      }
     }
-    previousMilestones.current = { crew: unlockedCrew, awards: unlocked.map(award => award.id) };
+    quietNews.current = false;
+    previousMilestones.current = { crew: unlockedCrew, awards: unlocked };
   }, [unlockedCrew, evaluatedAchievements]);
 
-  const upNextData = useMemo(() => {
-    for (let i = 0; i < allItems.length; i++) {
-      const item = allItems[i];
-      if (canonPuristMode && item.type !== 'canon' && item.type !== 'mixed') {
-        continue;
-      }
-      if (!watchedIds.has(item.id) && !skippedIds.has(item.id)) {
-        const parentSaga = SAGAS_DATA.find(s => s.items.some(it => it.id === item.id));
-        const isEpBased = Boolean(item.startEp && item.endEp);
-        const currentEp = isEpBased
-          ? (subProgress[item.id] !== undefined ? subProgress[item.id] : item.startEp)
-          : null;
-        const episodeTitle = isEpBased ? getEpisodeTitle(currentEp, item.title) : item.title;
+  const upNext = useMemo(() => findNext(watchedIds, skippedIds, subProgress, canonPuristMode), [watchedIds, skippedIds, subProgress, canonPuristMode]);
 
-        return {
-          index: i,
-          item,
-          saga: parentSaga,
-          isEpBased,
-          currentEp,
-          startEp: item.startEp,
-          endEp: item.endEp,
-          episodeTitle
-        };
-      }
-    }
-    return null;
-  }, [allItems, watchedIds, skippedIds, subProgress, canonPuristMode]);
+  // Where a skip would land you, so the card can say so before you press it.
+  const afterSkip = useMemo(() => {
+    if (!upNext) return null;
+    const after = findNext(watchedIds, new Set(skippedIds).add(upNext.item.id), subProgress, canonPuristMode);
+    return after ? (after.isEpBased ? `ep ${after.currentEp}, ${after.item.title}` : after.item.title) : 'the end of your queue';
+  }, [upNext, watchedIds, skippedIds, subProgress, canonPuristMode]);
 
-  const activeBgKey = useMemo(() => {
-    if (bgMode !== 'auto' && BACKGROUND_ARTWORKS[bgMode]) {
-      return bgMode;
-    }
-    return upNextData?.saga?.id || 'east-blue';
-  }, [bgMode, upNextData]);
+  // The end of the queue gets a proper ending, once.
+  const hadNext = useRef(Boolean(upNext));
+  useEffect(() => {
+    if (hadNext.current && !upNext && watchedUnits > 0) setDialog('finale');
+    hadNext.current = Boolean(upNext);
+  }, [upNext, watchedUnits]);
 
-  const activeHeaderArtwork = BACKGROUND_ARTWORKS[activeBgKey]?.img || bgEastBlue;
+  const positionEp = positionEpisode(upNext);
+  const positionIndex = upNext ? upNext.index : ALL_ITEMS.length;
 
-  const handleSetCurrentEpisode = (item, newEpisode) => {
-    if (!item.startEp || !item.endEp) return;
-    if (newEpisode >= item.endEp) {
-      setWatchedIds(prev => new Set(prev).add(item.id));
-      setSkippedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
-      setSubProgress(prev => { const n = { ...prev }; delete n[item.id]; return n; });
-    } else if (newEpisode < item.startEp) {
-      setWatchedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
-      setSubProgress(prev => { const n = { ...prev }; delete n[item.id]; return n; });
-    } else {
-      setWatchedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
-      setSubProgress(prev => ({ ...prev, [item.id]: newEpisode }));
-    }
+  const activeBgKey = bgMode !== 'auto' && BACKGROUND_ARTWORKS[bgMode] ? bgMode : upNext?.saga?.id || 'east-blue';
+  const cardArt = BACKGROUND_ARTWORKS[activeBgKey];
+
+  const segments = useMemo(() => SAGAS_DATA.map(saga => {
+    const eps = saga.items.filter(isEpBased);
+    const start = Math.min(...eps.map(i => i.startEp));
+    const end = Math.max(...eps.map(i => i.endEp));
+    const units = saga.items.reduce((s, i) => s + (i.epCount || 0), 0);
+    const done = saga.items.reduce((s, i) => s + unitsWatchedIn(i, watchedIds, subProgress), 0);
+    return { id: saga.id, title: saga.title, start, end, span: end - start + 1, done: units ? done / units : 0 };
+  }), [watchedIds, subProgress]);
+
+  // The strip at the bottom only appears once the title card has scrolled away.
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) => setCardVisible(entry.isIntersecting), { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [upNext === null]);
+
+  // --- actions ----------------------------------------------------------------
+  const completeItem = (item, snap, { celebrate }) => {
+    setWatchedIds(prev => new Set(prev).add(item.id));
+    setSkippedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
+    setSubProgress(prev => { const n = { ...prev }; delete n[item.id]; return n; });
+    if (celebrate && isEpBased(item)) setEyecatch({ id: Date.now(), title: item.title });
+    notify(`${item.title} done.`, snap);
+  };
+
+  const setEpisode = (item, onEp) => {
+    if (!isEpBased(item)) return;
+    const snap = snapshot();
+    if (onEp > item.endEp) { completeItem(item, snap, { celebrate: upNext?.item.id === item.id }); return; }
+    setWatchedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
+    setSkippedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
+    setSubProgress(prev => {
+      const n = { ...prev };
+      if (onEp <= item.startEp) delete n[item.id]; else n[item.id] = onEp;
+      return n;
+    });
   };
 
   const advanceUpNext = () => {
-    if (!upNextData) return;
-    const { item, isEpBased, currentEp, endEp } = upNextData;
-    if (isEpBased) {
-      if (currentEp < endEp) {
-        handleSetCurrentEpisode(item, currentEp + 1);
-        showToast(`Advanced to Episode ${currentEp + 1}!`);
-      } else {
-        setWatchedIds(prev => new Set(prev).add(item.id));
-        setSubProgress(prev => { const n = { ...prev }; delete n[item.id]; return n; });
-        const nextIndex = upNextData.index + 1;
-        if (nextIndex < allItems.length) {
-          showToast(`Completed ${item.title}! Starting ${allItems[nextIndex].title}.`);
-        } else {
-          showToast(`Congratulations! You have completed the entire Grand Line voyage!`);
-        }
-      }
+    if (!upNext) return;
+    const { item, isEpBased: epBased, currentEp, endEp } = upNext;
+    const snap = snapshot();
+    if (epBased && currentEp < endEp) {
+      setSubProgress(prev => ({ ...prev, [item.id]: currentEp + 1 }));
+      notify(`Ep ${currentEp} watched.`, snap, 4000);
     } else {
-      setWatchedIds(prev => new Set(prev).add(item.id));
-      const nextIndex = upNextData.index + 1;
-      if (nextIndex < allItems.length) {
-        showToast(`Completed ${item.title}! Starting ${allItems[nextIndex].title}.`);
-      }
+      completeItem(item, snap, { celebrate: true });
     }
   };
 
-  const skipUpNext = () => {
-    if (!upNextData) return;
-    const { item } = upNextData;
+  const skipItem = item => {
+    const snap = snapshot();
     setSkippedIds(prev => new Set(prev).add(item.id));
     setSubProgress(prev => { const n = { ...prev }; delete n[item.id]; return n; });
-    const nextIndex = upNextData.index + 1;
-    if (nextIndex < allItems.length) {
-      showToast(`Skipped ${item.title}. Up next: ${allItems[nextIndex].title}`);
+    notify(`Skipped ${item.title}. It stays on the roadmap if you change your mind.`, snap);
+  };
+
+  const toggleItem = item => {
+    const snap = snapshot();
+    if (watchedIds.has(item.id)) {
+      setWatchedIds(prev => { const n = new Set(prev); n.delete(item.id); return n; });
+      notify(`${item.title} marked as not watched.`, snap);
     } else {
-      showToast(`Skipped ${item.title}.`);
+      completeItem(item, snap, { celebrate: false });
     }
   };
 
-  const resetSkippedItems = () => {
-    setSkippedIds(new Set());
-    showToast('Restored all skipped items to the queue.');
+  const restoreItem = id => {
+    const snap = snapshot();
+    setSkippedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
+    notify(`${ALL_ITEMS[ITEM_INDEX[id]].item.title} is back in the queue.`, snap);
   };
 
-  const scrollToActiveArc = () => {
-    if (!upNextData) return;
+  const restoreAllSkipped = () => {
+    const snap = snapshot();
+    const count = skippedIds.size;
+    setSkippedIds(new Set());
+    notify(`Put ${count} skipped stop${count === 1 ? '' : 's'} back in the queue.`, snap);
+  };
+
+  const markSaga = (saga, watch) => {
+    const snap = snapshot();
+    setWatchedIds(prev => {
+      const next = new Set(prev);
+      saga.items.forEach(item => { if (watch) next.add(item.id); else next.delete(item.id); });
+      return next;
+    });
+    setSubProgress(prev => { const next = { ...prev }; saga.items.forEach(item => delete next[item.id]); return next; });
+    if (watch) setSkippedIds(prev => { const next = new Set(prev); saga.items.forEach(item => next.delete(item.id)); return next; });
+    notify(watch ? `Marked all ${saga.items.length} stops in ${saga.title} as watched.` : `Cleared ${saga.title}.`, snap);
+  };
+
+  const revealItem = id => {
     setActiveTab('roadmap');
     setSearchQuery('');
     setFilterType('all');
-    if (upNextData.saga) {
-      setExpandedSagas(prev => new Set(prev).add(upNextData.saga.id));
-    }
+    const saga = ALL_ITEMS[ITEM_INDEX[id]]?.saga;
+    if (saga) setExpandedSagas(prev => new Set(prev).add(saga.id));
     setTimeout(() => {
-      const el = document.getElementById(`arc-card-${upNextData.item.id}`);
-      if (el) { el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' }); el.focus({ preventScroll: true }); }
-    }, 100);
+      const el = document.getElementById(`arc-card-${id}`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
+      el.focus({ preventScroll: true });
+    }, 60);
   };
 
-  const toggleItem = (item) => {
-    setWatchedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(item.id)) {
-        next.delete(item.id);
-      } else {
-        next.add(item.id);
-        setSkippedIds(sk => { const s = new Set(sk); s.delete(item.id); return s; });
-        setSubProgress(sub => { const s = { ...sub }; delete s[item.id]; return s; });
+  const goToSaga = id => {
+    setActiveTab('roadmap');
+    setSearchQuery('');
+    setFilterType('all');
+    setExpandedSagas(prev => new Set(prev).add(id));
+    setTimeout(() => {
+      const target = document.getElementById(`saga-${id}`);
+      target?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      target?.focus({ preventScroll: true });
+    }, 60);
+  };
+
+  const openTab = tab => {
+    setActiveTab(tab);
+    requestAnimationFrame(() => document.getElementById('sections')?.scrollIntoView({ block: 'start' }));
+  };
+
+  // --- set my place -----------------------------------------------------------
+  const planTune = (ep, extras) => {
+    const containing = ALL_ITEMS.filter(({ item }) => isEpBased(item) && item.startEp <= ep && ep <= item.endEp);
+    const target = (containing.find(({ item }) => !isDetourType(item.type)) || containing[0])?.item
+      || ALL_ITEMS.find(({ item }) => isEpBased(item) && item.startEp >= ep)?.item;
+    if (!target) return null;
+    const targetIndex = ITEM_INDEX[target.id];
+    const watched = new Set(watchedIds);
+    const skipped = new Set(skippedIds);
+    const sub = { ...subProgress };
+    let story = 0, extrasCount = 0, cleared = 0;
+    ALL_ITEMS.forEach(({ item }, i) => {
+      if (i < targetIndex) {
+        if (!isDetourType(item.type)) { if (!watched.has(item.id)) story++; watched.add(item.id); skipped.delete(item.id); delete sub[item.id]; }
+        else if (!watched.has(item.id)) {
+          extrasCount++;
+          if (extras === 'watched') { watched.add(item.id); skipped.delete(item.id); } else skipped.add(item.id);
+          delete sub[item.id];
+        }
+      } else if (i > targetIndex) {
+        if (watched.has(item.id) || sub[item.id] !== undefined) cleared++;
+        watched.delete(item.id); delete sub[item.id];
       }
-      return next;
     });
+    const onEp = Math.max(target.startEp, Math.min(target.endEp, ep));
+    watched.delete(target.id); skipped.delete(target.id);
+    if (onEp > target.startEp) sub[target.id] = onEp; else delete sub[target.id];
+    return { ep: onEp, target, story, extras: extrasCount, cleared, result: { watched, skipped, sub }, next: findNext(watched, skipped, sub, canonPuristMode) };
   };
 
-  const markSaga = (sagaId, markAsWatched) => {
-    const saga = SAGAS_DATA.find(s => s.id === sagaId);
-    if (!saga) return;
-    setWatchedIds(prev => {
-      const next = new Set(prev);
-      saga.items.forEach(item => {
-        if (markAsWatched) next.add(item.id);
-        else next.delete(item.id);
-      });
-      return next;
-    });
-    if (markAsWatched) {
-      setSkippedIds(prev => {
-        const next = new Set(prev);
-        saga.items.forEach(item => next.delete(item.id));
-        return next;
-      });
-      setSubProgress(prev => {
-        const next = { ...prev };
-        saga.items.forEach(item => delete next[item.id]);
-        return next;
-      });
-    }
+  const applyTune = plan => {
+    const snap = snapshot();
+    restore({ watched: plan.result.watched, skipped: plan.result.skipped, sub: plan.result.sub });
+    setDialog(null);
+    notify(`You're on ep ${plan.ep}. Everything before it is sorted.`, snap, 10000);
+    requestAnimationFrame(() => window.scrollTo({ top: 0 }));
   };
 
-  const toggleSagaExpand = (sagaId) => {
-    setExpandedSagas(prev => {
-      const next = new Set(prev);
-      if (next.has(sagaId)) next.delete(sagaId);
-      else next.add(sagaId);
-      return next;
-    });
-  };
-
+  // --- backup -----------------------------------------------------------------
   const exportProgressJSON = () => {
     const backupData = {
       version: '3.0',
@@ -847,53 +689,102 @@ export default function App() {
       dailyPace,
       canonPuristMode
     };
+    const filename = `one_piece_voyage_${new Date().toISOString().slice(0, 10)}.json`;
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `one_piece_voyage_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Voyage progress saved to JSON!');
+    notify(`Backup saved as ${filename}.`);
   };
 
-  const importProgressJSON = (e) => {
+  const readBackup = e => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const data = JSON.parse(event.target?.result);
-        if (data.watchedIds) setWatchedIds(new Set(data.watchedIds));
-        if (data.skippedIds) setSkippedIds(new Set(data.skippedIds));
-        if (data.subProgress) setSubProgress(data.subProgress);
-        if (data.theme) setActiveThemeId(data.theme);
-        if (data.bgMode) setBgMode(data.bgMode);
-        if (data.dailyPace) setDailyPace(data.dailyPace);
-        if (typeof data.canonPuristMode === 'boolean') setCanonPuristMode(data.canonPuristMode);
-        showToast('Voyage progress restored successfully!');
-      } catch {
-        showToast('Invalid backup JSON file.');
+    reader.onload = event => {
+      let data;
+      try { data = JSON.parse(event.target?.result); } catch {
+        setImportPlan({ error: `“${file.name}” isn't a readable backup file. Nothing was changed.` }); setDialog('import'); return;
       }
+      const ids = v => Array.isArray(v) ? v.filter(x => typeof x === 'string') : null;
+      const watched = ids(data?.watchedIds);
+      const skipped = ids(data?.skippedIds);
+      const subOk = data?.subProgress && typeof data.subProgress === 'object' && !Array.isArray(data.subProgress);
+      if (!watched && !skipped && !subOk) {
+        setImportPlan({ error: `“${file.name}” doesn't look like an Eternal Pose backup. It has no watched, skipped or episode progress in it, so nothing was changed.` }); setDialog('import'); return;
+      }
+      const unknown = [...(watched || []), ...(skipped || [])].filter(id => !KNOWN_IDS.has(id)).length;
+      const sub = {};
+      if (subOk) Object.entries(data.subProgress).forEach(([id, v]) => { if (KNOWN_IDS.has(id) && Number.isFinite(v)) sub[id] = v; });
+      const result = {
+        watched: new Set((watched || []).filter(id => KNOWN_IDS.has(id))),
+        skipped: new Set((skipped || []).filter(id => KNOWN_IDS.has(id))),
+        sub,
+        theme: THEMES[data.theme] ? data.theme : null,
+        bgMode: typeof data.bgMode === 'string' && (data.bgMode === 'auto' || BACKGROUND_ARTWORKS[data.bgMode]) ? data.bgMode : null,
+        pace: Number.isInteger(data.dailyPace) && data.dailyPace >= 1 && data.dailyPace <= 15 ? data.dailyPace : null,
+        purist: typeof data.canonPuristMode === 'boolean' ? data.canonPuristMode : null
+      };
+      const purist = result.purist ?? canonPuristMode;
+      setImportPlan({
+        file: file.name,
+        date: data.exportDate ? new Date(data.exportDate) : null,
+        partial: !watched || !skipped || !subOk,
+        unknown,
+        result,
+        backupNext: describeNext(findNext(result.watched, result.skipped, result.sub, purist)),
+        backupUnits: ALL_ITEMS.reduce((acc, { item }) => acc + unitsWatchedIn(item, result.watched, result.sub), 0)
+      });
+      setDialog('import');
     };
     reader.readAsText(file);
   };
 
+  const applyImport = plan => {
+    const snap = { ...snapshot(), settings: { theme: activeThemeId, bgMode, purist: canonPuristMode } };
+    const saved = { watched: [...snap.watched], skipped: [...snap.skipped], sub: snap.sub, settings: snap.settings, savedAt: new Date().toISOString() };
+    writeKey('op_tracker_pre_import', JSON.stringify(saved));
+    setPreImport(saved);
+    const r = plan.result;
+    restore({ watched: r.watched, skipped: r.skipped, sub: r.sub });
+    if (r.theme) setActiveThemeId(r.theme);
+    if (r.bgMode) setBgMode(r.bgMode);
+    if (r.pace) setDailyPace(r.pace);
+    if (r.purist !== null) setCanonPuristMode(r.purist);
+    setDialog(null);
+    notify(`Backup loaded. You're at ${plan.backupNext}.`, snap, 10000);
+  };
+
+  const undoLastImport = () => {
+    if (!preImport) return;
+    const snap = snapshot();
+    restore({ watched: new Set(preImport.watched), skipped: new Set(preImport.skipped), sub: preImport.sub });
+    if (preImport.settings) { setActiveThemeId(preImport.settings.theme); setBgMode(preImport.settings.bgMode); setCanonPuristMode(preImport.settings.purist); }
+    try { localStorage.removeItem('op_tracker_pre_import'); } catch { /* storage unavailable */ }
+    setPreImport(null);
+    notify('Your progress from before the import is back.', snap);
+  };
+
+  const resetAll = () => {
+    const snap = snapshot();
+    restore({ watched: new Set(), skipped: new Set(), sub: {} });
+    setDialog(null);
+    notify('Everything reset. Up next is episode 1.', snap, 10000);
+  };
+
+  // --- roadmap filtering ----------------------------------------------------
   const filteredSagas = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return SAGAS_DATA.map(saga => {
       const filteredItems = saga.items.filter(item => {
-        // Enforce manga canon only when Purist Mode is active
-        if (canonPuristMode && item.type !== 'canon' && item.type !== 'mixed') {
-          return false;
-        }
-
-        const matchSearch =
-          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.episodes.toLowerCase().includes(searchQuery.toLowerCase());
+        if (canonPuristMode && isDetourType(item.type)) return false;
+        const matchSearch = !q || item.title.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || item.episodes.toLowerCase().includes(q);
         if (!matchSearch) return false;
-
-        if (filterType === 'canon') return item.type === 'canon' || item.type === 'mixed';
+        if (filterType === 'canon') return !isDetourType(item.type);
         if (filterType === 'movies') return item.type === 'movie' || item.type === 'special';
         if (filterType === 'must-watch') return item.tier === 'Must Watch' || item.type === 'canon';
         if (filterType === 'filler') return item.type === 'filler' || item.type === 'recommended_filler';
@@ -903,848 +794,185 @@ export default function App() {
     }).filter(saga => saga.items.length > 0);
   }, [filterType, searchQuery, canonPuristMode]);
 
-  const pacingStats = useMemo(() => {
-    const remainingEpisodes = Math.max(0, totalEpisodesCount - watchedEpisodesCount);
-    const daysToFinish = Math.ceil(remainingEpisodes / Math.max(1, dailyPace));
-    const completionDate = new Date();
-    completionDate.setDate(completionDate.getDate() + daysToFinish);
-    return {
-      remainingEpisodes,
-      daysToFinish,
-      completionDateStr: completionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    };
-  }, [totalEpisodesCount, watchedEpisodesCount, dailyPace]);
+  const pacing = useMemo(() => {
+    const remaining = Math.max(0, totalUnits - watchedUnits);
+    const days = Math.ceil(remaining / Math.max(1, dailyPace));
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return { remaining, days, date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) };
+  }, [totalUnits, watchedUnits, dailyPace]);
+
+  const films = useMemo(() => ALL_ITEMS.map(({ item }, index) => ({ item, index })).filter(({ item }) => item.type === 'movie' || item.type === 'special'), []);
+  const filmPlacement = index => {
+    for (let i = index - 1; i >= 0; i--) {
+      const { item } = ALL_ITEMS[i];
+      if (isEpBased(item)) return `After ep ${item.endEp}`;
+    }
+    return 'Before ep 1';
+  };
+  const fillerSkippable = useMemo(() => ALL_ITEMS.map(({ item }) => item).filter(item => item.type === 'filler' && item.tier === 'Filler'), []);
+  const fillerTieIns = useMemo(() => ALL_ITEMS.map(({ item }) => item).filter(item => item.type === 'filler' && item.tier !== 'Filler'), []);
+  const fillerHours = (fillerSkippable.reduce((s, i) => s + i.epCount, 0) * MINUTES_PER_UNIT / 60).toFixed(0);
+
+  const themeLocked = t => {
+    if (!spoilerShield) return false;
+    if (t.id === 'classic' || t.id === 'luffy') return false;
+    if (t.id === 'nika') return !watchedIds.has('arc-47');
+    return !unlockedCrew.some(c => c.toLowerCase() === t.id || (t.id === 'robin' && c === 'Nico Robin'));
+  };
+
+  const filmCount = films.filter(f => f.item.type === 'movie').length;
+  const specialCount = films.length - filmCount;
+  const filmsWatched = films.filter(f => watchedIds.has(f.item.id)).length;
+  const allExpanded = expandedSagas.size === SAGAS_DATA.length;
+  const clearEyecatch = useCallback(() => setEyecatch(null), []);
+  const stopCount = filteredSagas.reduce((sum, saga) => sum + saga.items.length, 0);
 
   return (
-    <div
-      className="voyage-app min-h-screen bg-slate-950 text-slate-100 font-sans pb-24"
-      style={{
-        '--theme-primary': theme.primary,
-        '--theme-hover': theme.primaryHover,
-        ...accentRamp(theme.primary)
-      }}
-    >
-      <a className="skip-link" href="#main-content">Skip to voyage content</a>
-      <div className="voyage-toast" role="status" aria-live="polite">{toastMessage && <span><CheckCircle2 size={16} />{toastMessage}</span>}</div>
-      <UpNextBar next={upNextData} onJump={scrollToActiveArc} onSkip={skipUpNext} onAdvance={advanceUpNext} />
-      <VoyageHeader artwork={activeHeaderArtwork} next={upNextData} progress={progressPercent}
-        watched={watchedEpisodesCount} total={totalEpisodesCount} stats={watchTimeStats}
-        bounty={formatBounty(calculatedBounty)} unlockedCount={unlockedCount} achievementCount={ACHIEVEMENTS.length}
-        crew={unlockedCrew} shield={spoilerShield} themeId={activeThemeId} onTheme={setActiveThemeId}
-        onAchievements={() => { setActiveTab('achievements'); document.getElementById('main-content')?.scrollIntoView(); }}
-        onJump={scrollToActiveArc} onAdvance={advanceUpNext} />
+    <div className="app">
+      <a className="skip-link" href="#sections">Skip to the roadmap</a>
+      <Masthead shield={spoilerShield} onShield={() => setSpoilerShield(!spoilerShield)} onSettings={() => setDialog('settings')} />
 
-      {/* Main Container */}
-      <main id="main-content" tabIndex={-1} className="page-width main-content">
-        <Navigation active={activeTab} onTab={setActiveTab} compact={compactView} onSettings={() => setShowSettingsModal(true)}
-          onCompact={() => setCompactView(!compactView)} shield={spoilerShield}
-          onShield={() => setSpoilerShield(!spoilerShield)} onExport={exportProgressJSON} onImport={importProgressJSON} />
+      <main id="main-content" tabIndex={-1} className="shell stage">
+        <TitleCard next={upNext} art={cardArt} afterSkip={afterSkip} skippedCount={skippedIds.size} cardRef={cardRef}
+          onAdvance={advanceUpNext} onSkip={() => upNext && skipItem(upNext.item)} onJump={() => upNext && revealItem(upNext.item.id)}
+          onRestoreSkipped={restoreAllSkipped} onRoadmap={() => openTab('roadmap')} />
+        <BountyStrip bounty={formatBounty(bounty)} onLogbook={() => openTab('logbook')} />
+        <VoyageAxis segments={segments} positionEp={positionEp} lastEp={LAST_EP} percent={progressPercent}
+          currentSagaId={upNext?.saga.id} onSaga={goToSaga}
+          onTune={ep => { setTuneTarget({ ep, extras: 'skip' }); setDialog('tune'); }} />
 
-        {/* TAB 1: WATCH ROADMAP */}
-        {activeTab === 'roadmap' && (
-          <div>
-            <div className="roadmap-heading"><div><h2>Your watch roadmap</h2><p>Follow the story. Choose your detours.</p></div>
-              <label className="saga-picker"><span>Navigate to saga</span><select aria-label="Navigate to saga" value="" onChange={e => {
-                const id = e.target.value;
-                setSearchQuery(''); setFilterType('all'); setExpandedSagas(prev => new Set(prev).add(id));
-                setTimeout(() => { const target = document.getElementById(`saga-${id}`); target?.scrollIntoView({ block: 'start' }); target?.focus({ preventScroll: true }); }, 100);
-              }}><option value="" disabled>Choose a saga…</option>{SAGAS_DATA.map((saga, i) => <option key={saga.id} value={saga.id}>{String(i+1).padStart(2,'0')} · {saga.title}</option>)}</select></label>
-            </div>
-            {canonPuristMode && <div className="mode-notice"><ShieldCheck size={16} />Canon Purist is on: canon and mixed arcs only.<button className="ui-button quiet" onClick={() => setCanonPuristMode(false)}>Show all content</button></div>}
-            <div className="filter-bar">
-              <div className="relative w-full md:w-80">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="search"
-                  aria-label="Search arcs, movies, or episodes"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search arc, movie, or episode..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition"
-                />
+        <div id="sections" style={{ scrollMarginTop: 12 }}>
+          <Tabs active={activeTab} onTab={setActiveTab} />
+        </div>
+
+        {activeTab === 'roadmap' && <section className="panel" id="panel-roadmap" role="tabpanel" aria-labelledby="tab-roadmap">
+          <div className="panel-head">
+            <div><h2>The roadmap</h2><p>Every arc, film and special in the order I'd watch them. Canon runs down the line, detours branch off it.</p></div>
+            <select className="select" aria-label="Go to a saga" value="" onChange={e => goToSaga(e.target.value)}>
+              <option value="" disabled>Go to a saga…</option>
+              {SAGAS_DATA.map(saga => <option key={saga.id} value={saga.id}>{saga.title}</option>)}
+            </select>
+          </div>
+          {canonPuristMode && <div className="notice">Canon Purist is on, so only canon and mostly-canon arcs show.<button className="link-btn" onClick={() => setCanonPuristMode(false)}>Show everything</button></div>}
+          <div className="finder">
+            <div className="finder-row">
+              <div className="search">
+                <Search size={18} aria-hidden="true" />
+                <input type="search" aria-label="Search arcs, films or episodes" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search an arc, film or episode range" />
               </div>
+            </div>
+            <div className="chips" role="group" aria-label="Show">
+              {[['all', 'Everything'], ['canon', 'Canon'], ['must-watch', 'Must-watch'], ['movies', 'Films & specials'], ['filler', 'Filler']].map(([id, label]) =>
+                <button key={id} className="chip" aria-pressed={filterType === id} onClick={() => setFilterType(id)}>{label}</button>)}
+            </div>
+            <div className="finder-status">
+              <span role="status">{stopCount} stops in {filteredSagas.length} sagas{searchQuery && ` matching “${searchQuery}”`}</span>
+              <span style={{ display: 'flex', gap: 16 }}>
+                {(searchQuery || filterType !== 'all') && <button className="link-btn" onClick={() => { setSearchQuery(''); setFilterType('all'); }}>Clear</button>}
+                <button className="link-btn" onClick={() => setExpandedSagas(allExpanded ? new Set() : new Set(SAGAS_DATA.map(s => s.id)))}>{allExpanded ? 'Collapse all' : 'Expand all'}</button>
+              </span>
+            </div>
+          </div>
 
-              <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-                <span className="text-xs text-slate-500 font-semibold mr-1 flex items-center gap-1">
-                  <Filter className="w-3 h-3" /> Filter:
-                </span>
-
-                {[
-                  { id: 'all', label: 'All Content' },
-                  { id: 'canon', label: 'Canon Arcs' },
-                  { id: 'movies', label: 'Films & Specials' },
-                  { id: 'must-watch', label: 'Must-Watch' },
-                  { id: 'filler', label: 'Fillers' }
-                ].map(filter => (
-                  <button
-                    key={filter.id}
-                    aria-pressed={filterType === filter.id}
-                    onClick={() => setFilterType(filter.id)}
-                    className={`text-xs px-3 py-1.5 rounded-lg font-medium transition ${
-                      filterType === filter.id
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                        : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
-                    }`}
-                  >
-                    {filter.label}
+          {filteredSagas.length === 0 ? <div className="empty">
+            <h3>Nothing matches that</h3>
+            <p>Try an arc name, a film, or an episode range like “196”.</p>
+            <button className="btn" onClick={() => { setSearchQuery(''); setFilterType('all'); }}>Clear the search</button>
+          </div> : filteredSagas.map(saga => {
+            const fullSaga = SAGAS_DATA.find(s => s.id === saga.id);
+            const expanded = expandedSagas.has(saga.id);
+            const done = fullSaga.items.filter(i => watchedIds.has(i.id)).length;
+            const total = fullSaga.items.length;
+            const sagaDone = done === total;
+            const here = upNext?.saga.id === saga.id;
+            const art = BACKGROUND_ARTWORKS[saga.id];
+            return <section key={saga.id} id={`saga-${saga.id}`} tabIndex={-1} className="saga" aria-labelledby={`saga-title-${saga.id}`}>
+              <div className="saga-band">
+                <Art art={art} />
+                {here && <span className="saga-here">You're here</span>}
+                <div className="saga-plate">
+                  <h2 id={`saga-title-${saga.id}`}>{saga.title}</h2>
+                  <p><span className="num">Ep {saga.episodes}</span> · {saga.mangaChapters}</p>
+                </div>
+              </div>
+              <div className="saga-bar">
+                <span className="count"><strong className="num">{done}</strong> of <span className="num">{total}</span> stops watched</span>
+                <div className="saga-bar-actions">
+                  <button className="btn btn-sm" onClick={() => markSaga(fullSaga, !sagaDone)}>{sagaDone ? 'Unmark saga' : 'Mark saga watched'}</button>
+                  <button className="btn btn-sm" aria-expanded={expanded} aria-controls={`saga-items-${saga.id}`}
+                    onClick={() => setExpandedSagas(prev => { const n = new Set(prev); if (n.has(saga.id)) n.delete(saga.id); else n.add(saga.id); return n; })}>
+                    {expanded ? 'Hide stops' : 'Show stops'}<ChevronDown size={16} aria-hidden="true" style={{ transform: expanded ? 'rotate(180deg)' : 'none' }} />
                   </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="roadmap-tools"><span role="status">{filteredSagas.reduce((sum, saga) => sum + saga.items.length, 0)} stops · {filteredSagas.length} sagas{searchQuery && ` matching “${searchQuery}”`}</span><div>{(searchQuery || filterType !== 'all') && <button className="ui-button quiet" onClick={() => { setSearchQuery(''); setFilterType('all'); }}>Clear filters</button>}<button className="ui-button quiet" onClick={() => setExpandedSagas(new Set())}>Collapse all</button><button className="ui-button quiet" onClick={() => setExpandedSagas(new Set(SAGAS_DATA.map(s => s.id)))}>Expand all</button></div></div>
-            <div className="space-y-8">
-              {filteredSagas.length === 0 ? (
-                <div className="text-center py-16 bg-slate-900/40 rounded-3xl border border-slate-800">
-                  <Compass className="w-12 h-12 mx-auto text-slate-600 mb-3" />
-                  <h3 className="text-lg font-bold text-slate-300">No Arcs Found</h3>
-                  <p className="text-slate-500 text-sm mt-1">Try clearing your search query or filter settings.</p>
-                </div>
-              ) : (
-                filteredSagas.map(saga => {
-                  const isExpanded = expandedSagas.has(saga.id);
-                  const fullSaga = SAGAS_DATA.find(s => s.id === saga.id);
-                  const sagaWatchedCount = fullSaga.items.filter(i => watchedIds.has(i.id)).length;
-                  const sagaTotalCount = fullSaga.items.length;
-                  const isSagaComplete = sagaTotalCount > 0 && sagaWatchedCount === sagaTotalCount;
-
-                  const canonCount = saga.items.filter(i => i.type === 'canon' || i.type === 'mixed').length;
-                  const fillerCount = saga.items.filter(i => i.type === 'filler' || i.type === 'recommended_filler').length;
-                  const movieCount = saga.items.filter(i => i.type === 'movie' || i.type === 'special').length;
-
-                  return (
-                    <div
-                      key={saga.id}
-                      id={`saga-${saga.id}`} tabIndex={-1}
-                      className="saga-section"
-                    >
-                      <div className="saga-heading">
-                        <div className="flex items-start gap-4">
-                          <button
-                            aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${saga.title}`}
-                            aria-expanded={isExpanded}
-                            aria-controls={`saga-items-${saga.id}`}
-                            onClick={() => toggleSagaExpand(saga.id)}
-                            className="saga-toggle mt-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition"
-                          >
-                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          </button>
-                          <span className="saga-ordinal" aria-hidden="true">{String(SAGAS_DATA.findIndex(s => s.id === saga.id) + 1).padStart(2, '0')}</span>
-                          <div>
-                            <div className="flex flex-wrap items-center gap-2 mb-1">
-                              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">
-                                {saga.episodes}
-                              </span>
-                              {saga.mangaChapters && (
-                                <span className="text-xs font-semibold text-slate-400 bg-slate-950 px-2 py-0.5 rounded-md border border-slate-800">
-                                  {saga.mangaChapters}
-                                </span>
-                              )}
-                              {isSagaComplete && (
-                                <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/20 flex items-center gap-1">
-                                  <CheckCheck className="w-3.5 h-3.5" /> Saga Completed
-                                </span>
-                              )}
-                              {compactView && (
-                                <span className="text-[11px] font-mono text-slate-400 bg-slate-950/80 px-2.5 py-0.5 rounded-md border border-slate-800 flex items-center gap-1.5">
-                                  <span className="text-blue-400 font-bold">{canonCount} Canon</span>
-                                  <span>&bull;</span>
-                                  <span className="text-slate-500 font-bold">{fillerCount} Filler</span>
-                                  {movieCount > 0 && (
-                                    <>
-                                      <span>&bull;</span>
-                                      <span className="text-rose-400 font-bold">{movieCount} Film/Spec</span>
-                                    </>
-                                  )}
-                                </span>
-                              )}
-                            </div>
-                            <h2 className="saga-title"><span>{String(SAGAS_DATA.findIndex(s => s.id === saga.id) + 1).padStart(2, '0')}</span>{saga.title}</h2>
-                            {upNextData?.saga?.id === saga.id && <span className="saga-current">Current saga</span>}
-                            <SpoilerContent hidden={spoilerShield && !isSagaComplete} label="saga overview"><p className="text-sm text-slate-400 mt-2">{saga.tagline}</p></SpoilerContent>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 self-end md:self-center">
-                          <span className="text-xs font-medium text-slate-400 mr-2">
-                            {sagaWatchedCount}/{sagaTotalCount} stops complete
-                          </span>
-                          <button
-                            onClick={() => markSaga(saga.id, !isSagaComplete)}
-                            className={`text-xs px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition ${
-                              isSagaComplete
-                                ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                                : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
-                            }`}
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            {isSagaComplete ? 'Unmark Saga' : 'Complete Saga'}
-                          </button>
-                        </div>
-                      </div>
-
-                      <ProgressBar value={sagaWatchedCount / sagaTotalCount * 100} label={`${saga.title} completion`} />
-                      {isExpanded && (
-                        <div id={`saga-items-${saga.id}`} className={compactView ? "arc-list compact-list" : "arc-list"}>
-                          {saga.items.map(item => <ArcCard key={item.id} item={item}
-                            watched={watchedIds.has(item.id)} skipped={skippedIds.has(item.id)}
-                            active={upNextData?.item?.id === item.id} currentEp={getItemCurrentEpisode(item)}
-                            currentEpTitle={getItemCurrentEpisode(item) !== null ? getEpisodeTitle(getItemCurrentEpisode(item), item.title) : null}
-                            compact={compactView} shield={spoilerShield} onToggle={toggleItem} onEpisode={handleSetCurrentEpisode}
-                            onRestore={id => { setSkippedIds(prev => { const next = new Set(prev); next.delete(id); return next; }); showToast('Restored to your watch queue.'); }} />)}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 2: PIRATE ACHIEVEMENTS WITH SPOILER PROTECTION */}
-        {activeTab === 'achievements' && (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400 mb-1">
-                  <Trophy className="w-4 h-4" /> Grand Line Milestones
-                </div>
-                <h2 className="text-2xl md:text-3xl font-black text-slate-100">Pirate Achievements</h2>
-                <p className="text-xs md:text-sm text-slate-400 mt-1 max-w-xl">
-                  Unlock accolades by navigating sagas, surviving landmark battles, and reaching episode thresholds on the Grand Line.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-4 bg-slate-950/80 border border-slate-800 px-6 py-4 rounded-2xl shrink-0">
-                <div className="text-center">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase">Unlocked</div>
-                  <div className="text-2xl font-black text-amber-400 font-mono">{unlockedCount} / {ACHIEVEMENTS.length}</div>
-                </div>
-                <div className="h-8 w-px bg-slate-800" />
-                <div className="text-center">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase">Completion</div>
-                  <div className="text-2xl font-black text-emerald-400 font-mono">
-                    {Math.round((unlockedCount / ACHIEVEMENTS.length) * 100)}%
-                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Achievements Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {evaluatedAchievements.map(ach => {
-                const tierStyles = {
-                  Bronze: 'border-amber-700/40 text-amber-600 bg-amber-950/20',
-                  Silver: 'border-slate-400/40 text-slate-300 bg-slate-800/40',
-                  Gold: 'border-amber-400/50 text-amber-300 bg-amber-500/10',
-                  Platinum: 'border-cyan-400/50 text-cyan-300 bg-cyan-500/10'
-                }[ach.tier];
-
-                const isMasked = spoilerShield && !ach.isUnlocked;
-
-                return (
-                  <div
-                    key={ach.id}
-                    className={`achievement-card p-4 rounded-2xl border transition-all flex items-start gap-4 ${
-                      ach.isUnlocked
-                        ? 'bg-slate-900/90 border-slate-700 shadow-md'
-                        : 'bg-slate-950/40 border-slate-900 group'
-                    }`}
-                  >
-                    <div className={`achievement-icon ${ach.isUnlocked ? '' : 'locked'}`}>{isMasked ? <Lock size={22} /> : <ach.icon size={22} strokeWidth={1.5} />}</div>
-                    <div className="flex-1 min-w-0"><div className="achievement-state"><span className={`text-xs font-bold ${ach.isUnlocked ? 'text-emerald-400' : 'text-slate-400'}`}>{ach.isUnlocked ? 'Unlocked' : 'Locked milestone'}</span><span className={`text-[11px] px-2 py-0.5 rounded border ${tierStyles}`}>{ach.tier}</span></div>
-                      <SpoilerContent hidden={isMasked} label="milestone"><h3 className="text-base font-bold mt-2">{ach.title}</h3><p className="text-sm text-slate-400 mt-1">{ach.description}</p></SpoilerContent>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: FILM GUIDE */}
-        {activeTab === 'tierlist' && (
-          <div className="space-y-8">
-            <div className="bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900 border border-amber-500/30 rounded-3xl p-6 md:p-8">
-              <h2 className="text-2xl md:text-3xl font-black text-amber-400 flex items-center gap-2">
-                <Film className="w-7 h-7" /> The Canonical One Piece Film Guide
-              </h2>
-              <p className="text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
-                All 15 movies are standalone theatrical adventures positioned to ensure zero spoilers.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { title: 'One Piece Film: Z (2012)', movieNum: 'Movie 12', placement: 'Watch after Episode 578 (Post-Fishman Island)', why: 'Widely hailed as the best film. Former Admiral Zephyr and Marine justice.', tier: 'Fan Favorite' },
-                { title: 'One Piece Film: Strong World (2009)', movieNum: 'Movie 10', placement: 'Watch after Episode 381 (or Ep 429)', why: 'First film written by Eiichiro Oda. The battle with Shiki the Golden Lion.', tier: 'Fan Favorite' },
-                { title: 'Baron Omatsuri & Secret Island (2005)', movieNum: 'Movie 6', placement: 'Watch after Episode 224 (before Water 7)', why: 'Directed by Mamoru Hosoda. Dark, psychological thriller exploring crew bonds.', tier: 'Fan Favorite' },
-                { title: 'One Piece Film: Red (2022)', movieNum: 'Movie 15', placement: 'Watch after Episode 1030 (Wano Act 3)', why: 'Global phenomenon with vocals by Ado as Uta and Red-Haired Shanks.', tier: 'Fan Favorite' },
-                { title: 'One Piece: Stampede (2019)', movieNum: 'Movie 14', placement: 'Watch after Episode 896 (between WCI and Wano)', why: '20th Anniversary festival war uniting Worst Generation, Marines, and Warlords.', tier: 'Fan Favorite' },
-                { title: 'One Piece Film: Gold (2016)', movieNum: 'Movie 13', placement: 'Watch after Episode 750 (Post-Dressrosa)', why: 'High-octane casino heist thriller aboard the 10km golden ship Gran Tesoro.', tier: 'Fan Favorite' },
-                { title: 'One Piece Film: God Valley (Summer 2027)', movieNum: 'Movie 16', placement: 'Watch after Egghead / Elbaph Arc', why: 'ONE PIECE FILM GOD VALLEY (ワンピース フィルム ゴッドバレー). Delves into the historic incident involving Roger, Garp, and the Rocks Pirates.', tier: 'Upcoming' },
-                { title: 'One Piece Film: Baad (2029)', movieNum: 'Movie 17', placement: 'Watch in the late Final Saga era', why: 'ONE PIECE FILM BAAD. The major theatrical follow-up releasing deep into the anime\'s final stretch.', tier: 'Upcoming' }
-              ].map(m => (
-                <div key={m.title} className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-                  <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                    {m.movieNum} &bull; {m.tier}
-                  </span>
-                  <h4 className="text-base font-bold text-slate-100 mt-2">{m.title}</h4>
-                  <div className="text-xs font-semibold text-cyan-400 my-1 flex items-center gap-1.5">
-                    <Compass className="w-3.5 h-3.5" /> {m.placement}
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed">{m.why}</p>
+              {expanded && <>
+                <div className="saga-overview">
+                  <SpoilerContent hidden={spoilerShield && !sagaDone} label="saga overview"><p style={{ margin: 0 }}>{saga.tagline}</p></SpoilerContent>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+                <ol className="route" id={`saga-items-${saga.id}`}>
+                  {saga.items.map(item => <ArcCard key={item.id} item={item}
+                    watched={watchedIds.has(item.id)} skipped={skippedIds.has(item.id)} current={upNext?.item.id === item.id}
+                    onEp={watchedIds.has(item.id) ? null : subProgress[item.id] ?? null} shield={spoilerShield}
+                    onToggle={toggleItem} onSetEp={setEpisode} onRestore={restoreItem} onSkip={skipItem} />)}
+                </ol>
+              </>}
+            </section>;
+          })}
+        </section>}
 
-        {/* TAB 4: PACING CALCULATOR */}
-        {activeTab === 'pacing' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 space-y-6">
-              <h3 className="text-xl font-bold text-amber-400 flex items-center gap-2">
-                <Calculator className="w-5 h-5" /> Voyage Catch-Up Estimator
-              </h3>
+        {activeTab === 'logbook' && <section className="panel" id="panel-logbook" role="tabpanel" aria-labelledby="tab-logbook">
+          <div className="panel-head"><div><h2>Logbook</h2><p>The fun bits: your bounty, the crew you've picked up, milestones, and how long this is going to take.</p></div></div>
+          <Logbook bounty={formatBounty(bounty)} stats={stats} crew={unlockedCrew} themes={THEMES} onField={onField} shield={spoilerShield}
+            themeId={activeThemeId} onTheme={id => { setActiveThemeId(id); notify(`Wearing ${THEMES[id].character}'s colours.`); }}
+            achievements={evaluatedAchievements} pace={dailyPace} onPace={setDailyPace} pacing={pacing} />
+        </section>}
 
-              <div>
-                <div className="flex justify-between items-center text-xs font-bold text-slate-300 mb-2">
-                  <span>Daily Watch Pace:</span>
-                  <span className="text-amber-400 text-sm font-mono">{dailyPace} Episodes / Day</span>
-                </div>
-                <input
-                  type="range"
-                  aria-label="Daily watch pace"
-                  min="1"
-                  max="15"
-                  value={dailyPace}
-                  onChange={e => setDailyPace(parseInt(e.target.value, 10))}
-                  className="w-full accent-amber-500"
-                />
-              </div>
+        {activeTab === 'films' && <section className="panel" id="panel-films" role="tabpanel" aria-labelledby="tab-films">
+          <div className="panel-head"><div><h2>Films and specials</h2><p><span className="num">{filmCount}</span> films and <span className="num">{specialCount}</span> specials, each placed where it fits. You've watched <span className="num">{filmsWatched}</span>. What happens in the ones ahead of you stays hidden while the Spoiler Shield is on.</p></div></div>
+          <Films films={films} positionIndex={positionIndex} shield={spoilerShield} placement={filmPlacement}
+            isWatched={id => watchedIds.has(id)} isSkipped={id => skippedIds.has(id)} onToggle={toggleItem} />
+        </section>}
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
-                  <div className="text-[11px] text-slate-400 font-medium">Episodes Remaining</div>
-                  <div className="text-2xl font-black text-amber-400 font-mono mt-0.5">{pacingStats.remainingEpisodes}</div>
-                </div>
-                <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
-                  <div className="text-[11px] text-slate-400 font-medium">Days to Catch Up</div>
-                  <div className="text-2xl font-black text-cyan-400 font-mono mt-0.5">{pacingStats.daysToFinish} Days</div>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs">
-                <div className="font-bold text-sm mb-0.5">Estimated Catch-up Date:</div>
-                <div className="text-base font-black font-mono">{pacingStats.completionDateStr}</div>
-              </div>
-            </div>
-
-            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 space-y-4">
-              <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <Flame className="w-5 h-5 text-orange-400" /> Time Saved by Skipping Fillers
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                By skipping the ~95 purely non-canon filler episodes identified in this tracker, you save approximately:
-              </p>
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                <div className="text-3xl font-black text-amber-400 font-mono">~{watchTimeStats.fillerHoursSaved} Hours</div>
-                <div className="text-xs text-slate-400 mt-1">Equal to roughly 38 full-length feature films!</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 5: QUICK TIPS */}
-        {activeTab === 'quicktips' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6">
-              <div className="flex items-center gap-2 text-amber-400 mb-3">
-                <ShieldCheck className="w-5 h-5" />
-                <h3 className="text-lg font-bold text-slate-100">Gold Standard Watch Rules</h3>
-              </div>
-              <ul className="space-y-3 text-xs md:text-sm text-slate-300">
-                <li className="flex items-start gap-2.5">
-                  <span className="text-amber-400 font-bold">1.</span>
-                  <span><strong>Never Skip G-8 (Episodes 196–206):</strong> Even though it is filler, Vice Admiral Jonathan and Navarone Fortress are brilliantly written.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-amber-400 font-bold">2.</span>
-                  <span><strong>Watch Film Strong World at Ep 381 or 429:</strong> Watching Episode 0 (OVA) first provides vital Roger-era lore.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-amber-400 font-bold">3.</span>
-                  <span><strong>Watch "3D2Y" Special After Ep 516:</strong> It provides the perfect emotional bridge before the timeskip.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="text-amber-400 font-bold">4.</span>
-                  <span><strong>Do Not Miss "ONE PIECE FAN LETTER" (2024):</strong> Directed by Megumi Ishitani, this 25-minute special is one of the highest-rated episodes in history.</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6">
-              <div className="flex items-center gap-2 text-rose-400 mb-3">
-                <AlertTriangle className="w-5 h-5" />
-                <h3 className="text-lg font-bold text-slate-100">Recommended Fillers to Skip</h3>
-              </div>
-              <div className="space-y-2 text-xs">
-                {[
-                  { name: 'Warship Island Arc', eps: 'Episodes 54 – 61' },
-                  { name: 'Goat & Ruluka Islands', eps: 'Episodes 136 – 143' },
-                  { name: 'Ocean’s Dream & Foxy Return', eps: 'Episodes 220 – 226' },
-                  { name: 'Ice Hunter Arc', eps: 'Episodes 326 – 335' },
-                  { name: 'Caesar Retrieval Arc', eps: 'Episodes 626 – 628' },
-                  { name: 'Marine Rookie Arc', eps: 'Episodes 780 – 782' }
-                ].map(f => (
-                  <div key={f.name} className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center">
-                    <span className="font-semibold text-slate-200">{f.name}</span>
-                    <span className="text-slate-400">{f.eps}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        {activeTab === 'guide' && <section className="panel" id="panel-guide" role="tabpanel" aria-labelledby="tab-guide">
+          <div className="panel-head"><div><h2>Watch guide</h2><p>How the tracker works, what's worth keeping, and what you can safely skip.</p></div></div>
+          <Guide skippable={fillerSkippable} tieIns={fillerTieIns} fillerHours={fillerHours} onJumpTo={revealItem} />
+        </section>}
       </main>
 
-      {/* Footer & Social Links */}
-      <footer className="max-w-6xl mx-auto px-4 mt-16">
-        <hr className="border-slate-800/80 mb-8" />
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pb-8">
-          <div className="flex items-center gap-2">
-            <span>Eternal Pose</span>
-            <span>&bull;</span>
-            <span>Made for Pirates sailing the Grand Line.</span>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            {/* Legal / Info Button */}
-            <button
-              onClick={() => setShowDisclaimerModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition duration-200 font-semibold text-xs"
-              title="Legal Disclaimer & Credits"
-            >
-              <Info className="w-3.5 h-3.5 text-amber-400" />
-              <span>About & Legal</span>
-            </button>
-
-            {/* Ko-fi Donation Link */}
-            <a
-              href="https://ko-fi.com/looneth"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 hover:text-amber-300 border border-amber-500/30 transition duration-200 group font-semibold text-xs"
-              title="Support the voyage on Ko-fi"
-            >
-              <Coffee className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-              <span>Support on Ko-fi</span>
-            </a>
-
-            {/* GitHub Link */}
-            <a
-              href="https://github.com/EY4O/One-Piece-Voyage-Tracker"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition duration-200 group"
-              title="View Repository on GitHub"
-            >
-              <svg
-                className="w-4 h-4 fill-current text-slate-400 group-hover:text-white transition-colors"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                />
-              </svg>
-              <span className="font-semibold text-xs">GitHub</span>
-            </a>
-          </div>
+      <footer className="footer">
+        <div className="shell">
+          <span>Eternal Pose is a free fan project. One Piece belongs to Eiichiro Oda, Shueisha and Toei Animation.</span>
+          <nav aria-label="About">
+            <button className="link-btn" onClick={() => setDialog('about')}>About</button>
+            <a href="https://github.com/EY4O/One-Piece-Voyage-Tracker" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://ko-fi.com/looneth" target="_blank" rel="noopener noreferrer">Ko-fi</a>
+          </nav>
         </div>
       </footer>
 
-      <a href="#main-content" className="back-to-roadmap" aria-label="Back to voyage navigation"><ChevronUp size={18} /><span>Navigation</span></a>
+      <NowStrip next={upNext} visible={!cardVisible && !dialog} onAdvance={advanceUpNext}
+        onShow={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })} />
+      <ToastDock toast={toast} onUndo={undoToast} onDismiss={() => setToast(null)} />
+      <Eyecatch event={eyecatch} onDone={clearEyecatch} />
 
-      {/* VOYAGE SETTINGS MODAL */}
-      {showSettingsModal && (
-        <Modal label="Voyage Settings" message={toastMessage} onClose={() => setShowSettingsModal(false)}>
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative my-8">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                  <Settings className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-slate-100">Voyage Settings</h3>
-                  <p className="text-xs text-slate-400">Customize your Straw Hat theme and artwork</p>
-                </div>
-              </div>
-              <button
-                aria-label="Close settings"
-                onClick={() => setShowSettingsModal(false)}
-                className="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {dialog === 'settings' && <SettingsDialog onClose={() => setDialog(null)}
+        shield={spoilerShield} onShield={setSpoilerShield} purist={canonPuristMode} onPurist={setCanonPuristMode}
+        colorMode={colorMode} onColorMode={setColorMode}
+        themes={THEMES} themeId={activeThemeId} themeLocked={themeLocked} onTheme={setActiveThemeId}
+        artworks={BACKGROUND_ARTWORKS} bgMode={bgMode} onBgMode={setBgMode}
+        onExport={exportProgressJSON} onImport={readBackup} preImport={preImport} onUndoImport={undoLastImport}
+        skippedCount={skippedIds.size} onRestoreSkipped={restoreAllSkipped} onReset={() => setDialog('reset')}
+        onAbout={() => setDialog('about')} />}
+      {dialog === 'import' && importPlan && <ImportDialog plan={importPlan} currentNext={describeNext(upNext)} currentUnits={watchedUnits}
+        onApply={applyImport} onClose={() => { setDialog(null); setImportPlan(null); }} />}
+      {dialog === 'tune' && tuneTarget && <TuneDialog target={tuneTarget} plan={planTune(tuneTarget.ep, tuneTarget.extras)}
+        onExtras={extras => setTuneTarget(t => ({ ...t, extras }))} currentNext={describeNext(upNext)}
+        onApply={applyTune} onClose={() => setDialog(null)} />}
+      {dialog === 'reset' && <ResetDialog units={watchedUnits} onConfirm={resetAll} onClose={() => setDialog(null)} />}
+      {dialog === 'about' && <AboutDialog onClose={() => setDialog(null)} />}
+      {dialog === 'finale' && <FinaleDialog stats={stats} bounty={formatBounty(bounty)} onClose={() => setDialog(null)} />}
 
-            <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-1">
-              {/* Support Project Banner in Settings */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
-                    <Coffee className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-                      Fuel the Voyage <Heart className="w-3 h-3 text-red-500 fill-current" />
-                    </h4>
-                    <p className="text-[11px] text-slate-400">Support the ongoing development of this tracker</p>
-                  </div>
-                </div>
-                <a
-                  href="https://ko-fi.com/looneth"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-ink font-black text-xs transition shadow-md shadow-amber-500/20 shrink-0 flex items-center gap-1.5"
-                >
-                  <Coffee className="w-3.5 h-3.5" />
-                  <span>Support on Ko-fi</span>
-                </a>
-              </div>
-
-              {/* Colour mode */}
-              <div>
-                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Sun className="w-4 h-4 text-amber-400" /> Appearance
-                </div>
-                <ModeToggle mode={colorMode} onMode={setColorMode} />
-              </div>
-
-              {/* SECTION 1: Straw Hat Character Theme */}
-              <div>
-                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-amber-400" /> Straw Hat Character Theme
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {Object.values(THEMES).map(t => {
-                    const isUnlocked =
-                      t.id === 'classic' ||
-                      t.id === 'luffy' ||
-                      unlockedCrew.some(
-                        c => c.toLowerCase() === t.id.toLowerCase() || (t.id === 'robin' && c === 'Nico Robin')
-                      );
-                    const isNika = t.id === 'nika';
-                    const nikaUnlocked = watchedIds.has('arc-47');
-                    const isThemeLocked = spoilerShield && !isUnlocked && (!isNika || !nikaUnlocked);
-
-                    return (
-                      <button
-                        key={t.id}
-                        aria-pressed={activeThemeId === t.id}
-                        onClick={() => {
-                          if (isThemeLocked) { showToast('Turn off Spoiler Shield to explore unrecruited character themes.'); return; }
-                          setActiveThemeId(t.id);
-                          showToast(`Switched theme to ${t.character}!`);
-                        }}
-                        className={`flex items-center gap-3 p-2.5 rounded-2xl border text-left transition ${
-                          activeThemeId === t.id
-                            ? 'bg-slate-800 border-amber-500/50 shadow-md'
-                            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
-                        }`}
-                      >
-                        <span className="crew-initial" aria-hidden="true">{isThemeLocked ? <Lock size={12} /> : t.name.trim()[0]}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className={`text-xs font-bold truncate ${isThemeLocked ? 'text-slate-400' : 'text-slate-200'}`}>
-                            {isThemeLocked ? 'Locked Member' : t.name}
-                          </div>
-                          <div className="text-[10px] text-slate-500 truncate">{isThemeLocked ? 'Hidden by Spoiler Shield' : t.character}</div>
-                        </div>
-                        <span className="w-3.5 h-3.5 rounded-full border border-white/20 shrink-0" style={{ backgroundColor: t.primary }} />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* SECTION 2: Header Background Artwork */}
-              <div>
-                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-cyan-400" /> Header Background Artwork
-                </div>
-
-                {/* Auto Mode Button */}
-                <button
-                  aria-pressed={bgMode === 'auto'}
-                  onClick={() => {
-                    setBgMode('auto');
-                    showToast('Header art set to Auto-Sync with your active arc!');
-                  }}
-                  className={`w-full flex items-center justify-between p-3 rounded-2xl border mb-3 transition ${
-                    bgMode === 'auto'
-                      ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-md'
-                      : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <RotateCcw size={17} strokeWidth={1.5} className="shrink-0" />
-                    <div className="text-left">
-                      <div className="text-xs font-bold">Auto-Sync With Active Arc</div>
-                      <div className="text-[10px] text-slate-500">Artwork updates as you advance through the story</div>
-                    </div>
-                  </div>
-                  {bgMode === 'auto' && <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />}
-                </button>
-
-                {/* Special Showcases (Sunny, Straw Hat, Merry) */}
-                <div className="text-[11px] font-bold text-amber-400/90 uppercase tracking-wider mb-2">
-                  Special Showcases
-                </div>
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                  {['sunny', 'strawhat', 'merry'].map(customKey => {
-                    const item = BACKGROUND_ARTWORKS[customKey];
-                    return (
-                      <button
-                        key={customKey}
-                        aria-pressed={bgMode === customKey}
-                        onClick={() => {
-                          setBgMode(customKey);
-                          showToast(`Header background locked to ${item.name}!`);
-                        }}
-                        className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border text-center transition ${
-                          bgMode === customKey
-                            ? 'bg-slate-800 border-amber-500/50 text-amber-300 shadow-md'
-                            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
-                        }`}
-                      >
-                        <item.icon size={22} strokeWidth={1.5} />
-                        <span className="text-xs font-bold leading-tight">{item.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Lock to Saga Artwork */}
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  Lock to Saga Artwork
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {Object.entries(BACKGROUND_ARTWORKS)
-                    .filter(([_, data]) => data.type === 'saga')
-                    .map(([key, data], idx) => (
-                      <button
-                        key={key}
-                        aria-pressed={bgMode === key}
-                        onClick={() => {
-                          setBgMode(key);
-                          showToast(`Header background locked to ${data.name}!`);
-                        }}
-                        className={`flex items-center justify-between p-2 rounded-xl border text-xs font-medium transition ${
-                          bgMode === key
-                            ? 'bg-slate-800 border-amber-500/50 text-amber-300'
-                            : 'bg-slate-950/40 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
-                        }`}
-                      >
-                        <span className="truncate">{idx + 1}. {data.name}</span>
-                        {bgMode === key && <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                      </button>
-                    ))}
-                </div>
-              </div>
-
-              {/* SECTION 3: Content & Viewing Modes */}
-              <div>
-                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" /> Content & Viewing Preferences
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-slate-200">Canon Purist Mode</span>
-                      <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        Manga Only
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-                      Hides all filler arcs, theatrical films, and specials from your queue and roadmap, leaving only 100% canon story progression.
-                    </p>
-                  </div>
-
-                  <button
-                    role="switch" aria-label="Canon Purist Mode" aria-checked={canonPuristMode}
-                    onClick={() => {
-                      setCanonPuristMode(!canonPuristMode);
-                      showToast(`Canon Purist Mode ${!canonPuristMode ? 'Enabled' : 'Disabled'}!`);
-                    }}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                      canonPuristMode ? 'bg-emerald-500' : 'bg-slate-800'
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        canonPuristMode ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-              </div>
-
-              {/* SECTION 4: Data & Voyage Resets */}
-              <div>
-                <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-400" /> Data & Voyage Resets
-                </div>
-
-                <div className="space-y-2.5">
-                  {/* Reset Skips Row */}
-                  <div className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-slate-200 flex items-center gap-2">
-                        <span>Restore Skipped Queue</span>
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">
-                          {skippedIds.size} Skipped
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        Restores any episodes or arcs you previously skipped back into your active roadmap queue.
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={resetSkippedItems}
-                      disabled={skippedIds.size === 0}
-                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 text-amber-300 border border-slate-700 text-xs font-bold transition shrink-0 flex items-center gap-1.5"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      <span>Reset Skips</span>
-                    </button>
-                  </div>
-
-                  {/* Reset All Progress Row */}
-                  <div className="p-3 rounded-2xl bg-rose-950/20 border border-rose-900/40 flex items-center justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <span className="text-xs font-bold text-rose-300">Reset All Voyage Data</span>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        Clears all watched episodes, active steppers, and unlocked pirate achievements back to day one.
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setShowSettingsModal(false);
-                        setShowResetModal(true);
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition shadow-md shadow-rose-600/20 shrink-0 flex items-center gap-1.5"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      <span>Reset Progress</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-slate-800 flex justify-end">
-              <button
-                onClick={() => setShowSettingsModal(false)}
-                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-ink font-bold text-xs shadow-md shadow-amber-500/20 transition"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
-
-      {/* Reset Modal */}
-      {showResetModal && (
-        <Modal label="Reset Voyage Progress?" onClose={() => setShowResetModal(false)}>
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl text-center">
-            <AlertTriangle className="w-12 h-12 mx-auto text-rose-500 mb-3" />
-            <h3 className="text-lg font-bold text-slate-100">Reset Voyage Progress?</h3>
-            <p className="text-xs text-slate-400 mt-2">
-              This resets all checked arcs, episode steppers, and achievements back to the start.
-            </p>
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setShowResetModal(false)}
-                className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setWatchedIds(new Set());
-                  setSkippedIds(new Set());
-                  setSubProgress({});
-                  setShowResetModal(false);
-                  showToast('Voyage progress reset to start.');
-                }}
-                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white transition"
-              >
-                Confirm Reset
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
-      
-      {/* LEGAL & CREDITS MODAL */}
-      {showDisclaimerModal && (
-        <Modal label="About & Disclaimer" onClose={() => setShowDisclaimerModal(false)}>
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                <ShieldCheck className="w-5 h-5 text-amber-400" />
-                <span className="text-slate-100 font-black text-base">About & Disclaimer</span>
-              </div>
-              <button
-                aria-label="Close about dialog"
-                onClick={() => setShowDisclaimerModal(false)}
-                className="p-1 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-3.5 text-xs text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
-              <p>
-                <strong>Eternal Pose</strong> is a free, open-source, non-profit fan application developed solely for informational, navigational, and entertainment purposes.
-              </p>
-
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400">
-                <span className="text-slate-200 font-semibold">Copyright & Trademark Notice:</span><br />
-                <em>One Piece</em> and all associated characters, artwork, audio, logos, names, and indicia are exclusive trademarks and copyrights of <strong>Eiichiro Oda</strong>, <strong>Shueisha</strong>, and <strong>Toei Animation</strong>.
-              </div>
-
-              <p className="text-slate-400">
-                This project claims no ownership over any official artwork, narrative content, or trademarks. All assets and episode titles are utilized strictly under non-commercial fair-use guidelines.
-              </p>
-
-              <p className="text-slate-400">
-                Voluntary tips through Ko-fi are purely non-commercial donations that go directly toward defraying third-party domain, hosting, and API server costs.
-              </p>
-            </div>
-
-            <div className="mt-5 pt-3 border-t border-slate-800 flex justify-end">
-              <button
-                onClick={() => setShowDisclaimerModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
-
-      {/* ONE-TIME PWA INSTALL PROMPT FOR MOBILE */}
       <InstallPromptBanner />
     </div>
   );

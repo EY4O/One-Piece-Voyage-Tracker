@@ -24,15 +24,15 @@ There's no account and no server. Your progress lives in your browser.
 
 **Movies & placement.** Where each film fits, which ones are worth it, and which tie-in filler to watch right before them.
 
-**Looks.** Light mode (parchment) and dark mode (navy), or follow your system. Twelve colour themes, one per Straw Hat plus Nika and a classic one. The header art follows whatever saga you're on, or you can pin one of 15 images.
+**Looks.** Light mode and dark mode, or follow your system. Twelve colour themes, one per Straw Hat plus Nika and a classic one. The art on the Up Next card follows whatever saga you're on, or you can pin one of 15 images.
 
 **Installable.** It's a PWA, so you can add it to your home screen and it works offline.
 
 ## Backing up your progress
 
-Everything saves to `localStorage` on whatever device you're using. If you want to move to another browser or phone, use the download button in the toolbar to export a JSON file, then import it on the other end. There's no cloud sync.
+Everything saves to `localStorage` on whatever device you're using. If you want to move to another browser or phone, go to Settings, save a backup (a JSON file), then load it on the other end. There's no cloud sync.
 
-Importing overwrites your current progress, so be a little careful.
+Loading a backup replaces your current progress. It shows you what's in the file first, and you can put your old progress back from Settings afterwards.
 
 A couple of quirks worth knowing:
 
@@ -59,17 +59,18 @@ npm run preview
 
 Pushing to `main` builds and deploys to GitHub Pages through `.github/workflows/deploy.yml`.
 
-Built with React, Vite and Tailwind. Icons are from Lucide, fonts are Instrument Serif and Outfit, and the PWA side is `vite-plugin-pwa`.
+Built with React, Vite and Tailwind. Icons are from Lucide, fonts are Dela Gothic One and Zen Kaku Gothic New, and the PWA side is `vite-plugin-pwa`.
 
 ## Where things are
 
 - `src/OnePieceWatchOrder.jsx` is the big one. The whole watch order, the themes, achievements, state and save logic all live here. If you want to fix an episode range or add an arc, this is the file.
-- `src/components/VoyageUI.jsx` has the header, the Up Next bar, the toolbar, progress bars and dialogs.
-- `src/components/ArcCard.jsx` is the arc card, in both compact and detailed layouts.
+- `src/components/VoyageUI.jsx` has the header, the Up Next card, the voyage line, the bottom bar and the dialog shell.
+- `src/components/Panels.jsx` is the Logbook, Films and Guide tabs. `src/components/Dialogs.jsx` is Settings and the other popups.
+- `src/components/ArcCard.jsx` is one stop on the roadmap, with its episode stepper.
 - `src/data/episodeTitles.js` maps episode numbers to titles.
-- `src/index.css` holds the design system: colour modes, character accents, layout.
+- `src/index.css` holds the design system: colour modes, character colours, layout.
 - `src/InstallPromptBanner.jsx` is the "add to home screen" banner.
-- `src/assets/sagas/` is the header artwork.
+- `src/assets/sagas/` is the saga artwork. The app ships the smaller copies in `src/assets/sagas/web/`, so run `npm run art` after adding or replacing a piece.
 
 There aren't any tests yet. `docs/qa/` has two sample backup files (a fresh start and a returning viewer) that are handy for testing imports. Use a throwaway browser profile for that since importing replaces your progress. `docs/UI-UX-REVIEW.md` has notes from an older round of UI work.
 

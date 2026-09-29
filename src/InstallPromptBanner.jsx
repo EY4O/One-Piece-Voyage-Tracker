@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Download, Share, X, PlusSquare } from 'lucide-react';
+import { Download, Share, X, PlusSquare } from 'lucide-react';
 
 export default function InstallPromptBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -60,53 +60,26 @@ export default function InstallPromptBanner() {
   if (!showPrompt) return null;
 
   return (
-    <div
-      role="region"
-      aria-label="Install Eternal Pose"
-      className="install-banner fixed bottom-4 left-4 right-4 z-50 max-w-md mx-auto p-4 rounded-2xl bg-slate-900/95 border border-amber-500/40 shadow-2xl backdrop-blur-md text-slate-100"
-      style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-            <Compass size={20} strokeWidth={1.5} />
-          </div>
-          <div>
-            <h4 className="text-xs font-black text-slate-100">Install Eternal Pose</h4>
-            <p className="text-[11px] text-slate-400">
-              Access the Grand Line offline with zero address bars
-            </p>
-          </div>
+    <div role="region" aria-label="Install Eternal Pose" className="install-banner">
+      <div className="install-row">
+        <div>
+          <h2>Put Eternal Pose on your home screen</h2>
+          <p>It opens like an app and works offline.</p>
         </div>
-        <button
-          onClick={handleDismiss}
-          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          aria-label="Dismiss prompt"
-        >
-          <X className="w-4 h-4" />
+        <button onClick={handleDismiss} className="btn btn-sm btn-icon" aria-label="Dismiss">
+          <X size={18} />
         </button>
       </div>
-
-      <div className="mt-3 pt-3 border-t border-slate-800/80">
-        {isIOS ? (
-          <div className="flex items-center gap-2 text-[11px] text-amber-300/90 font-medium">
-            <span>Tap</span>
-            <Share className="w-3.5 h-3.5 text-amber-400 shrink-0 inline" />
-            <span>then select</span>
-            <span className="inline-flex items-center gap-1 font-bold text-slate-200">
-              <PlusSquare className="w-3.5 h-3.5 text-amber-400" /> Add to Home Screen
-            </span>
-          </div>
-        ) : (
-          <button
-            onClick={handleInstallClick}
-            className="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition active:scale-[0.98]"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Install App</span>
-          </button>
-        )}
-      </div>
+      {isIOS ? (
+        <p className="install-steps">
+          <span>Tap</span><Share size={16} aria-label="Share" /><span>then</span>
+          <PlusSquare size={16} aria-hidden="true" /><span>Add to Home Screen</span>
+        </p>
+      ) : (
+        <button onClick={handleInstallClick} className="btn btn-field" style={{ width: '100%', marginTop: 10 }}>
+          <Download size={18} aria-hidden="true" />Install
+        </button>
+      )}
     </div>
   );
 }

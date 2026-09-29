@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './OnePieceWatchOrder.jsx';
-import '@fontsource/instrument-serif/400.css';
-import '@fontsource/instrument-serif/400-italic.css';
-import '@fontsource-variable/outfit';
+import '@fontsource/dela-gothic-one/latin-400.css';
+import '@fontsource/zen-kaku-gothic-new/latin-400.css';
+import '@fontsource/zen-kaku-gothic-new/latin-500.css';
+import '@fontsource/zen-kaku-gothic-new/latin-700.css';
 import './index.css';
 import { registerSW } from 'virtual:pwa-register';
 

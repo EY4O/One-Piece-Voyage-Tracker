@@ -1,0 +1,798 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-29T06:01:01.686Z",
+  "title": "Design System: Eternal Pose",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Broadcast Paper",
+        "canonical": "#f3f2ee",
+        "tonalRamp": [
+          "oklch(15% 0.005 95.1)",
+          "oklch(26% 0.005 95.1)",
+          "oklch(37% 0.005 95.1)",
+          "oklch(48% 0.005 95.1)",
+          "oklch(59% 0.005 95.1)",
+          "oklch(70% 0.005 95.1)",
+          "oklch(82% 0.005 95.1)",
+          "oklch(95% 0.005 95.1)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Panel White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0 89.9)",
+          "oklch(26% 0 89.9)",
+          "oklch(37% 0 89.9)",
+          "oklch(48% 0 89.9)",
+          "oklch(59% 0 89.9)",
+          "oklch(70% 0 89.9)",
+          "oklch(82% 0 89.9)",
+          "oklch(95% 0 89.9)"
+        ]
+      },
+      "sunk": {
+        "role": "neutral",
+        "displayName": "Sunk Paper",
+        "canonical": "#e8e6e0",
+        "tonalRamp": [
+          "oklch(15% 0.008 91.5)",
+          "oklch(26% 0.008 91.5)",
+          "oklch(37% 0.008 91.5)",
+          "oklch(48% 0.008 91.5)",
+          "oklch(59% 0.008 91.5)",
+          "oklch(70% 0.008 91.5)",
+          "oklch(82% 0.008 91.5)",
+          "oklch(95% 0.008 91.5)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Manga Ink",
+        "canonical": "#17150f",
+        "tonalRamp": [
+          "oklch(15% 0.012 91.8)",
+          "oklch(26% 0.012 91.8)",
+          "oklch(37% 0.012 91.8)",
+          "oklch(48% 0.012 91.8)",
+          "oklch(59% 0.012 91.8)",
+          "oklch(70% 0.012 91.8)",
+          "oklch(82% 0.012 91.8)",
+          "oklch(95% 0.012 91.8)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "#47433b",
+        "tonalRamp": [
+          "oklch(15% 0.014 84.6)",
+          "oklch(26% 0.014 84.6)",
+          "oklch(37% 0.014 84.6)",
+          "oklch(48% 0.014 84.6)",
+          "oklch(59% 0.014 84.6)",
+          "oklch(70% 0.014 84.6)",
+          "oklch(82% 0.014 84.6)",
+          "oklch(95% 0.014 84.6)"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "canonical": "#635e54",
+        "tonalRamp": [
+          "oklch(15% 0.017 84.6)",
+          "oklch(26% 0.017 84.6)",
+          "oklch(37% 0.017 84.6)",
+          "oklch(48% 0.017 84.6)",
+          "oklch(59% 0.017 84.6)",
+          "oklch(70% 0.017 84.6)",
+          "oklch(82% 0.017 84.6)",
+          "oklch(95% 0.017 84.6)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#17150f",
+        "tonalRamp": [
+          "oklch(15% 0.012 91.8)",
+          "oklch(26% 0.012 91.8)",
+          "oklch(37% 0.012 91.8)",
+          "oklch(48% 0.012 91.8)",
+          "oklch(59% 0.012 91.8)",
+          "oklch(70% 0.012 91.8)",
+          "oklch(82% 0.012 91.8)",
+          "oklch(95% 0.012 91.8)"
+        ]
+      },
+      "struck": {
+        "role": "secondary",
+        "displayName": "Struck Red",
+        "canonical": "#b3261e",
+        "tonalRamp": [
+          "oklch(15% 0.178 28.7)",
+          "oklch(26% 0.178 28.7)",
+          "oklch(37% 0.178 28.7)",
+          "oklch(48% 0.178 28.7)",
+          "oklch(59% 0.178 28.7)",
+          "oklch(70% 0.178 28.7)",
+          "oklch(82% 0.178 28.7)",
+          "oklch(95% 0.178 28.7)"
+        ]
+      },
+      "ground-night": {
+        "role": "neutral",
+        "displayName": "Night Paper",
+        "canonical": "#11100e",
+        "tonalRamp": [
+          "oklch(15% 0.004 84.6)",
+          "oklch(26% 0.004 84.6)",
+          "oklch(37% 0.004 84.6)",
+          "oklch(48% 0.004 84.6)",
+          "oklch(59% 0.004 84.6)",
+          "oklch(70% 0.004 84.6)",
+          "oklch(82% 0.004 84.6)",
+          "oklch(95% 0.004 84.6)"
+        ]
+      },
+      "surface-night": {
+        "role": "neutral",
+        "displayName": "Night Panel",
+        "canonical": "#1a1916",
+        "tonalRamp": [
+          "oklch(15% 0.006 91.6)",
+          "oklch(26% 0.006 91.6)",
+          "oklch(37% 0.006 91.6)",
+          "oklch(48% 0.006 91.6)",
+          "oklch(59% 0.006 91.6)",
+          "oklch(70% 0.006 91.6)",
+          "oklch(82% 0.006 91.6)",
+          "oklch(95% 0.006 91.6)"
+        ]
+      },
+      "sunk-night": {
+        "role": "neutral",
+        "displayName": "Night Sunk",
+        "canonical": "#25231f",
+        "tonalRamp": [
+          "oklch(15% 0.008 84.6)",
+          "oklch(26% 0.008 84.6)",
+          "oklch(37% 0.008 84.6)",
+          "oklch(48% 0.008 84.6)",
+          "oklch(59% 0.008 84.6)",
+          "oklch(70% 0.008 84.6)",
+          "oklch(82% 0.008 84.6)",
+          "oklch(95% 0.008 84.6)"
+        ]
+      },
+      "ink-night": {
+        "role": "neutral",
+        "displayName": "Chalk",
+        "canonical": "#eeece6",
+        "tonalRamp": [
+          "oklch(15% 0.008 91.5)",
+          "oklch(26% 0.008 91.5)",
+          "oklch(37% 0.008 91.5)",
+          "oklch(48% 0.008 91.5)",
+          "oklch(59% 0.008 91.5)",
+          "oklch(70% 0.008 91.5)",
+          "oklch(82% 0.008 91.5)",
+          "oklch(95% 0.008 91.5)"
+        ]
+      },
+      "ink-2-night": {
+        "role": "neutral",
+        "displayName": "Chalk 2",
+        "canonical": "#c2bdb2",
+        "tonalRamp": [
+          "oklch(15% 0.016 86.4)",
+          "oklch(26% 0.016 86.4)",
+          "oklch(37% 0.016 86.4)",
+          "oklch(48% 0.016 86.4)",
+          "oklch(59% 0.016 86.4)",
+          "oklch(70% 0.016 86.4)",
+          "oklch(82% 0.016 86.4)",
+          "oklch(95% 0.016 86.4)"
+        ]
+      },
+      "ink-3-night": {
+        "role": "neutral",
+        "displayName": "Chalk 3",
+        "canonical": "#9a958a",
+        "tonalRamp": [
+          "oklch(15% 0.017 86.4)",
+          "oklch(26% 0.017 86.4)",
+          "oklch(37% 0.017 86.4)",
+          "oklch(48% 0.017 86.4)",
+          "oklch(59% 0.017 86.4)",
+          "oklch(70% 0.017 86.4)",
+          "oklch(82% 0.017 86.4)",
+          "oklch(95% 0.017 86.4)"
+        ]
+      },
+      "rule-night": {
+        "role": "neutral",
+        "displayName": "Chalk Rule",
+        "canonical": "#d9d5cb",
+        "tonalRamp": [
+          "oklch(15% 0.014 88.7)",
+          "oklch(26% 0.014 88.7)",
+          "oklch(37% 0.014 88.7)",
+          "oklch(48% 0.014 88.7)",
+          "oklch(59% 0.014 88.7)",
+          "oklch(70% 0.014 88.7)",
+          "oklch(82% 0.014 88.7)",
+          "oklch(95% 0.014 88.7)"
+        ]
+      },
+      "struck-night": {
+        "role": "secondary",
+        "displayName": "Night Struck Red",
+        "canonical": "#f0776c",
+        "tonalRamp": [
+          "oklch(15% 0.151 26.9)",
+          "oklch(26% 0.151 26.9)",
+          "oklch(37% 0.151 26.9)",
+          "oklch(48% 0.151 26.9)",
+          "oklch(59% 0.151 26.9)",
+          "oklch(70% 0.151 26.9)",
+          "oklch(82% 0.151 26.9)",
+          "oklch(95% 0.151 26.9)"
+        ]
+      },
+      "keyframe-black": {
+        "role": "neutral",
+        "displayName": "Keyframe Black",
+        "canonical": "#0b0a08",
+        "tonalRamp": [
+          "oklch(15% 0.005 85.9)",
+          "oklch(26% 0.005 85.9)",
+          "oklch(37% 0.005 85.9)",
+          "oklch(48% 0.005 85.9)",
+          "oklch(59% 0.005 85.9)",
+          "oklch(70% 0.005 85.9)",
+          "oklch(82% 0.005 85.9)",
+          "oklch(95% 0.005 85.9)"
+        ]
+      },
+      "placard-white": {
+        "role": "neutral",
+        "displayName": "Placard White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0 89.9)",
+          "oklch(26% 0 89.9)",
+          "oklch(37% 0 89.9)",
+          "oklch(48% 0 89.9)",
+          "oklch(59% 0 89.9)",
+          "oklch(70% 0 89.9)",
+          "oklch(82% 0 89.9)",
+          "oklch(95% 0 89.9)"
+        ]
+      },
+      "placard-grey": {
+        "role": "neutral",
+        "displayName": "Placard Grey",
+        "canonical": "#e9e6de",
+        "tonalRamp": [
+          "oklch(15% 0.011 89.7)",
+          "oklch(26% 0.011 89.7)",
+          "oklch(37% 0.011 89.7)",
+          "oklch(48% 0.011 89.7)",
+          "oklch(59% 0.011 89.7)",
+          "oklch(70% 0.011 89.7)",
+          "oklch(82% 0.011 89.7)",
+          "oklch(95% 0.011 89.7)"
+        ]
+      },
+      "field-classic": {
+        "role": "primary",
+        "displayName": "Romance Dawn Yellow",
+        "canonical": "#f2b705",
+        "oklch": "oklch(81.1% 0.166 85)",
+        "tonalRamp": [
+          "oklch(15% 0.166 85)",
+          "oklch(26% 0.166 85)",
+          "oklch(37% 0.166 85)",
+          "oklch(48% 0.166 85)",
+          "oklch(59% 0.166 85)",
+          "oklch(70% 0.166 85)",
+          "oklch(82% 0.166 85)",
+          "oklch(95% 0.166 85)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-luffy": {
+        "role": "primary",
+        "displayName": "Luffy Red",
+        "canonical": "#d8322a",
+        "oklch": "oklch(57.9% 0.203 28.3)",
+        "tonalRamp": [
+          "oklch(15% 0.2 28.3)",
+          "oklch(26% 0.2 28.3)",
+          "oklch(37% 0.2 28.3)",
+          "oklch(48% 0.2 28.3)",
+          "oklch(59% 0.2 28.3)",
+          "oklch(70% 0.2 28.3)",
+          "oklch(82% 0.2 28.3)",
+          "oklch(95% 0.2 28.3)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-zoro": {
+        "role": "primary",
+        "displayName": "Zoro Green",
+        "canonical": "#2a7d45",
+        "oklch": "oklch(52.5% 0.118 150.8)",
+        "tonalRamp": [
+          "oklch(15% 0.118 150.8)",
+          "oklch(26% 0.118 150.8)",
+          "oklch(37% 0.118 150.8)",
+          "oklch(48% 0.118 150.8)",
+          "oklch(59% 0.118 150.8)",
+          "oklch(70% 0.118 150.8)",
+          "oklch(82% 0.118 150.8)",
+          "oklch(95% 0.118 150.8)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-nami": {
+        "role": "primary",
+        "displayName": "Nami Orange",
+        "canonical": "#f27d1f",
+        "oklch": "oklch(71% 0.172 52.4)",
+        "tonalRamp": [
+          "oklch(15% 0.172 52.4)",
+          "oklch(26% 0.172 52.4)",
+          "oklch(37% 0.172 52.4)",
+          "oklch(48% 0.172 52.4)",
+          "oklch(59% 0.172 52.4)",
+          "oklch(70% 0.172 52.4)",
+          "oklch(82% 0.172 52.4)",
+          "oklch(95% 0.172 52.4)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-usopp": {
+        "role": "primary",
+        "displayName": "Usopp Ochre",
+        "canonical": "#c9a227",
+        "oklch": "oklch(72.8% 0.138 89.7)",
+        "tonalRamp": [
+          "oklch(15% 0.138 89.7)",
+          "oklch(26% 0.138 89.7)",
+          "oklch(37% 0.138 89.7)",
+          "oklch(48% 0.138 89.7)",
+          "oklch(59% 0.138 89.7)",
+          "oklch(70% 0.138 89.7)",
+          "oklch(82% 0.138 89.7)",
+          "oklch(95% 0.138 89.7)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-sanji": {
+        "role": "primary",
+        "displayName": "Sanji Blue",
+        "canonical": "#2a5fc4",
+        "oklch": "oklch(50.9% 0.168 261.7)",
+        "tonalRamp": [
+          "oklch(15% 0.168 261.7)",
+          "oklch(26% 0.168 261.7)",
+          "oklch(37% 0.168 261.7)",
+          "oklch(48% 0.168 261.7)",
+          "oklch(59% 0.168 261.7)",
+          "oklch(70% 0.168 261.7)",
+          "oklch(82% 0.168 261.7)",
+          "oklch(95% 0.168 261.7)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-chopper": {
+        "role": "primary",
+        "displayName": "Chopper Pink",
+        "canonical": "#ef7fae",
+        "oklch": "oklch(73.4% 0.146 354.8)",
+        "tonalRamp": [
+          "oklch(15% 0.146 354.8)",
+          "oklch(26% 0.146 354.8)",
+          "oklch(37% 0.146 354.8)",
+          "oklch(48% 0.146 354.8)",
+          "oklch(59% 0.146 354.8)",
+          "oklch(70% 0.146 354.8)",
+          "oklch(82% 0.146 354.8)",
+          "oklch(95% 0.146 354.8)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-robin": {
+        "role": "primary",
+        "displayName": "Robin Violet",
+        "canonical": "#6c4bb6",
+        "oklch": "oklch(50.4% 0.162 294)",
+        "tonalRamp": [
+          "oklch(15% 0.162 294)",
+          "oklch(26% 0.162 294)",
+          "oklch(37% 0.162 294)",
+          "oklch(48% 0.162 294)",
+          "oklch(59% 0.162 294)",
+          "oklch(70% 0.162 294)",
+          "oklch(82% 0.162 294)",
+          "oklch(95% 0.162 294)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-franky": {
+        "role": "primary",
+        "displayName": "Franky Cyan",
+        "canonical": "#19a7c9",
+        "oklch": "oklch(67.5% 0.119 220)",
+        "tonalRamp": [
+          "oklch(15% 0.119 220)",
+          "oklch(26% 0.119 220)",
+          "oklch(37% 0.119 220)",
+          "oklch(48% 0.119 220)",
+          "oklch(59% 0.119 220)",
+          "oklch(70% 0.119 220)",
+          "oklch(82% 0.119 220)",
+          "oklch(95% 0.119 220)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-brook": {
+        "role": "primary",
+        "displayName": "Brook Grey",
+        "canonical": "#a7adb8",
+        "oklch": "oklch(74.6% 0.017 262.7)",
+        "tonalRamp": [
+          "oklch(15% 0.017 262.7)",
+          "oklch(26% 0.017 262.7)",
+          "oklch(37% 0.017 262.7)",
+          "oklch(48% 0.017 262.7)",
+          "oklch(59% 0.017 262.7)",
+          "oklch(70% 0.017 262.7)",
+          "oklch(82% 0.017 262.7)",
+          "oklch(95% 0.017 262.7)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-jinbe": {
+        "role": "primary",
+        "displayName": "Jinbe Teal",
+        "canonical": "#0e7a72",
+        "oklch": "oklch(52.3% 0.089 186.7)",
+        "tonalRamp": [
+          "oklch(15% 0.089 186.7)",
+          "oklch(26% 0.089 186.7)",
+          "oklch(37% 0.089 186.7)",
+          "oklch(48% 0.089 186.7)",
+          "oklch(59% 0.089 186.7)",
+          "oklch(70% 0.089 186.7)",
+          "oklch(82% 0.089 186.7)",
+          "oklch(95% 0.089 186.7)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "field-nika": {
+        "role": "primary",
+        "displayName": "Nika Cream",
+        "canonical": "#f6ecd0",
+        "oklch": "oklch(94.4% 0.038 90.7)",
+        "tonalRamp": [
+          "oklch(15% 0.038 90.7)",
+          "oklch(26% 0.038 90.7)",
+          "oklch(37% 0.038 90.7)",
+          "oklch(48% 0.038 90.7)",
+          "oklch(59% 0.038 90.7)",
+          "oklch(70% 0.038 90.7)",
+          "oklch(82% 0.038 90.7)",
+          "oklch(95% 0.038 90.7)"
+        ],
+        "note": "Applied at runtime as --field; --on-field is computed ink (#17150f) or white."
+      },
+      "hair": {
+        "role": "neutral",
+        "displayName": "Hair",
+        "canonical": "rgb(23 21 15 / .16)"
+      },
+      "tone": {
+        "role": "neutral",
+        "displayName": "Screentone Dot",
+        "canonical": "rgb(23 21 15 / .2)"
+      },
+      "hair-night": {
+        "role": "neutral",
+        "displayName": "Night Hair",
+        "canonical": "rgb(238 236 230 / .14)"
+      },
+      "tone-night": {
+        "role": "neutral",
+        "displayName": "Night Screentone Dot",
+        "canonical": "rgb(238 236 230 / .16)"
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Scrim",
+        "canonical": "rgb(10 9 7 / .78)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Episode Numeral",
+        "purpose": "The title-card episode number only; field fill, 3px keyframe-black stroke, sized by digit count."
+      },
+      "headline": {
+        "displayName": "Episode Title",
+        "purpose": "Title-card episode title, white with a 5px keyframe-black stroke, three-line clamp."
+      },
+      "title": {
+        "displayName": "Panel Heading",
+        "purpose": "Tab panel headings."
+      },
+      "title-sm": {
+        "displayName": "Block Heading",
+        "purpose": "Dialog heads, logbook and guide blocks, empty states."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All reading copy, 56 to 68ch."
+      },
+      "body-strong": {
+        "displayName": "Stop Title",
+        "purpose": "Route stop titles."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Stop meta, captions, panel intros, in ink-2."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase labels naming an adjacent value: kind chips, tiers, table heads, bounty label."
+      },
+      "tab-label": {
+        "displayName": "Card Tab",
+        "purpose": "The card tab and saga \"you are here\" tab."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 2px 0 rgb(23 21 15 / .08), 0 12px 32px -12px rgb(23 21 15 / .28)",
+        "purpose": "Floating layers only: now-playing strip, toasts, dialogs, install banner."
+      },
+      {
+        "name": "lift-night",
+        "value": "0 2px 0 rgb(0 0 0 / .3), 0 14px 36px -12px rgb(0 0 0 / .7)",
+        "purpose": "Night version of lift."
+      },
+      {
+        "name": "press-fill",
+        "value": "inset 0 0 0 999px rgb(0 0 0 / .08)",
+        "purpose": "Hover on field buttons (white at 10% on ink buttons)."
+      },
+      {
+        "name": "current-ring",
+        "value": "0 0 0 3px var(--surface), 0 0 0 5px var(--rule)",
+        "purpose": "The current-position state mark."
+      },
+      {
+        "name": "focus",
+        "value": "outline: 3px solid var(--ink); outline-offset: 2px",
+        "purpose": "Global focus-visible ring; -3px inset on stop rows."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-broadcast",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Default out-curve: cut, toast, strip, progress, switch."
+      },
+      {
+        "name": "ease-press",
+        "value": "cubic-bezier(.2, .8, .2, 1)",
+        "purpose": "Button press, .12s."
+      },
+      {
+        "name": "cut",
+        "value": ".26s: translateX(-5%) skewX(-8deg) blur(1.5px) to none",
+        "purpose": "Episode numeral on change; never on first load."
+      },
+      {
+        "name": "eyecatch-wipe",
+        "value": "1.25s cubic-bezier(.7, 0, .2, 1); clip-path inset 0 100% 0 0 -> 0 (28%) hold (72%) -> inset 0 0 0 100%",
+        "purpose": "Full-screen field wipe when an arc completes."
+      },
+      {
+        "name": "toast-in",
+        "value": ".28s translateY(12px), opacity 0 to rest",
+        "purpose": "Toast entry."
+      },
+      {
+        "name": "now-strip",
+        "value": ".32s translateY(110%) to none",
+        "purpose": "Now-playing strip slide-in."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "durations .01ms; eyecatch display:none",
+        "purpose": "prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "360px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "720px"
+      },
+      {
+        "name": "lg",
+        "value": "960px"
+      },
+      {
+        "name": "page",
+        "value": "1180px"
+      }
+    ],
+    "screentone": {
+      "value": "radial-gradient(var(--tone) 1.1px, transparent 1.3px) / 6px 6px",
+      "eyecatchBand": "radial-gradient(rgb(0 0 0 / .18) 1.4px, transparent 1.6px) / 8px 8px"
+    },
+    "themeMechanism": {
+      "vars": [
+        "--field",
+        "--on-field"
+      ],
+      "onField": "WCAG relative luminance; ink #17150f if its contrast >= white, else #ffffff",
+      "setOn": "document.documentElement"
+    }
+  },
+  "components": [
+    {
+      "name": "Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Default framed square button; hover drops to sunk paper, press moves 1px.",
+      "html": "<button class=\"ds-btn\">Skip detour</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:0 16px; border:var(--frame, 2px) solid var(--rule, #17150f); border-radius:0; background:var(--surface, #ffffff); color:var(--ink, #17150f); font-family:var(--text, 'Zen Kaku Gothic New', system-ui, sans-serif); font-weight:700; font-size:15px; line-height:1.1; transition:transform .12s cubic-bezier(.2,.8,.2,1), background-color .15s; } .ds-btn:hover { background:var(--sunk, #e8e6e0); } .ds-btn:active { transform:translateY(1px); } .ds-btn:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Field Button (primary)",
+      "kind": "button",
+      "refersTo": "button-field",
+      "description": "The title-card primary: flat field fill, computed ink, display face, 56px.",
+      "html": "<button class=\"ds-btn-field\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg>Watched ep 9</button>",
+      "css": ".ds-btn-field { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:56px; min-width:300px; padding:0 16px; border:var(--frame, 2px) solid var(--rule, #17150f); border-radius:0; background:var(--field, #f2b705); color:var(--on-field, #17150f); font-family:var(--display, 'Dela Gothic One', sans-serif); font-weight:400; font-size:21px; letter-spacing:.01em; transition:transform .12s cubic-bezier(.2,.8,.2,1), box-shadow .15s; } .ds-btn-field:hover { box-shadow:inset 0 0 0 999px rgb(0 0 0 / .08); } .ds-btn-field:active { transform:translateY(1px); } .ds-btn-field:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Small ink-filled step action, e.g. +1 in a stop stepper.",
+      "html": "<button class=\"ds-btn-ink\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M12 5v14\"/></svg>1</button>",
+      "css": ".ds-btn-ink { display:inline-flex; align-items:center; gap:8px; min-height:36px; min-width:48px; padding:0 12px; border:var(--frame, 2px) solid var(--ink, #17150f); border-radius:0; background:var(--ink, #17150f); color:var(--ground, #f3f2ee); font-weight:700; font-size:14px; } .ds-btn-ink:hover { box-shadow:inset 0 0 0 999px rgb(255 255 255 / .1); } .ds-btn-ink:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Framed square field with inline search icon.",
+      "html": "<label class=\"ds-search\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input type=\"search\" placeholder=\"Search an arc, film or episode range\"></label>",
+      "css": ".ds-search { position:relative; display:block; max-width:420px; } .ds-search svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--ink-3, #635e54); } .ds-search input { width:100%; min-height:44px; padding:0 12px 0 40px; border:var(--frame, 2px) solid var(--rule, #17150f); border-radius:0; background:var(--surface, #ffffff); color:var(--ink, #17150f); font:16px var(--text, 'Zen Kaku Gothic New', sans-serif); } .ds-search input::placeholder { color:var(--ink-3, #635e54); } .ds-search input:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Filter Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Framed square chips; pressed fills ink.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\">All</button><button class=\"ds-chip\" aria-pressed=\"false\">Canon</button><button class=\"ds-chip\" aria-pressed=\"false\">Films</button></div>",
+      "css": ".ds-chips { display:flex; gap:6px; } .ds-chip { min-height:38px; padding:0 14px; border:var(--frame, 2px) solid var(--rule, #17150f); border-radius:0; background:var(--surface, #ffffff); color:var(--ink, #17150f); font-weight:700; font-size:14px; } .ds-chip:hover { background:var(--sunk, #e8e6e0); } .ds-chip[aria-pressed=\"true\"] { background:var(--ink, #17150f); color:var(--ground, #f3f2ee); } .ds-chip:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Folder tabs on a 2px baseline; the selected tab opens into the panel.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\">Roadmap</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Logbook</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Films</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Guide</button></div>",
+      "css": ".ds-tabs { display:flex; border-bottom:var(--frame, 2px) solid var(--rule, #17150f); } .ds-tab { min-height:48px; padding:0 18px; border:var(--frame, 2px) solid transparent; border-bottom:0; margin-bottom:-2px; background:transparent; font-weight:700; font-size:15px; color:var(--ink-2, #47433b); } .ds-tab:hover { color:var(--ink, #17150f); } .ds-tab[aria-selected=\"true\"] { color:var(--ink, #17150f); background:var(--ground, #f3f2ee); border-color:var(--rule, #17150f); border-bottom:var(--frame, 2px) solid var(--ground, #f3f2ee); } .ds-tab:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Title Card",
+      "kind": "custom",
+      "refersTo": "card-tab",
+      "description": "The signature: framed keyframe, card tab, stroked display numeral and title, ruled action bar.",
+      "html": "<section class=\"ds-card\"><div class=\"ds-card-art\"></div><span class=\"ds-card-tab\">Next episode</span><div class=\"ds-placard\"><div class=\"ds-epnum\"><small>EP</small><strong>9</strong></div><h1 class=\"ds-eptitle\">The Honorable Liar? Captain Usopp!</h1><p class=\"ds-epctx\"><b>Syrup Village Arc</b> · East Blue Saga · episodes 9 – 18</p></div><div class=\"ds-card-actions\"><button class=\"ds-card-primary\">Watched ep 9</button></div></section>",
+      "css": ".ds-card { position:relative; display:grid; grid-template-rows:minmax(0,1fr) auto; min-height:440px; border:var(--frame, 2px) solid var(--rule, #17150f); background:#0b0a08; overflow:hidden; container-type:inline-size; font-family:var(--text, 'Zen Kaku Gothic New', sans-serif); } .ds-card-art { position:absolute; inset:0; background:linear-gradient(to top, rgb(10 9 7 / .78) 0%, rgb(8 7 5 / .55) 34%, rgb(8 7 5 / 0) 68%), repeating-linear-gradient(135deg, #3a4a5c 0 40px, #2c3a4a 40px 80px); } .ds-card-tab { position:absolute; z-index:2; top:0; left:0; padding:8px 14px 9px; background:var(--field, #f2b705); color:var(--on-field, #17150f); border-right:2px solid #0b0a08; border-bottom:2px solid #0b0a08; font-family:var(--display, 'Dela Gothic One', sans-serif); font-size:14px; letter-spacing:.04em; line-height:1; } .ds-placard { position:relative; z-index:1; align-self:end; display:grid; gap:6px; padding:88px 32px 24px; color:#fff; } .ds-epnum { display:flex; align-items:flex-end; gap:10px; line-height:.8; } .ds-epnum small { font-family:var(--display, 'Dela Gothic One', sans-serif); font-size:24px; padding-bottom:.5em; } .ds-epnum strong { font-family:var(--display, 'Dela Gothic One', sans-serif); font-weight:400; font-size:140px; letter-spacing:-.04em; color:var(--field, #f2b705); -webkit-text-stroke:3px #0b0a08; paint-order:stroke fill; } .ds-eptitle { margin:4px 0 0; font-family:var(--display, 'Dela Gothic One', sans-serif); font-weight:400; font-size:40px; line-height:1.08; max-width:22ch; -webkit-text-stroke:5px #0b0a08; paint-order:stroke fill; } .ds-epctx { margin:6px 0 0; font-size:15px; color:#e9e6de; } .ds-epctx b { color:#fff; } .ds-card-actions { position:relative; z-index:1; padding:12px; background:var(--surface, #ffffff); border-top:var(--frame, 2px) solid var(--rule, #17150f); } .ds-card-primary { min-height:56px; width:100%; max-width:320px; border:var(--frame, 2px) solid var(--rule, #17150f); border-radius:0; background:var(--field, #f2b705); color:var(--on-field, #17150f); font-family:var(--display, 'Dela Gothic One', sans-serif); font-size:21px; } .ds-card-primary:hover { box-shadow:inset 0 0 0 999px rgb(0 0 0 / .08); } .ds-card-primary:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; }"
+    },
+    {
+      "name": "Bounty Strip",
+      "kind": "custom",
+      "refersTo": "bounty-strip",
+      "description": "Slim flat field strip with the bounty figure in the display face.",
+      "html": "<div class=\"ds-bounty\"><span class=\"ds-bounty-label\">Bounty</span><strong>฿ 30,000,000</strong><button class=\"ds-bounty-btn\">Logbook</button></div>",
+      "css": ".ds-bounty { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:12px 18px; padding:12px 16px; background:var(--field, #f2b705); color:var(--on-field, #17150f); border:var(--frame, 2px) solid var(--rule, #17150f); } .ds-bounty-label { font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; } .ds-bounty strong { font-family:var(--display, 'Dela Gothic One', sans-serif); font-weight:400; font-size:30px; line-height:1; letter-spacing:-.01em; white-space:nowrap; } .ds-bounty-btn { min-height:36px; padding:0 12px; border:2px solid currentColor; border-radius:0; background:transparent; color:inherit; font-weight:700; font-size:14px; } .ds-bounty-btn:hover { background:rgb(0 0 0 / .08); } .ds-bounty-btn:focus-visible { outline:3px solid currentColor; outline-offset:2px; }"
+    },
+    {
+      "name": "Route Stops with State Marks",
+      "kind": "custom",
+      "refersTo": "state-mark",
+      "description": "Stops on a 2px rail; each state is a mark in a fixed cell plus a word.",
+      "html": "<ul class=\"ds-route\"><li class=\"ds-stop\"><span class=\"ds-rail\"><button class=\"ds-mark is-done\" aria-label=\"Romance Dawn Arc, watched\"></button></span><div class=\"ds-body\"><strong>Romance Dawn Arc</strong> <span class=\"ds-kind\">Canon</span><div class=\"ds-state\">Watched</div></div></li><li class=\"ds-stop\"><span class=\"ds-rail\"><button class=\"ds-mark is-current\" aria-label=\"Syrup Village Arc, on episode 9\"></button></span><div class=\"ds-body\"><strong>Syrup Village Arc</strong><div class=\"ds-state\">On ep 9</div></div></li><li class=\"ds-stop is-skipped\"><span class=\"ds-rail\"><button class=\"ds-mark is-skipped\" aria-label=\"Movie 1, skipped\"></button></span><div class=\"ds-body\"><strong>Movie 1</strong><div class=\"ds-state\">Skipped</div></div></li><li class=\"ds-stop\"><span class=\"ds-rail\"><button class=\"ds-mark\" aria-label=\"Baratie Arc, not watched\"></button></span><div class=\"ds-body\"><strong>Baratie Arc</strong><div class=\"ds-state\">Not started</div></div></li></ul>",
+      "css": ".ds-route { list-style:none; margin:0; padding:0; border:var(--frame, 2px) solid var(--rule, #17150f); background:var(--surface, #ffffff); max-width:520px; font-family:var(--text, 'Zen Kaku Gothic New', sans-serif); color:var(--ink, #17150f); } .ds-stop { display:grid; grid-template-columns:56px minmax(0,1fr); border-top:1px solid rgb(23 21 15 / .16); } .ds-stop:first-child { border-top:0; } .ds-rail { position:relative; display:flex; justify-content:center; padding-top:16px; } .ds-rail::before { content:\"\"; position:absolute; top:0; bottom:0; left:50%; width:2px; margin-left:-1px; background:var(--rule, #17150f); } .ds-stop.is-skipped .ds-rail::before { background:repeating-linear-gradient(to bottom, var(--rule, #17150f) 0 5px, transparent 5px 11px); } .ds-mark { position:relative; z-index:1; width:26px; height:26px; padding:0; border:var(--frame, 2px) solid var(--rule, #17150f); border-radius:0; background:var(--surface, #ffffff); } .ds-mark.is-done { background:var(--ink, #17150f); } .ds-mark.is-current { background:var(--field, #f2b705); box-shadow:0 0 0 3px var(--surface, #ffffff), 0 0 0 5px var(--rule, #17150f); } .ds-mark.is-skipped { background:linear-gradient(to top right, transparent calc(50% - 1.5px), var(--struck, #b3261e) calc(50% - 1.5px) calc(50% + 1.5px), transparent calc(50% + 1.5px)), var(--surface, #ffffff); } .ds-mark:hover { box-shadow:0 0 0 3px rgb(23 21 15 / .16); } .ds-mark:focus-visible { outline:3px solid var(--ink, #17150f); outline-offset:2px; } .ds-body { padding:12px 14px 14px 0; font-size:17px; } .ds-stop.is-skipped strong { color:var(--ink-3, #635e54); } .ds-kind { display:inline-flex; align-items:center; min-height:22px; padding:0 7px; border:1px solid var(--ink, #17150f); background:var(--ink, #17150f); color:var(--ground, #f3f2ee); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; } .ds-state { font-size:14px; font-weight:700; }"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Ink bar, lifted, with a field-coloured undo.",
+      "html": "<div class=\"ds-toast\"><span>Skipped Warship Island.</span><button class=\"ds-toast-btn\">Undo</button></div>",
+      "css": ".ds-toast { display:flex; align-items:center; gap:12px; max-width:520px; min-height:52px; padding:10px 10px 10px 16px; background:var(--ink, #17150f); color:var(--ground, #f3f2ee); border:var(--frame, 2px) solid var(--ink, #17150f); box-shadow:0 2px 0 rgb(23 21 15 / .08), 0 12px 32px -12px rgb(23 21 15 / .28); font-size:15px; font-weight:600; animation:ds-toast-in .28s cubic-bezier(.16,1,.3,1); } .ds-toast span { flex:1; } .ds-toast-btn { min-height:36px; padding:0 12px; border:2px solid var(--field, #f2b705); border-radius:0; background:var(--field, #f2b705); color:var(--on-field, #17150f); font-weight:700; } .ds-toast-btn:focus-visible { outline:3px solid var(--ground, #f3f2ee); outline-offset:2px; } @keyframes ds-toast-in { from { transform:translateY(12px); opacity:0; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Broadcast Title Card",
+    "overview": "The next episode arrives the way the show announces it: a full title card with the saga art full-bleed inside an ink frame, a monumental episode numeral, and the episode title in heavy gothic lettering. Everything else in the app borrows the same broadcast graphic language: flat eyecatch colour fields, square panels ruled in manga ink, and a printed screentone where a surface needs to read as printed.\n\nThe system is two grounds and one field. Day is broadcast white paper with ink rules; night is ink paper with chalk rules. The only colour the user chooses is the field: a Straw Hat's flat eyecatch colour that paints the card tab, the bounty strip, the primary action, dialog heads and the current-position marks. Its text ink is computed, not chosen. The saga art is the primary identity of every hero surface; the field is the second voice, and it never becomes a gradient, a glow or a tint.\n\nDensity is phone-first and thumb-first: 44px minimum targets, 56px primary actions, one column of framed panels stacked 12px apart under the card, then tabs.",
+    "keyCharacteristics": [
+      "Square corners everywhere, framed in a 2px ink rule.",
+      "One flat, user-chosen field colour with computed ink or white text.",
+      "Dela Gothic One for numerals and titles, Zen Kaku Gothic New for everything read.",
+      "Saga art as the keyframe inside ink-ruled frames, under a bottom-up scrim.",
+      "State shown by a mark in a fixed cell plus a word, never by colour alone.",
+      "Motion as broadcast edits: a hard cut on the numeral, an eyecatch wipe on arc completion."
+    ],
+    "rules": [
+      {
+        "name": "The One Field Rule",
+        "body": "The theme supplies exactly two values, `--field` and `--on-field`. Nothing else is themed, and the field is always a flat fill: no gradients, tints, glows or opacity steps.",
+        "section": "colors"
+      },
+      {
+        "name": "The Computed Ink Rule",
+        "body": "Text on the field is never picked by hand; it is whichever of ink or white contrasts better with that field.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Dela Gothic One announces (numerals, titles, the card tab, the bounty figure, the now-playing number); Zen Kaku Gothic New explains. Never set body copy or controls in the display face, except the primary title-card action.",
+        "section": "typography"
+      },
+      {
+        "name": "The Own Figures Rule",
+        "body": "Tabular numerals everywhere numbers sit in text, except in Dela Gothic display numerals, where its tabular figures gap; those keep default spacing.",
+        "section": "typography"
+      },
+      {
+        "name": "The Only Floaters Lift Rule",
+        "body": "A surface in the page flow never casts a shadow. If it does not sit above the page, it is framed, not lifted.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep every corner square (0px) and frame containers and controls in the 2px rule (`--frame`).",
+      "**Do** let the saga art be the identity of the title card and saga bands, always inside keyframe black with a scrim. Whole Cake, Wano, Final Saga and Elbaph currently ship placeholder art until the author supplies final pieces; build surfaces so the art can be swapped without layout change.",
+      "**Do** paint the field flat, and take its text colour from `--on-field`.",
+      "**Do** show state with a mark in a fixed cell and a word: filled, half, hollow, current ring, struck slash. Colour is a third signal, never the only one.",
+      "**Do** make a skip visible as a break (dashed rail) until it is restored, and make every skip undoable.",
+      "**Do** stroke display lettering over art in keyframe black with `paint-order: stroke fill`.",
+      "**Do** keep targets at 44px minimum and the primary title-card action at 56px."
+    ],
+    "donts": [
+      "**Don't** round corners or use pill shapes anywhere.",
+      "**Don't** use coloured side stripes on rows, callouts or cards; a warning changes the whole frame to struck red.",
+      "**Don't** put eyebrow kickers or small uppercase lines above headings; uppercase labels only name the value beside them.",
+      "**Don't** open with a stat-tile hero, progress rings or a poster grid; stats live in the logbook, and the first viewport belongs to the title card.",
+      "**Don't** cast shadows on in-flow surfaces; `--lift` is for floating layers only.",
+      "**Don't** theme anything but `--field` and `--on-field`, or tint and gradient the field.",
+      "**Don't** set body copy below 12px or in the display face."
+    ]
+  }
+}

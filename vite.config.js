@@ -10,15 +10,15 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024
       },
       manifest: {
         name: 'The One Piece Voyage Tracker',
         short_name: 'Eternal Pose',
-        description: 'Definitive Watch Order, Marine Bounties & Episode Tracker',
-        theme_color: '#020617',
-        background_color: '#020617',
+        description: 'A One Piece watch-order tracker that remembers where you stopped.',
+        theme_color: '#11100e',
+        background_color: '#11100e',
         display: 'standalone',
         orientation: 'portrait-primary',
         start_url: '/',
