@@ -109,6 +109,14 @@ export function Films({ films, positionIndex, shield, isWatched, isSkipped, onTo
   </ul>;
 }
 
+function SkipRow({ f, onJumpTo }) {
+  return <tr>
+    <td><button className="link-btn" onClick={() => onJumpTo(f.id)}>{f.title}</button></td>
+    <td className="num">{f.episodes}</td>
+    <td className="num">{(f.epCount * 23.5 / 60).toFixed(1)}</td>
+  </tr>;
+}
+
 export function Guide({ skippable, tieIns, fillerHours, onJumpTo }) {
   return <div className="guide-cols">
     <section className="guide-block" aria-labelledby="g-how">
@@ -135,24 +143,16 @@ export function Guide({ skippable, tieIns, fillerHours, onJumpTo }) {
     <section className="guide-block wide" aria-labelledby="g-skip">
       <h3 id="g-skip">Filler you can skip</h3>
       <p style={{ margin: '0 0 10px', color: 'var(--ink-2)' }}>About <span className="num">{fillerHours}</span> hours in total. None of it changes the story.</p>
+      {/* One table for both groups, so the columns line up all the way down. */}
       <table className="skip-table">
-        <thead><tr><th scope="col">Arc</th><th scope="col">Episodes</th><th scope="col">Hours</th></tr></thead>
-        <tbody>{skippable.map(f => <tr key={f.id}>
-          <td><button className="link-btn" onClick={() => onJumpTo(f.id)}>{f.title}</button></td>
-          <td className="num">{f.episodes}</td>
-          <td className="num">{(f.epCount * 23.5 / 60).toFixed(1)}</td>
-        </tr>)}</tbody>
+        <colgroup><col /><col className="col-eps" /><col className="col-hours" /></colgroup>
+        <thead><tr><th scope="col">Arc</th><th scope="col">Episodes</th><th scope="col" className="num">Hours</th></tr></thead>
+        <tbody>{skippable.map(f => <SkipRow key={f.id} f={f} onJumpTo={onJumpTo} />)}</tbody>
+        {tieIns.length > 0 && <tbody>
+          <tr className="group"><th scope="rowgroup" colSpan={3}>Film tie-ins: only if you're watching the film</th></tr>
+          {tieIns.map(f => <SkipRow key={f.id} f={f} onJumpTo={onJumpTo} />)}
+        </tbody>}
       </table>
-      {tieIns.length > 0 && <>
-        <p style={{ margin: '16px 0 8px', fontWeight: 700 }}>Film tie-ins: only if you're watching the film</p>
-        <table className="skip-table">
-          <tbody>{tieIns.map(f => <tr key={f.id}>
-            <td><button className="link-btn" onClick={() => onJumpTo(f.id)}>{f.title}</button></td>
-            <td className="num">{f.episodes}</td>
-            <td className="num">{(f.epCount * 23.5 / 60).toFixed(1)}</td>
-          </tr>)}</tbody>
-        </table>
-      </>}
     </section>
   </div>;
 }

@@ -418,9 +418,19 @@ input[type="range"] { accent-color: var(--ink); }
 .guide-block dt { font-weight: 700; }
 .guide-block dd { margin: 2px 0 0; color: var(--ink-2); max-width: 66ch; }
 .skip-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-.skip-table th, .skip-table td { text-align: left; padding: 8px 8px 8px 0; border-top: 1px solid var(--hair); vertical-align: top; }
-.skip-table th { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); border-top: 0; }
-.skip-table td.num { white-space: nowrap; }
+.skip-table col.col-eps { width: 11em; }
+.skip-table col.col-hours { width: 5em; }
+.skip-table th, .skip-table td { text-align: left; padding: 6px 12px 6px 0; border-top: 1px solid var(--hair); vertical-align: middle; }
+.skip-table th:last-child, .skip-table td:last-child { padding-right: 0; }
+.skip-table thead th { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); border-top: 0; }
+.skip-table .num { white-space: nowrap; text-align: right; }
+.skip-table td:nth-child(2) { text-align: left; }
+@media (max-width: 640px) {
+  .skip-table col.col-eps { width: 6.5em; }
+  .skip-table col.col-hours { width: 3.4em; }
+  .skip-table td:nth-child(2) { white-space: normal; }
+}
+.skip-table tr.group th { padding-top: 22px; font-size: 15px; font-weight: 700; color: var(--ink); }
 
 /* ============================================================
    Footer
