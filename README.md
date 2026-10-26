@@ -78,6 +78,12 @@ There aren't any tests yet. `docs/qa/` has two sample backup files (a fresh star
 
 Spotted a wrong episode range, a missing special, or an arc that's in the wrong spot? Open an issue or a PR. Watch-order stuff is the most useful help by far.
 
+## Support
+
+If the tracker keeps you on course, you can support it on Ko-fi:
+
+[![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/looneth)
+
 ## Disclaimer
 
 This is a free, non-commercial fan project. One Piece and everything related to it belongs to Eiichiro Oda, Shueisha and Toei Animation. I don't own any of it.
