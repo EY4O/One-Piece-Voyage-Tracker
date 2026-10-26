@@ -1,6 +1,6 @@
-# Eternal Pose
+# The One Piece Voyage Tracker
 
-A watch-order tracker for One Piece. Live at **[eternalpose.io](https://eternalpose.io)**.
+A watch-order tracker for One Piece. Live at **[voyage.eternalpose.io](https://voyage.eternalpose.io/)**.
 
 One Piece is 1,100+ episodes, plus fifteen-odd movies, a handful of specials, and a lot of filler that may or may not be worth your time. I kept losing track of where I was and which bits I'd meant to skip, so I made this. It lays the whole thing out in the order I'd actually watch it and remembers where you stopped.
 
